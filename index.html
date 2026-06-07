@@ -16,16 +16,17 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #F4F7FC;
+            background-color: #F0F4F0;
             color: #1A2A1A;
             line-height: 1.4;
         }
 
+        /* МЯТНАЯ ЦВЕТОВАЯ СХЕМА */
         :root {
-            --primary: #2A6B9E;
-            --primary-dark: #1E5A85;
-            --primary-light: #E0EAF3;
-            --primary-ultralight: #F0F4F9;
+            --primary: #4CAF7F;
+            --primary-dark: #3d8c64;
+            --primary-light: #e2f3ea;
+            --primary-ultralight: #f0faf5;
             --gray-bg: #F7F9F7;
             --gray-card: #FFFFFF;
             --text-dark: #1A2A1A;
@@ -481,7 +482,6 @@
     const SUPABASE_URL = 'https://zweulqmupkljowyfwzqs.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_CQDuw-BNAqeYUTr8HyzaoQ_JTw_Qv05';
     
-    // Используем другое имя переменной, чтобы избежать конфликта с глобальным supabase
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     
     let currentUser = null;
@@ -490,13 +490,11 @@
     let currentSearchQuery = '';
     let favorites = [];
 
-    // DOM элементы
     const mainPage = document.getElementById('mainPage');
     const dashboard = document.getElementById('dashboard');
     const sectionsContainer = document.getElementById('sectionsContainer');
     const authSection = document.getElementById('authSection');
     
-    // Проверка сессии
     async function checkSession() {
         const { data: { session } } = await supabaseClient.auth.getSession();
         if (session) {
@@ -512,7 +510,6 @@
         }
     }
 
-    // Загрузка профиля
     async function loadUserProfile() {
         if (!currentUser) return;
         const { data, error } = await supabaseClient
@@ -525,13 +522,11 @@
         } else if (data) {
             currentUserProfile = data;
         } else {
-            // Создаём профиль если нет
             currentUserProfile = { id: currentUser.id, full_name: currentUser.email.split('@')[0], interests: [], status: 'offline' };
             await supabaseClient.from('profiles').insert([currentUserProfile]);
         }
     }
 
-    // Загрузка избранного
     async function loadFavorites() {
         if (!currentUser) return;
         const { data, error } = await supabaseClient
@@ -544,7 +539,6 @@
         }
     }
 
-    // Добавить в избранное
     async function addFavorite(sectionId) {
         if (!currentUser) {
             openModal();
@@ -562,7 +556,6 @@
         }
     }
 
-    // Удалить из избранного
     async function removeFavorite(sectionId) {
         const { error } = await supabaseClient
             .from('user_favorites')
@@ -578,7 +571,6 @@
         }
     }
 
-    // Переключить статус
     async function toggleStatus() {
         if (!currentUserProfile) return;
         const newStatus = currentUserProfile.status === 'online' ? 'offline' : 'online';
@@ -594,7 +586,6 @@
         }
     }
 
-    // Показать дашборд
     function showDashboard() {
         mainPage.style.display = 'none';
         dashboard.style.display = 'block';
@@ -665,7 +656,6 @@
         }
     }
 
-    // Загрузка секций
     async function loadSections(searchQuery = '') {
         if (!sectionsContainer) return;
         sectionsContainer.innerHTML = '<div class="loading">Загрузка секций...</div>';
@@ -699,7 +689,6 @@
     }
 
     function getIconForSection(name) {
-        // Возвращаем иконку для аватарки
         const lower = name.toLowerCase();
         if (lower.includes('бег')) return '<i class="fas fa-running"></i>';
         if (lower.includes('шахмат')) return '<i class="fas fa-chess"></i>';
@@ -715,7 +704,6 @@
         return div.innerHTML;
     }
 
-    // Авторизация
     const modal = document.getElementById('authModal');
     const modalTitle = document.getElementById('modalTitle');
     const emailInput = document.getElementById('emailInput');
@@ -790,7 +778,6 @@
         }
     }
 
-    // Обработчики событий
     document.getElementById('searchBtn')?.addEventListener('click', () => {
         currentSearchQuery = document.getElementById('searchInput')?.value || '';
         loadSections(currentSearchQuery);
@@ -822,7 +809,6 @@
     switchAuthMode?.addEventListener('click', (e) => { e.preventDefault(); switchMode(); });
     window.addEventListener('click', (e) => { if (e.target === modal) closeModalFunc(); });
     
-    // Делаем функции глобальными для onclick
     window.addFavorite = addFavorite;
     window.removeFavorite = removeFavorite;
     window.toggleStatus = toggleStatus;
