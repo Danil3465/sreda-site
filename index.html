@@ -353,6 +353,13 @@
             padding: 12px 0;
             border-bottom: 1px solid var(--border-light);
         }
+        .favorite-emoji {
+            font-size: 1.5rem;
+            margin-right: 12px;
+        }
+        .favorite-info {
+            flex: 1;
+        }
         .modal {
             display: none;
             position: fixed;
@@ -613,6 +620,16 @@
         loadSections(currentSearchQuery);
     }
 
+    function getEmojiForSection(name) {
+        const lower = name.toLowerCase();
+        if (lower.includes('бег')) return '🏃';
+        if (lower.includes('шахмат')) return '♟️';
+        if (lower.includes('танц')) return '💃';
+        if (lower.includes('карате')) return '🥋';
+        if (lower.includes('вело')) return '🚴';
+        return '🏆';
+    }
+
     function renderDashboard() {
         if (!currentUserProfile) return;
         const statusClass = currentUserProfile.status === 'online' ? 'online' : 'offline';
@@ -629,11 +646,11 @@
             </div>
             <div>
                 <div class="widget-card">
-                    <div class="widget-title">Избранные секции</div>
+                    <div class="widget-title">❤️ Избранные секции</div>
                     <div id="favoritesList"></div>
                 </div>
                 <div class="widget-card">
-                    <div class="widget-title">Редактировать профиль</div>
+                    <div class="widget-title">✏️ Редактировать профиль</div>
                     <input type="text" id="editName" placeholder="Ваше имя" value="${escapeHtml(currentUserProfile.full_name || '')}" style="width:100%; padding:10px; margin-bottom:12px; border-radius:12px; border:1px solid var(--border-light);">
                     <button class="btn-primary" onclick="window.updateProfile()">Сохранить</button>
                 </div>
@@ -649,7 +666,8 @@
             })).then(sections => {
                 favoritesList.innerHTML = sections.filter(s => s).map(section => `
                     <div class="favorite-item">
-                        <div>
+                        <div class="favorite-emoji">${getEmojiForSection(section.name)}</div>
+                        <div class="favorite-info">
                             <div style="font-weight:600;">${escapeHtml(section.name)}</div>
                             <div style="font-size:0.7rem; color:var(--text-gray);">${escapeHtml(section.metro || '')}</div>
                         </div>
@@ -690,13 +708,13 @@
                 <div class="card">
                     <div class="card-icon">${getIconForSection(section.name)}</div>
                     <div class="card-title">${escapeHtml(section.name)}</div>
-                    <div class="card-address">${escapeHtml(section.metro || 'Адрес не указан')}</div>
+                    <div class="card-address">📍 ${escapeHtml(section.metro || 'Адрес не указан')}</div>
                     <div class="card-stats">${section.trainer_name ? escapeHtml(section.trainer_name) : ''}</div>
                     <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
                         ${section.max_chat_link ? `<a href="${escapeHtml(section.max_chat_link)}" target="_blank" class="btn-max">Чат в MAX</a>` : ''}
                         ${currentUser && favorites.includes(section.id) ? 
-                            `<button class="btn-outline" onclick="window.removeFavorite(${section.id})">В избранном</button>` :
-                            `<button class="btn-outline" onclick="window.addFavorite(${section.id})">В избранное</button>`
+                            `<button class="btn-outline" onclick="window.removeFavorite(${section.id})">❤️ В избранном</button>` :
+                            `<button class="btn-outline" onclick="window.addFavorite(${section.id})">🤍 В избранное</button>`
                         }
                     </div>
                 </div>
