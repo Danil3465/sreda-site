@@ -298,16 +298,41 @@
             text-align: center;
         }
         .avatar {
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
             background: var(--primary-light);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 16px;
-            font-size: 2rem;
+            font-size: 3rem;
             color: var(--primary);
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+        }
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .avatar-upload-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            font-size: 0.7rem;
+            padding: 4px;
+            text-align: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .avatar:hover .avatar-upload-label {
+            opacity: 1;
         }
         .status-switch {
             display: inline-block;
@@ -345,6 +370,70 @@
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+        .profile-field {
+            margin-bottom: 20px;
+        }
+        .profile-field label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-gray);
+            margin-bottom: 4px;
+        }
+        .profile-field input, .profile-field select, .profile-field textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            background: white;
+        }
+        .profile-field textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        .interests-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .interest-tag {
+            background: var(--primary-light);
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .interest-tag .remove {
+            cursor: pointer;
+            font-size: 0.7rem;
+            opacity: 0.6;
+        }
+        .add-interest {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .add-interest input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--border-light);
+            border-radius: 40px;
+            font-size: 0.8rem;
+        }
+        .btn-small {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            cursor: pointer;
         }
         .favorite-item {
             display: flex;
@@ -517,6 +606,22 @@
     const sectionsContainer = document.getElementById('sectionsContainer');
     const authSection = document.getElementById('authSection');
     
+    // Дополнительные поля профиля
+    async function updateProfileField(field, value) {
+        if (!currentUser) return;
+        const updateData = {};
+        updateData[field] = value;
+        const { error } = await supabaseClient
+            .from('profiles')
+            .update(updateData)
+            .eq('id', currentUser.id);
+        if (error) {
+            console.error('Ошибка обновления:', error);
+            return false;
+        }
+        return true;
+    }
+
     async function checkSession() {
         const { data: { session } } = await supabaseClient.auth.getSession();
         if (session) {
@@ -544,7 +649,16 @@
         } else if (data) {
             currentUserProfile = data;
         } else {
-            currentUserProfile = { id: currentUser.id, full_name: currentUser.email.split('@')[0], interests: [], status: 'offline' };
+            currentUserProfile = { 
+                id: currentUser.id, 
+                full_name: currentUser.email.split('@')[0], 
+                interests: [], 
+                status: 'offline',
+                birthdate: '',
+                city: '',
+                about: '',
+                avatar_url: ''
+            };
             await supabaseClient.from('profiles').insert([currentUserProfile]);
         }
     }
@@ -596,16 +710,9 @@
     async function toggleStatus() {
         if (!currentUserProfile) return;
         const newStatus = currentUserProfile.status === 'online' ? 'offline' : 'online';
-        const { error } = await supabaseClient
-            .from('profiles')
-            .update({ status: newStatus })
-            .eq('id', currentUser.id);
-        if (error) {
-            alert('Ошибка: ' + error.message);
-        } else {
-            currentUserProfile.status = newStatus;
-            renderDashboard();
-        }
+        await updateProfileField('status', newStatus);
+        currentUserProfile.status = newStatus;
+        renderDashboard();
     }
 
     function showDashboard() {
@@ -630,14 +737,69 @@
         return '🏆';
     }
 
+    async function updateAvatar(file) {
+        if (!file || !currentUser) return;
+        
+        // Проверка типа файла
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/heic', 'image/heif', 'image/webp'];
+        if (!allowedTypes.includes(file.type)) {
+            alert('Поддерживаются форматы: JPEG, PNG, HEIC, WEBP');
+            return;
+        }
+        
+        // Проверка размера (максимум 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('Файл не должен превышать 5MB');
+            return;
+        }
+        
+        try {
+            // Генерируем уникальное имя файла
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${currentUser.id}_${Date.now()}.${fileExt}`;
+            
+            // Загружаем файл в Storage
+            const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                .from('avatars')
+                .upload(fileName, file);
+            
+            if (uploadError) throw uploadError;
+            
+            // Получаем публичный URL
+            const { data: { publicUrl } } = supabaseClient.storage
+                .from('avatars')
+                .getPublicUrl(fileName);
+            
+            // Обновляем профиль
+            await updateProfileField('avatar_url', publicUrl);
+            currentUserProfile.avatar_url = publicUrl;
+            
+            renderDashboard();
+            alert('Аватар обновлён!');
+        } catch (error) {
+            console.error('Ошибка загрузки аватара:', error);
+            alert('Ошибка при загрузке аватара. Попробуйте позже.');
+        }
+    }
+
     function renderDashboard() {
         if (!currentUserProfile) return;
         const statusClass = currentUserProfile.status === 'online' ? 'online' : 'offline';
         const statusText = currentUserProfile.status === 'online' ? 'Готов к общению' : 'Не беспокоить';
+        const interests = currentUserProfile.interests || [];
         
         document.getElementById('dashboardContent').innerHTML = `
             <div class="profile-card">
-                <div class="avatar">${(currentUserProfile.full_name?.[0] || 'U').toUpperCase()}</div>
+                <div class="avatar" id="avatarContainer">
+                    ${currentUserProfile.avatar_url ? 
+                        `<img src="${currentUserProfile.avatar_url}" alt="avatar">` : 
+                        `${(currentUserProfile.full_name?.[0] || 'U').toUpperCase()}`
+                    }
+                    <div class="avatar-upload-label" onclick="document.getElementById('avatarInput').click()">
+                        <i class="fas fa-camera"></i> Изменить
+                    </div>
+                </div>
+                <input type="file" id="avatarInput" accept="image/jpeg,image/jpg,image/png,image/heic,image/heif,image/webp" style="display:none">
                 <h2>${escapeHtml(currentUserProfile.full_name || 'Пользователь')}</h2>
                 <div class="status-switch ${statusClass}" onclick="window.toggleStatus()">
                     ${statusText}
@@ -646,16 +808,56 @@
             </div>
             <div>
                 <div class="widget-card">
+                    <div class="widget-title">📝 Личная информация</div>
+                    <div class="profile-field">
+                        <label>Полное имя</label>
+                        <input type="text" id="fullName" value="${escapeHtml(currentUserProfile.full_name || '')}" placeholder="Как вас зовут?">
+                    </div>
+                    <div class="profile-field">
+                        <label>📅 Дата рождения</label>
+                        <input type="date" id="birthdate" value="${currentUserProfile.birthdate || ''}">
+                    </div>
+                    <div class="profile-field">
+                        <label>🏙️ Город</label>
+                        <input type="text" id="city" value="${escapeHtml(currentUserProfile.city || '')}" placeholder="Москва, Санкт-Петербург...">
+                    </div>
+                    <div class="profile-field">
+                        <label>📖 О себе</label>
+                        <textarea id="about" placeholder="Расскажите о своих увлечениях, целях и о том, кого хотите найти...">${escapeHtml(currentUserProfile.about || '')}</textarea>
+                    </div>
+                    <div class="profile-field">
+                        <label>🏷️ Интересы</label>
+                        <div class="interests-tags" id="interestsContainer"></div>
+                        <div class="add-interest">
+                            <input type="text" id="newInterest" placeholder="Новый интерес (например, бег, шахматы)">
+                            <button class="btn-small" onclick="window.addInterest()">Добавить</button>
+                        </div>
+                    </div>
+                    <button class="btn-primary" style="margin-top: 16px; width:100%;" onclick="window.saveProfileInfo()">Сохранить изменения</button>
+                </div>
+                <div class="widget-card">
                     <div class="widget-title">❤️ Избранные секции</div>
                     <div id="favoritesList"></div>
                 </div>
-                <div class="widget-card">
-                    <div class="widget-title">✏️ Редактировать профиль</div>
-                    <input type="text" id="editName" placeholder="Ваше имя" value="${escapeHtml(currentUserProfile.full_name || '')}" style="width:100%; padding:10px; margin-bottom:12px; border-radius:12px; border:1px solid var(--border-light);">
-                    <button class="btn-primary" onclick="window.updateProfile()">Сохранить</button>
-                </div>
             </div>
         `;
+        
+        // Заполняем интересы
+        const interestsContainer = document.getElementById('interestsContainer');
+        if (interestsContainer) {
+            if (interests.length === 0) {
+                interestsContainer.innerHTML = '<span style="color: var(--text-gray); font-size: 0.8rem;">Добавьте ваши интересы</span>';
+            } else {
+                interestsContainer.innerHTML = interests.map(interest => `
+                    <span class="interest-tag">
+                        ${escapeHtml(interest)}
+                        <span class="remove" onclick="window.removeInterest('${escapeHtml(interest)}')">×</span>
+                    </span>
+                `).join('');
+            }
+        }
+        
+        // Заполняем избранное
         const favoritesList = document.getElementById('favoritesList');
         if (favorites.length === 0) {
             favoritesList.innerHTML = '<div style="padding: 12px 0; color: var(--text-gray);">Нет избранных секций</div>';
@@ -676,20 +878,64 @@
                 `).join('');
             });
         }
+        
+        // Обработчик загрузки аватара
+        document.getElementById('avatarInput')?.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                updateAvatar(e.target.files[0]);
+            }
+        });
     }
+
+    window.addInterest = async function() {
+        const input = document.getElementById('newInterest');
+        const interest = input.value.trim();
+        if (!interest) return;
+        
+        const interests = currentUserProfile.interests || [];
+        if (!interests.includes(interest)) {
+            interests.push(interest);
+            await updateProfileField('interests', interests);
+            currentUserProfile.interests = interests;
+            renderDashboard();
+        }
+        input.value = '';
+    };
+
+    window.removeInterest = async function(interest) {
+        let interests = currentUserProfile.interests || [];
+        interests = interests.filter(i => i !== interest);
+        await updateProfileField('interests', interests);
+        currentUserProfile.interests = interests;
+        renderDashboard();
+    };
+
+    window.saveProfileInfo = async function() {
+        const fullName = document.getElementById('fullName')?.value;
+        const birthdate = document.getElementById('birthdate')?.value;
+        const city = document.getElementById('city')?.value;
+        const about = document.getElementById('about')?.value;
+        
+        if (fullName) await updateProfileField('full_name', fullName);
+        if (birthdate !== undefined) await updateProfileField('birthdate', birthdate);
+        if (city !== undefined) await updateProfileField('city', city);
+        if (about !== undefined) await updateProfileField('about', about);
+        
+        if (fullName) currentUserProfile.full_name = fullName;
+        if (birthdate !== undefined) currentUserProfile.birthdate = birthdate;
+        if (city !== undefined) currentUserProfile.city = city;
+        if (about !== undefined) currentUserProfile.about = about;
+        
+        renderDashboard();
+        alert('Информация сохранена!');
+    };
 
     async function updateProfile() {
         const newName = document.getElementById('editName')?.value;
         if (!newName || !currentUser) return;
-        const { error } = await supabaseClient
-            .from('profiles')
-            .update({ full_name: newName })
-            .eq('id', currentUser.id);
-        if (error) alert('Ошибка: ' + error.message);
-        else {
-            currentUserProfile.full_name = newName;
-            renderDashboard();
-        }
+        await updateProfileField('full_name', newName);
+        currentUserProfile.full_name = newName;
+        renderDashboard();
     }
 
     async function loadSections(searchQuery = '') {
@@ -779,7 +1025,7 @@
                 if (error) throw error;
                 if (data.user) {
                     currentUser = data.user;
-                    currentUserProfile = { id: data.user.id, full_name: email.split('@')[0], interests: [], status: 'offline' };
+                    currentUserProfile = { id: data.user.id, full_name: email.split('@')[0], interests: [], status: 'offline', birthdate: '', city: '', about: '', avatar_url: '' };
                     await supabaseClient.from('profiles').insert([currentUserProfile]);
                     await loadFavorites();
                     updateAuthUI(true);
