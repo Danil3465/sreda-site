@@ -66,6 +66,7 @@
             align-items: center;
             gap: 8px;
             text-decoration: none;
+            cursor: pointer;
         }
 
         .nav {
@@ -262,7 +263,72 @@
             color: var(--text-gray);
         }
 
-        /* Модальное окно */
+        /* Дашборд */
+        .dashboard {
+            display: none;
+        }
+        .dashboard.active {
+            display: block;
+        }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 24px;
+            margin: 24px 0;
+        }
+        .profile-card {
+            background: white;
+            border-radius: 28px;
+            padding: 28px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            text-align: center;
+        }
+        .avatar {
+            width: 100px;
+            height: 100px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 2.5rem;
+            color: var(--primary);
+        }
+        .status-switch {
+            display: inline-block;
+            background: #e6f7e6;
+            padding: 5px 16px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 12px 0;
+        }
+        .widget-card {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+        }
+        .widget-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .favorite-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
         .modal {
             display: none;
             position: fixed;
@@ -293,18 +359,6 @@
             border-radius: 12px;
             font-size: 1rem;
         }
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            background: var(--primary-light);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            color: var(--primary);
-        }
-
         .footer {
             border-top: 1px solid var(--border-light);
             padding: 40px 0 32px;
@@ -316,19 +370,17 @@
             font-size: 0.8rem;
             color: var(--text-gray);
         }
-
         .footer-links {
             display: flex;
             gap: 32px;
             flex-wrap: wrap;
         }
-
         .footer-links a {
             text-decoration: none;
             color: var(--text-gray);
         }
-
-        @media (max-width: 700px) {
+        @media (max-width: 900px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
             .container { padding: 0 16px; }
             .hero h1 { font-size: 2rem; }
             .header-inner { flex-direction: column; align-items: flex-start; }
@@ -341,10 +393,10 @@
 <div class="header">
     <div class="container">
         <div class="header-inner">
-            <a href="#" class="logo">🌿 Среда</a>
-            <div class="nav">
-                <a href="#">Сообщества</a>
-                <a href="#">Секции</a>
+            <div class="logo" id="logoBtn">🌿 Среда</div>
+            <div class="nav" id="navSection">
+                <a href="#" id="mainPageBtn">Главная</a>
+                <a href="#" id="profileNavBtn">Профиль</a>
                 <div id="authSection">
                     <a href="#" id="loginBtn" class="btn-outline">Войти / Регистрация</a>
                 </div>
@@ -354,7 +406,8 @@
 </div>
 
 <main>
-    <div class="container">
+    <!-- Главная страница -->
+    <div id="mainPage" class="container" style="display: block;">
         <div class="hero">
             <h1>Найди своих по интересам</h1>
             <p>Бег, шахматы, танцы, единоборства — выбирай увлечение, находи людей рядом и занимайтесь вместе.</p>
@@ -370,7 +423,6 @@
                 <div class="chip" data-interest="вело">🚴 Вело</div>
             </div>
         </div>
-
         <div>
             <div class="section-title">📍 Секции и кружки рядом</div>
             <div class="section-sub">Конкретные места, где можно заниматься. Отзывы — в чатах участников.</div>
@@ -379,9 +431,16 @@
             </div>
         </div>
     </div>
+
+    <!-- Дашборд профиля -->
+    <div id="dashboard" class="container dashboard">
+        <div class="dashboard-grid" id="dashboardContent">
+            <!-- Заполняется через JS -->
+        </div>
+    </div>
 </main>
 
-<!-- Модальное окно для входа/регистрации -->
+<!-- Модальное окно -->
 <div id="authModal" class="modal">
     <div class="modal-content">
         <h3 id="modalTitle">Вход</h3>
@@ -392,7 +451,7 @@
         <div style="text-align: center; margin-top: 16px;">
             <a href="#" id="switchAuthMode">Нет аккаунта? Зарегистрироваться</a>
         </div>
-        <button id="closeModal" style="margin-top: 12px; background: none; border: none; cursor: pointer;">Закрыть</button>
+        <button id="closeModal" style="margin-top: 12px; background: none; border: none; cursor: pointer; color: var(--text-gray);">Закрыть</button>
     </div>
 </div>
 
@@ -413,196 +472,222 @@
     // ========== НАСТРОЙКИ SUPABASE ==========
     const SUPABASE_URL = 'https://zweulqmupkljowyfwzqs.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_CQDuw-BNAqeYUTr8HyzaoQ_JTw_Qv05';
-    
-    // Инициализация Supabase (другим именем, чтобы избежать конфликта)
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     
     let currentUser = null;
+    let currentUserProfile = null;
     let isLoginMode = true;
     let currentSearchQuery = '';
-    
-    // Элементы DOM
+    let favorites = [];
+
+    // DOM элементы
+    const mainPage = document.getElementById('mainPage');
+    const dashboard = document.getElementById('dashboard');
     const sectionsContainer = document.getElementById('sectionsContainer');
     const authSection = document.getElementById('authSection');
-    const loginBtn = document.getElementById('loginBtn');
-    const modal = document.getElementById('authModal');
-    const modalTitle = document.getElementById('modalTitle');
-    const emailInput = document.getElementById('emailInput');
-    const passwordInput = document.getElementById('passwordInput');
-    const modalActionBtn = document.getElementById('modalActionBtn');
-    const switchAuthMode = document.getElementById('switchAuthMode');
-    const modalError = document.getElementById('modalError');
-    const closeModal = document.getElementById('closeModal');
     
-    // Проверка сессии при загрузке
+    // Проверка сессии
     async function checkSession() {
-        const { data: { session } } = await supabaseClient.auth.getSession();
+        const { data: { session } } = await supabase.auth.getSession();
         if (session) {
             currentUser = session.user;
-            updateAuthUI();
             await loadUserProfile();
+            await loadFavorites();
+            updateAuthUI(true);
+            showDashboard();
         } else {
+            currentUser = null;
             updateAuthUI(false);
+            showMainPage();
         }
     }
-    
-    // Загрузка профиля пользователя
+
+    // Загрузка профиля
     async function loadUserProfile() {
         if (!currentUser) return;
-        const { data, error } = await supabaseClient
+        const { data, error } = await supabase
             .from('profiles')
             .select('*')
             .eq('id', currentUser.id)
             .single();
-        
         if (error && error.code !== 'PGRST116') {
             console.error('Ошибка загрузки профиля:', error);
+        } else if (data) {
+            currentUserProfile = data;
+        } else {
+            // Создаём профиль если нет
+            currentUserProfile = { id: currentUser.id, full_name: currentUser.email.split('@')[0], interests: [], status: 'offline' };
+            await supabase.from('profiles').insert([currentUserProfile]);
         }
     }
-    
-    // Создание профиля для нового пользователя
-    async function createProfile(userId, email) {
-        const { error } = await supabaseClient
+
+    // Загрузка избранного
+    async function loadFavorites() {
+        if (!currentUser) return;
+        const { data, error } = await supabase
+            .from('user_favorites')
+            .select('section_id');
+        if (error) {
+            console.error('Ошибка загрузки избранного:', error);
+        } else {
+            favorites = data.map(f => f.section_id);
+        }
+    }
+
+    // Добавить в избранное
+    async function addFavorite(sectionId) {
+        if (!currentUser) {
+            openModal();
+            return;
+        }
+        const { error } = await supabase
+            .from('user_favorites')
+            .insert([{ user_id: currentUser.id, section_id: sectionId }]);
+        if (error) {
+            alert('Ошибка: ' + error.message);
+        } else {
+            await loadFavorites();
+            renderDashboard();
+            loadSections(currentSearchQuery);
+        }
+    }
+
+    // Удалить из избранного
+    async function removeFavorite(sectionId) {
+        const { error } = await supabase
+            .from('user_favorites')
+            .delete()
+            .eq('user_id', currentUser.id)
+            .eq('section_id', sectionId);
+        if (error) {
+            alert('Ошибка: ' + error.message);
+        } else {
+            await loadFavorites();
+            renderDashboard();
+            loadSections(currentSearchQuery);
+        }
+    }
+
+    // Переключить статус
+    async function toggleStatus() {
+        if (!currentUserProfile) return;
+        const newStatus = currentUserProfile.status === 'online' ? 'offline' : 'online';
+        const { error } = await supabase
             .from('profiles')
-            .insert([{ id: userId, full_name: email.split('@')[0], interests: [] }]);
-        if (error) console.error('Ошибка создания профиля:', error);
+            .update({ status: newStatus })
+            .eq('id', currentUser.id);
+        if (error) {
+            alert('Ошибка: ' + error.message);
+        } else {
+            currentUserProfile.status = newStatus;
+            renderDashboard();
+        }
     }
-    
-    // Обновление UI в зависимости от статуса авторизации
-    function updateAuthUI(isLoggedIn = !!currentUser) {
-        if (isLoggedIn && currentUser) {
-            authSection.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <div class="user-avatar">${(currentUser.email?.[0] || 'U').toUpperCase()}</div>
-                    <span style="font-size: 0.85rem;">${currentUser.email?.split('@')[0]}</span>
-                    <a href="#" id="logoutBtn" class="btn-outline" style="padding: 6px 14px;">Выйти</a>
-                    <a href="#" id="profileBtn" class="btn-outline" style="padding: 6px 14px;">Профиль</a>
+
+    // Показать дашборд
+    function showDashboard() {
+        mainPage.style.display = 'none';
+        dashboard.style.display = 'block';
+        renderDashboard();
+    }
+
+    function showMainPage() {
+        mainPage.style.display = 'block';
+        dashboard.style.display = 'none';
+        loadSections(currentSearchQuery);
+    }
+
+    function renderDashboard() {
+        if (!currentUserProfile) return;
+        document.getElementById('dashboardContent').innerHTML = `
+            <div class="profile-card">
+                <div class="avatar">${(currentUserProfile.full_name?.[0] || '👤').toUpperCase()}</div>
+                <h2>${escapeHtml(currentUserProfile.full_name || 'Пользователь')}</h2>
+                <div class="status-switch" onclick="toggleStatus()">
+                    ${currentUserProfile.status === 'online' ? '🟢 Готов к общению' : '🔴 Не беспокоить'}
                 </div>
-            `;
-            document.getElementById('logoutBtn')?.addEventListener('click', logout);
-            document.getElementById('profileBtn')?.addEventListener('click', () => {
-                alert('Страница профиля будет доступна в следующей версии!');
+                <div style="color: var(--text-gray); font-size: 0.8rem;">${escapeHtml(currentUser.email)}</div>
+            </div>
+            <div>
+                <div class="widget-card">
+                    <div class="widget-title"><i class="fas fa-heart"></i> Избранные секции</div>
+                    <div id="favoritesList"></div>
+                </div>
+                <div class="widget-card">
+                    <div class="widget-title"><i class="fas fa-user-edit"></i> Редактировать профиль</div>
+                    <input type="text" id="editName" placeholder="Ваше имя" value="${escapeHtml(currentUserProfile.full_name || '')}" style="width:100%; padding:10px; margin-bottom:12px; border-radius:12px; border:1px solid var(--border-light);">
+                    <button class="btn-primary" onclick="updateProfile()">Сохранить</button>
+                </div>
+            </div>
+        `;
+        const favoritesList = document.getElementById('favoritesList');
+        if (favorites.length === 0) {
+            favoritesList.innerHTML = '<div style="padding: 12px 0; color: var(--text-gray);">Нет избранных секций</div>';
+        } else {
+            Promise.all(favorites.map(async id => {
+                const { data } = await supabase.from('sections').select('*').eq('id', id).single();
+                return data;
+            })).then(sections => {
+                favoritesList.innerHTML = sections.filter(s => s).map(section => `
+                    <div class="favorite-item">
+                        <div>
+                            <div style="font-weight:600;">${escapeHtml(section.name)}</div>
+                            <div style="font-size:0.7rem; color:var(--text-gray);">${escapeHtml(section.metro || '')}</div>
+                        </div>
+                        <button class="btn-outline" style="padding:4px 12px;" onclick="removeFavorite(${section.id})">Удалить</button>
+                    </div>
+                `).join('');
             });
-        } else {
-            authSection.innerHTML = '<a href="#" id="loginBtn" class="btn-outline">Войти / Регистрация</a>';
-            document.getElementById('loginBtn')?.addEventListener('click', openModal);
         }
     }
-    
-    // Выход
-    async function logout() {
-        await supabaseClient.auth.signOut();
-        currentUser = null;
-        updateAuthUI(false);
-    }
-    
-    // Открытие модального окна
-    function openModal() {
-        modal.classList.add('active');
-        modalError.textContent = '';
-        emailInput.value = '';
-        passwordInput.value = '';
-    }
-    
-    // Закрытие модального окна
-    function closeModalFunc() {
-        modal.classList.remove('active');
-    }
-    
-    // Переключение между входом и регистрацией
-    function switchMode() {
-        isLoginMode = !isLoginMode;
-        if (isLoginMode) {
-            modalTitle.textContent = 'Вход';
-            modalActionBtn.textContent = 'Войти';
-            switchAuthMode.textContent = 'Нет аккаунта? Зарегистрироваться';
-        } else {
-            modalTitle.textContent = 'Регистрация';
-            modalActionBtn.textContent = 'Зарегистрироваться';
-            switchAuthMode.textContent = 'Уже есть аккаунт? Войти';
-        }
-        modalError.textContent = '';
-    }
-    
-    // Обработка входа/регистрации
-    async function handleAuth() {
-        const email = emailInput.value.trim();
-        const password = passwordInput.value.trim();
-        
-        if (!email || !password) {
-            modalError.textContent = 'Заполните все поля';
-            return;
-        }
-        
-        if (password.length < 6) {
-            modalError.textContent = 'Пароль должен быть не менее 6 символов';
-            return;
-        }
-        
-        try {
-            if (isLoginMode) {
-                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-                if (error) throw error;
-                currentUser = data.user;
-                updateAuthUI(true);
-                closeModalFunc();
-            } else {
-                const { data, error } = await supabaseClient.auth.signUp({ email, password });
-                if (error) throw error;
-                if (data.user) {
-                    await createProfile(data.user.id, email);
-                    currentUser = data.user;
-                    updateAuthUI(true);
-                    closeModalFunc();
-                    alert('Регистрация успешна! Вы вошли в систему.');
-                }
-            }
-        } catch (err) {
-            modalError.textContent = err.message;
+
+    async function updateProfile() {
+        const newName = document.getElementById('editName')?.value;
+        if (!newName || !currentUser) return;
+        const { error } = await supabase
+            .from('profiles')
+            .update({ full_name: newName })
+            .eq('id', currentUser.id);
+        if (error) alert('Ошибка: ' + error.message);
+        else {
+            currentUserProfile.full_name = newName;
+            renderDashboard();
         }
     }
-    
+
     // Загрузка секций
     async function loadSections(searchQuery = '') {
+        if (!sectionsContainer) return;
         sectionsContainer.innerHTML = '<div class="loading">Загрузка секций...</div>';
-        
         try {
-            let query = supabaseClient.from('sections').select('*').order('created_at', { ascending: false });
-            if (searchQuery) {
-                query = query.ilike('name', `%${searchQuery}%`);
-            }
+            let query = supabase.from('sections').select('*').order('created_at', { ascending: false });
+            if (searchQuery) query = query.ilike('name', `%${searchQuery}%`);
             const { data: sections, error } = await query;
             if (error) throw error;
             if (!sections || sections.length === 0) {
-                sectionsContainer.innerHTML = '<div class="loading">😕 Ничего не найдено. Попробуйте другой запрос.</div>';
+                sectionsContainer.innerHTML = '<div class="loading">😕 Ничего не найдено.</div>';
                 return;
             }
             sectionsContainer.innerHTML = sections.map(section => `
                 <div class="card">
                     <div class="card-icon">${getIconForSection(section.name)}</div>
                     <div class="card-title">${escapeHtml(section.name)}</div>
-                    <div class="card-address">
-                        <i class="fas fa-map-marker-alt"></i> ${escapeHtml(section.metro || 'Адрес не указан')}
-                        ${section.address ? `, ${escapeHtml(section.address)}` : ''}
+                    <div class="card-address"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(section.metro || 'Адрес не указан')}</div>
+                    <div class="card-stats">${section.trainer_name ? `👨‍🏫 ${escapeHtml(section.trainer_name)}` : ''}</div>
+                    <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
+                        ${section.max_chat_link ? `<a href="${escapeHtml(section.max_chat_link)}" target="_blank" class="btn-max"><i class="fab fa-telegram-plane"></i> Чат в MAX</a>` : ''}
+                        ${currentUser && favorites.includes(section.id) ? 
+                            `<button class="btn-outline" onclick="removeFavorite(${section.id})">❤️ В избранном</button>` :
+                            `<button class="btn-outline" onclick="addFavorite(${section.id})">🤍 В избранное</button>`
+                        }
                     </div>
-                    <div class="card-stats">
-                        ${section.trainer_name ? `👨‍🏫 ${escapeHtml(section.trainer_name)}` : ''}
-                        ${section.rating && section.rating > 0 ? ` • ⭐ ${section.rating}` : ''}
-                    </div>
-                    ${section.max_chat_link ? 
-                        `<a href="${escapeHtml(section.max_chat_link)}" target="_blank" class="btn-max" style="margin-top: 12px; display: inline-block;">
-                            <i class="fab fa-telegram-plane"></i> Вступить в MAX-чат →
-                        </a>` : 
-                        `<button class="btn-outline" style="margin-top: 12px; width: 100%;" disabled>Чат пока не создан</button>`
-                    }
                 </div>
             `).join('');
         } catch (error) {
-            console.error('Ошибка загрузки секций:', error);
-            sectionsContainer.innerHTML = '<div class="loading">❌ Ошибка загрузки. Проверьте подключение к Supabase.</div>';
+            sectionsContainer.innerHTML = '<div class="loading">❌ Ошибка загрузки</div>';
         }
     }
-    
+
     function getIconForSection(name) {
         const lower = name.toLowerCase();
         if (lower.includes('бег')) return '🏃';
@@ -611,20 +696,95 @@
         if (lower.includes('карате')) return '🥋';
         return '🏆';
     }
-    
+
     function escapeHtml(text) {
         if (!text) return '';
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
     }
-    
+
+    // Авторизация (как в прошлой версии)
+    const modal = document.getElementById('authModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const emailInput = document.getElementById('emailInput');
+    const passwordInput = document.getElementById('passwordInput');
+    const modalActionBtn = document.getElementById('modalActionBtn');
+    const switchAuthMode = document.getElementById('switchAuthMode');
+    const modalError = document.getElementById('modalError');
+    const closeModal = document.getElementById('closeModal');
+
+    function openModal() { modal.classList.add('active'); modalError.textContent = ''; emailInput.value = ''; passwordInput.value = ''; }
+    function closeModalFunc() { modal.classList.remove('active'); }
+    function switchMode() {
+        isLoginMode = !isLoginMode;
+        modalTitle.textContent = isLoginMode ? 'Вход' : 'Регистрация';
+        modalActionBtn.textContent = isLoginMode ? 'Войти' : 'Зарегистрироваться';
+        switchAuthMode.textContent = isLoginMode ? 'Нет аккаунта? Зарегистрироваться' : 'Уже есть аккаунт? Войти';
+        modalError.textContent = '';
+    }
+
+    async function handleAuth() {
+        const email = emailInput.value.trim();
+        const password = passwordInput.value.trim();
+        if (!email || !password) { modalError.textContent = 'Заполните все поля'; return; }
+        if (password.length < 6) { modalError.textContent = 'Пароль должен быть не менее 6 символов'; return; }
+        try {
+            if (isLoginMode) {
+                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+                currentUser = data.user;
+                await loadUserProfile();
+                await loadFavorites();
+                updateAuthUI(true);
+                closeModalFunc();
+                showDashboard();
+            } else {
+                const { data, error } = await supabase.auth.signUp({ email, password });
+                if (error) throw error;
+                if (data.user) {
+                    currentUser = data.user;
+                    currentUserProfile = { id: data.user.id, full_name: email.split('@')[0], interests: [], status: 'offline' };
+                    await supabase.from('profiles').insert([currentUserProfile]);
+                    await loadFavorites();
+                    updateAuthUI(true);
+                    closeModalFunc();
+                    showDashboard();
+                    alert('Регистрация успешна!');
+                }
+            }
+        } catch (err) { modalError.textContent = err.message; }
+    }
+
+    async function logout() {
+        await supabase.auth.signOut();
+        currentUser = null;
+        currentUserProfile = null;
+        updateAuthUI(false);
+        showMainPage();
+    }
+
+    function updateAuthUI(isLoggedIn) {
+        if (isLoggedIn && currentUser) {
+            authSection.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span style="font-size: 0.85rem;">${escapeHtml(currentUser.email?.split('@')[0])}</span>
+                    <a href="#" id="logoutBtn" class="btn-outline" style="padding: 6px 14px;">Выйти</a>
+                </div>
+            `;
+            document.getElementById('logoutBtn')?.addEventListener('click', logout);
+        } else {
+            authSection.innerHTML = '<a href="#" id="loginBtn" class="btn-outline">Войти / Регистрация</a>';
+            document.getElementById('loginBtn')?.addEventListener('click', openModal);
+        }
+    }
+
     // Обработчики событий
-    document.getElementById('searchBtn').addEventListener('click', () => {
-        currentSearchQuery = document.getElementById('searchInput').value;
+    document.getElementById('searchBtn')?.addEventListener('click', () => {
+        currentSearchQuery = document.getElementById('searchInput')?.value || '';
         loadSections(currentSearchQuery);
     });
-    document.getElementById('searchInput').addEventListener('keypress', (e) => {
+    document.getElementById('searchInput')?.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             currentSearchQuery = e.target.value;
             loadSections(currentSearchQuery);
@@ -633,22 +793,29 @@
     document.querySelectorAll('.chip').forEach(chip => {
         chip.addEventListener('click', () => {
             const interest = chip.getAttribute('data-interest');
-            if (interest) {
+            if (interest && document.getElementById('searchInput')) {
                 document.getElementById('searchInput').value = interest;
                 currentSearchQuery = interest;
                 loadSections(currentSearchQuery);
             }
         });
     });
-    closeModal.addEventListener('click', closeModalFunc);
-    modalActionBtn.addEventListener('click', handleAuth);
-    switchAuthMode.addEventListener('click', (e) => {
-        e.preventDefault();
-        switchMode();
+    document.getElementById('logoBtn')?.addEventListener('click', showMainPage);
+    document.getElementById('mainPageBtn')?.addEventListener('click', showMainPage);
+    document.getElementById('profileNavBtn')?.addEventListener('click', () => {
+        if (currentUser) showDashboard();
+        else openModal();
     });
+    closeModal?.addEventListener('click', closeModalFunc);
+    modalActionBtn?.addEventListener('click', handleAuth);
+    switchAuthMode?.addEventListener('click', (e) => { e.preventDefault(); switchMode(); });
     window.addEventListener('click', (e) => { if (e.target === modal) closeModalFunc(); });
     
-    // Запуск
+    window.addFavorite = addFavorite;
+    window.removeFavorite = removeFavorite;
+    window.toggleStatus = toggleStatus;
+    window.updateProfile = updateProfile;
+
     checkSession();
     loadSections();
 </script>
