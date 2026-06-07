@@ -16,16 +16,16 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #F0F4F0;
+            background-color: #F4F7FC;
             color: #1A2A1A;
             line-height: 1.4;
         }
 
         :root {
-            --primary: #4CAF7F;
-            --primary-dark: #3d8c64;
-            --primary-light: #e2f3ea;
-            --primary-ultralight: #f0faf5;
+            --primary: #2A6B9E;
+            --primary-dark: #1E5A85;
+            --primary-light: #E0EAF3;
+            --primary-ultralight: #F0F4F9;
             --gray-bg: #F7F9F7;
             --gray-card: #FFFFFF;
             --text-dark: #1A2A1A;
@@ -235,8 +235,16 @@
         }
 
         .card-icon {
-            font-size: 2rem;
-            margin-bottom: 12px;
+            width: 48px;
+            height: 48px;
+            background: var(--primary-light);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            color: var(--primary);
+            font-size: 1.25rem;
         }
 
         .card-title {
@@ -293,7 +301,7 @@
             align-items: center;
             justify-content: center;
             margin: 0 auto 16px;
-            font-size: 2.5rem;
+            font-size: 2rem;
             color: var(--primary);
         }
         .status-switch {
@@ -393,7 +401,7 @@
 <div class="header">
     <div class="container">
         <div class="header-inner">
-            <div class="logo" id="logoBtn">🌿 Среда</div>
+            <div class="logo" id="logoBtn">Среда</div>
             <div class="nav" id="navSection">
                 <a href="#" id="mainPageBtn">Главная</a>
                 <a href="#" id="profileNavBtn">Профиль</a>
@@ -416,15 +424,15 @@
                 <button id="searchBtn">Найти</button>
             </div>
             <div class="chips">
-                <div class="chip" data-interest="бег">🏃 Бег</div>
-                <div class="chip" data-interest="шахматы">♟️ Шахматы</div>
-                <div class="chip" data-interest="танцы">💃 Танцы</div>
-                <div class="chip" data-interest="карате">🥋 Карате</div>
-                <div class="chip" data-interest="вело">🚴 Вело</div>
+                <div class="chip" data-interest="бег">Бег</div>
+                <div class="chip" data-interest="шахматы">Шахматы</div>
+                <div class="chip" data-interest="танцы">Танцы</div>
+                <div class="chip" data-interest="карате">Карате</div>
+                <div class="chip" data-interest="вело">Вело</div>
             </div>
         </div>
         <div>
-            <div class="section-title">📍 Секции и кружки рядом</div>
+            <div class="section-title">Секции и кружки рядом</div>
             <div class="section-sub">Конкретные места, где можно заниматься. Отзывы — в чатах участников.</div>
             <div id="sectionsContainer" class="grid-3">
                 <div class="loading">Загрузка секций...</div>
@@ -457,7 +465,7 @@
 
 <footer class="container">
     <div class="footer">
-        <div>🌿 Среда — найди своих по интересам</div>
+        <div>Среда — найди своих по интересам</div>
         <div class="footer-links">
             <a href="#">О проекте</a>
             <a href="#">Контакты</a>
@@ -603,20 +611,20 @@
         if (!currentUserProfile) return;
         document.getElementById('dashboardContent').innerHTML = `
             <div class="profile-card">
-                <div class="avatar">${(currentUserProfile.full_name?.[0] || '👤').toUpperCase()}</div>
+                <div class="avatar">${(currentUserProfile.full_name?.[0] || 'U').toUpperCase()}</div>
                 <h2>${escapeHtml(currentUserProfile.full_name || 'Пользователь')}</h2>
                 <div class="status-switch" onclick="window.toggleStatus()">
-                    ${currentUserProfile.status === 'online' ? '🟢 Готов к общению' : '🔴 Не беспокоить'}
+                    ${currentUserProfile.status === 'online' ? 'Готов к общению' : 'Не беспокоить'}
                 </div>
                 <div style="color: var(--text-gray); font-size: 0.8rem;">${escapeHtml(currentUser.email)}</div>
             </div>
             <div>
                 <div class="widget-card">
-                    <div class="widget-title"><i class="fas fa-heart"></i> Избранные секции</div>
+                    <div class="widget-title">Избранные секции</div>
                     <div id="favoritesList"></div>
                 </div>
                 <div class="widget-card">
-                    <div class="widget-title"><i class="fas fa-user-edit"></i> Редактировать профиль</div>
+                    <div class="widget-title">Редактировать профиль</div>
                     <input type="text" id="editName" placeholder="Ваше имя" value="${escapeHtml(currentUserProfile.full_name || '')}" style="width:100%; padding:10px; margin-bottom:12px; border-radius:12px; border:1px solid var(--border-light);">
                     <button class="btn-primary" onclick="window.updateProfile()">Сохранить</button>
                 </div>
@@ -667,36 +675,37 @@
             const { data: sections, error } = await query;
             if (error) throw error;
             if (!sections || sections.length === 0) {
-                sectionsContainer.innerHTML = '<div class="loading">😕 Ничего не найдено.</div>';
+                sectionsContainer.innerHTML = '<div class="loading">Ничего не найдено.</div>';
                 return;
             }
             sectionsContainer.innerHTML = sections.map(section => `
                 <div class="card">
                     <div class="card-icon">${getIconForSection(section.name)}</div>
                     <div class="card-title">${escapeHtml(section.name)}</div>
-                    <div class="card-address"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(section.metro || 'Адрес не указан')}</div>
-                    <div class="card-stats">${section.trainer_name ? `👨‍🏫 ${escapeHtml(section.trainer_name)}` : ''}</div>
+                    <div class="card-address">${escapeHtml(section.metro || 'Адрес не указан')}</div>
+                    <div class="card-stats">${section.trainer_name ? escapeHtml(section.trainer_name) : ''}</div>
                     <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
-                        ${section.max_chat_link ? `<a href="${escapeHtml(section.max_chat_link)}" target="_blank" class="btn-max"><i class="fab fa-telegram-plane"></i> Чат в MAX</a>` : ''}
+                        ${section.max_chat_link ? `<a href="${escapeHtml(section.max_chat_link)}" target="_blank" class="btn-max">Чат в MAX</a>` : ''}
                         ${currentUser && favorites.includes(section.id) ? 
-                            `<button class="btn-outline" onclick="window.removeFavorite(${section.id})">❤️ В избранном</button>` :
-                            `<button class="btn-outline" onclick="window.addFavorite(${section.id})">🤍 В избранное</button>`
+                            `<button class="btn-outline" onclick="window.removeFavorite(${section.id})">В избранном</button>` :
+                            `<button class="btn-outline" onclick="window.addFavorite(${section.id})">В избранное</button>`
                         }
                     </div>
                 </div>
             `).join('');
         } catch (error) {
-            sectionsContainer.innerHTML = '<div class="loading">❌ Ошибка загрузки</div>';
+            sectionsContainer.innerHTML = '<div class="loading">Ошибка загрузки</div>';
         }
     }
 
     function getIconForSection(name) {
+        // Возвращаем иконку для аватарки
         const lower = name.toLowerCase();
-        if (lower.includes('бег')) return '🏃';
-        if (lower.includes('шахмат')) return '♟️';
-        if (lower.includes('танц')) return '💃';
-        if (lower.includes('карате')) return '🥋';
-        return '🏆';
+        if (lower.includes('бег')) return '<i class="fas fa-running"></i>';
+        if (lower.includes('шахмат')) return '<i class="fas fa-chess"></i>';
+        if (lower.includes('танц')) return '<i class="fas fa-music"></i>';
+        if (lower.includes('карате')) return '<i class="fas fa-fist-raised"></i>';
+        return '<i class="fas fa-location-dot"></i>';
     }
 
     function escapeHtml(text) {
