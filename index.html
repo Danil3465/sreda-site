@@ -472,7 +472,9 @@
     // ========== НАСТРОЙКИ SUPABASE ==========
     const SUPABASE_URL = 'https://zweulqmupkljowyfwzqs.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_CQDuw-BNAqeYUTr8HyzaoQ_JTw_Qv05';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    
+    // Используем другое имя переменной, чтобы избежать конфликта с глобальным supabase
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     
     let currentUser = null;
     let currentUserProfile = null;
@@ -488,7 +490,7 @@
     
     // Проверка сессии
     async function checkSession() {
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session } } = await supabaseClient.auth.getSession();
         if (session) {
             currentUser = session.user;
             await loadUserProfile();
@@ -505,7 +507,7 @@
     // Загрузка профиля
     async function loadUserProfile() {
         if (!currentUser) return;
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('profiles')
             .select('*')
             .eq('id', currentUser.id)
@@ -517,14 +519,14 @@
         } else {
             // Создаём профиль если нет
             currentUserProfile = { id: currentUser.id, full_name: currentUser.email.split('@')[0], interests: [], status: 'offline' };
-            await supabase.from('profiles').insert([currentUserProfile]);
+            await supabaseClient.from('profiles').insert([currentUserProfile]);
         }
     }
 
     // Загрузка избранного
     async function loadFavorites() {
         if (!currentUser) return;
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('user_favorites')
             .select('section_id');
         if (error) {
@@ -540,7 +542,7 @@
             openModal();
             return;
         }
-        const { error } = await supabase
+        const { error } = await supabaseClient
             .from('user_favorites')
             .insert([{ user_id: currentUser.id, section_id: sectionId }]);
         if (error) {
@@ -554,7 +556,7 @@
 
     // Удалить из избранного
     async function removeFavorite(sectionId) {
-        const { error } = await supabase
+        const { error } = await supabaseClient
             .from('user_favorites')
             .delete()
             .eq('user_id', currentUser.id)
@@ -572,7 +574,7 @@
     async function toggleStatus() {
         if (!currentUserProfile) return;
         const newStatus = currentUserProfile.status === 'online' ? 'offline' : 'online';
-        const { error } = await supabase
+        const { error } = await supabaseClient
             .from('profiles')
             .update({ status: newStatus })
             .eq('id', currentUser.id);
@@ -603,7 +605,7 @@
             <div class="profile-card">
                 <div class="avatar">${(currentUserProfile.full_name?.[0] || '👤').toUpperCase()}</div>
                 <h2>${escapeHtml(currentUserProfile.full_name || 'Пользователь')}</h2>
-                <div class="status-switch" onclick="toggleStatus()">
+                <div class="status-switch" onclick="window.toggleStatus()">
                     ${currentUserProfile.status === 'online' ? '🟢 Готов к общению' : '🔴 Не беспокоить'}
                 </div>
                 <div style="color: var(--text-gray); font-size: 0.8rem;">${escapeHtml(currentUser.email)}</div>
@@ -616,7 +618,7 @@
                 <div class="widget-card">
                     <div class="widget-title"><i class="fas fa-user-edit"></i> Редактировать профиль</div>
                     <input type="text" id="editName" placeholder="Ваше имя" value="${escapeHtml(currentUserProfile.full_name || '')}" style="width:100%; padding:10px; margin-bottom:12px; border-radius:12px; border:1px solid var(--border-light);">
-                    <button class="btn-primary" onclick="updateProfile()">Сохранить</button>
+                    <button class="btn-primary" onclick="window.updateProfile()">Сохранить</button>
                 </div>
             </div>
         `;
@@ -625,7 +627,7 @@
             favoritesList.innerHTML = '<div style="padding: 12px 0; color: var(--text-gray);">Нет избранных секций</div>';
         } else {
             Promise.all(favorites.map(async id => {
-                const { data } = await supabase.from('sections').select('*').eq('id', id).single();
+                const { data } = await supabaseClient.from('sections').select('*').eq('id', id).single();
                 return data;
             })).then(sections => {
                 favoritesList.innerHTML = sections.filter(s => s).map(section => `
@@ -634,7 +636,7 @@
                             <div style="font-weight:600;">${escapeHtml(section.name)}</div>
                             <div style="font-size:0.7rem; color:var(--text-gray);">${escapeHtml(section.metro || '')}</div>
                         </div>
-                        <button class="btn-outline" style="padding:4px 12px;" onclick="removeFavorite(${section.id})">Удалить</button>
+                        <button class="btn-outline" style="padding:4px 12px;" onclick="window.removeFavorite(${section.id})">Удалить</button>
                     </div>
                 `).join('');
             });
@@ -644,7 +646,7 @@
     async function updateProfile() {
         const newName = document.getElementById('editName')?.value;
         if (!newName || !currentUser) return;
-        const { error } = await supabase
+        const { error } = await supabaseClient
             .from('profiles')
             .update({ full_name: newName })
             .eq('id', currentUser.id);
@@ -660,7 +662,7 @@
         if (!sectionsContainer) return;
         sectionsContainer.innerHTML = '<div class="loading">Загрузка секций...</div>';
         try {
-            let query = supabase.from('sections').select('*').order('created_at', { ascending: false });
+            let query = supabaseClient.from('sections').select('*').order('created_at', { ascending: false });
             if (searchQuery) query = query.ilike('name', `%${searchQuery}%`);
             const { data: sections, error } = await query;
             if (error) throw error;
@@ -677,8 +679,8 @@
                     <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
                         ${section.max_chat_link ? `<a href="${escapeHtml(section.max_chat_link)}" target="_blank" class="btn-max"><i class="fab fa-telegram-plane"></i> Чат в MAX</a>` : ''}
                         ${currentUser && favorites.includes(section.id) ? 
-                            `<button class="btn-outline" onclick="removeFavorite(${section.id})">❤️ В избранном</button>` :
-                            `<button class="btn-outline" onclick="addFavorite(${section.id})">🤍 В избранное</button>`
+                            `<button class="btn-outline" onclick="window.removeFavorite(${section.id})">❤️ В избранном</button>` :
+                            `<button class="btn-outline" onclick="window.addFavorite(${section.id})">🤍 В избранное</button>`
                         }
                     </div>
                 </div>
@@ -704,7 +706,7 @@
         return div.innerHTML;
     }
 
-    // Авторизация (как в прошлой версии)
+    // Авторизация
     const modal = document.getElementById('authModal');
     const modalTitle = document.getElementById('modalTitle');
     const emailInput = document.getElementById('emailInput');
@@ -731,7 +733,7 @@
         if (password.length < 6) { modalError.textContent = 'Пароль должен быть не менее 6 символов'; return; }
         try {
             if (isLoginMode) {
-                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
                 if (error) throw error;
                 currentUser = data.user;
                 await loadUserProfile();
@@ -740,12 +742,12 @@
                 closeModalFunc();
                 showDashboard();
             } else {
-                const { data, error } = await supabase.auth.signUp({ email, password });
+                const { data, error } = await supabaseClient.auth.signUp({ email, password });
                 if (error) throw error;
                 if (data.user) {
                     currentUser = data.user;
                     currentUserProfile = { id: data.user.id, full_name: email.split('@')[0], interests: [], status: 'offline' };
-                    await supabase.from('profiles').insert([currentUserProfile]);
+                    await supabaseClient.from('profiles').insert([currentUserProfile]);
                     await loadFavorites();
                     updateAuthUI(true);
                     closeModalFunc();
@@ -757,7 +759,7 @@
     }
 
     async function logout() {
-        await supabase.auth.signOut();
+        await supabaseClient.auth.signOut();
         currentUser = null;
         currentUserProfile = null;
         updateAuthUI(false);
@@ -811,6 +813,7 @@
     switchAuthMode?.addEventListener('click', (e) => { e.preventDefault(); switchMode(); });
     window.addEventListener('click', (e) => { if (e.target === modal) closeModalFunc(); });
     
+    // Делаем функции глобальными для onclick
     window.addFavorite = addFavorite;
     window.removeFavorite = removeFavorite;
     window.toggleStatus = toggleStatus;
