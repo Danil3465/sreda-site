@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Среда — сообщества по интересам и секции</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F0F4F0;
+            color: #1A2A1A;
+            line-height: 1.4;
+        }
+
+        :root {
+            --primary: #4CAF7F;
+            --primary-dark: #3d8c64;
+            --primary-light: #e2f3ea;
+            --primary-ultralight: #f0faf5;
+            --gray-bg: #F7F9F7;
+            --gray-card: #FFFFFF;
+            --text-dark: #1A2A1A;
+            --text-gray: #5E6E5E;
+            --border-light: #DEE6DE;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.05);
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .header {
+            background: white;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border-light);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .nav {
+            display: flex;
+            gap: 28px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+
+        .nav a:hover {
+            color: var(--primary);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 0.85rem;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-outline {
+            border: 1px solid var(--border-light);
+            padding: 8px 18px;
+            border-radius: 40px;
+            background: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-size: 0.85rem;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .btn-max {
+            background: #1A73E8;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.2s;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 0 48px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-gray);
+            max-width: 640px;
+            margin: 0 auto 32px;
+        }
+
+        .search-bar {
+            max-width: 600px;
+            margin: 0 auto 24px;
+            display: flex;
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: 60px;
+            padding: 6px 6px 6px 24px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .search-bar input {
+            flex: 1;
+            border: none;
+            padding: 14px 0;
+            font-size: 1rem;
+            outline: none;
+            background: transparent;
+        }
+
+        .search-bar button {
+            background: var(--primary);
+            border: none;
+            border-radius: 60px;
+            padding: 10px 28px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .chips {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .chip {
+            background: var(--gray-bg);
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 40px 0 12px;
+        }
+
+        .section-sub {
+            color: var(--text-gray);
+            margin-bottom: 32px;
+            font-size: 1rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 28px;
+            margin: 32px 0 24px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            transition: all 0.25s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .card-address {
+            font-size: 0.75rem;
+            color: var(--text-gray);
+            margin-bottom: 12px;
+        }
+
+        .card-stats {
+            color: var(--text-gray);
+            font-size: 0.75rem;
+            margin: 12px 0;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-gray);
+        }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 32px;
+            padding: 32px;
+            max-width: 400px;
+            width: 90%;
+        }
+        .modal-content input {
+            width: 100%;
+            padding: 12px;
+            margin: 12px 0;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            font-size: 1rem;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .footer {
+            border-top: 1px solid var(--border-light);
+            padding: 40px 0 32px;
+            margin-top: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 20px;
+            font-size: 0.8rem;
+            color: var(--text-gray);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            text-decoration: none;
+            color: var(--text-gray);
+        }
+
+        @media (max-width: 700px) {
+            .container { padding: 0 16px; }
+            .hero h1 { font-size: 2rem; }
+            .header-inner { flex-direction: column; align-items: flex-start; }
+            .nav { width: 100%; justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="container">
+        <div class="header-inner">
+            <a href="#" class="logo">🌿 Среда</a>
+            <div class="nav">
+                <a href="#">Сообщества</a>
+                <a href="#">Секции</a>
+                <div id="authSection">
+                    <a href="#" id="loginBtn" class="btn-outline">Войти / Регистрация</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<main>
+    <div class="container">
+        <div class="hero">
+            <h1>Найди своих по интересам</h1>
+            <p>Бег, шахматы, танцы, единоборства — выбирай увлечение, находи людей рядом и занимайтесь вместе.</p>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Поиск по названию секции...">
+                <button id="searchBtn">Найти</button>
+            </div>
+            <div class="chips">
+                <div class="chip" data-interest="бег">🏃 Бег</div>
+                <div class="chip" data-interest="шахматы">♟️ Шахматы</div>
+                <div class="chip" data-interest="танцы">💃 Танцы</div>
+                <div class="chip" data-interest="карате">🥋 Карате</div>
+                <div class="chip" data-interest="вело">🚴 Вело</div>
+            </div>
+        </div>
+
+        <div>
+            <div class="section-title">📍 Секции и кружки рядом</div>
+            <div class="section-sub">Конкретные места, где можно заниматься. Отзывы — в чатах участников.</div>
+            <div id="sectionsContainer" class="grid-3">
+                <div class="loading">Загрузка секций...</div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Модальное окно для входа/регистрации -->
+<div id="authModal" class="modal">
+    <div class="modal-content">
+        <h3 id="modalTitle">Вход</h3>
+        <input type="email" id="emailInput" placeholder="Email">
+        <input type="password" id="passwordInput" placeholder="Пароль">
+        <div id="modalError" style="color: red; font-size: 0.8rem; margin: 8px 0;"></div>
+        <button id="modalActionBtn" class="btn-primary" style="width: 100%;">Войти</button>
+        <div style="text-align: center; margin-top: 16px;">
+            <a href="#" id="switchAuthMode">Нет аккаунта? Зарегистрироваться</a>
+        </div>
+        <button id="closeModal" style="margin-top: 12px; background: none; border: none; cursor: pointer;">Закрыть</button>
+    </div>
+</div>
+
+<footer class="container">
+    <div class="footer">
+        <div>🌿 Среда — найди своих по интересам</div>
+        <div class="footer-links">
+            <a href="#">О проекте</a>
+            <a href="#">Контакты</a>
+            <a href="#">Для тренеров</a>
+            <a href="#">Пользовательское соглашение</a>
+        </div>
+        <div>© 2026 Среда</div>
+    </div>
+</footer>
+
+<script>
+    // ========== НАСТРОЙКИ SUPABASE ==========
+    const SUPABASE_URL = 'https://zweulqmupkljowyfwzqs.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_CQDuw-BNAqeYUTr8HyzaoQ_JTw_Qv05';
+    
+    // Инициализация Supabase (другим именем, чтобы избежать конфликта)
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    
+    let currentUser = null;
+    let isLoginMode = true;
+    let currentSearchQuery = '';
+    
+    // Элементы DOM
+    const sectionsContainer = document.getElementById('sectionsContainer');
+    const authSection = document.getElementById('authSection');
+    const loginBtn = document.getElementById('loginBtn');
+    const modal = document.getElementById('authModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const emailInput = document.getElementById('emailInput');
+    const passwordInput = document.getElementById('passwordInput');
+    const modalActionBtn = document.getElementById('modalActionBtn');
+    const switchAuthMode = document.getElementById('switchAuthMode');
+    const modalError = document.getElementById('modalError');
+    const closeModal = document.getElementById('closeModal');
+    
+    // Проверка сессии при загрузке
+    async function checkSession() {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (session) {
+            currentUser = session.user;
+            updateAuthUI();
+            await loadUserProfile();
+        } else {
+            updateAuthUI(false);
+        }
+    }
+    
+    // Загрузка профиля пользователя
+    async function loadUserProfile() {
+        if (!currentUser) return;
+        const { data, error } = await supabaseClient
+            .from('profiles')
+            .select('*')
+            .eq('id', currentUser.id)
+            .single();
+        
+        if (error && error.code !== 'PGRST116') {
+            console.error('Ошибка загрузки профиля:', error);
+        }
+    }
+    
+    // Создание профиля для нового пользователя
+    async function createProfile(userId, email) {
+        const { error } = await supabaseClient
+            .from('profiles')
+            .insert([{ id: userId, full_name: email.split('@')[0], interests: [] }]);
+        if (error) console.error('Ошибка создания профиля:', error);
+    }
+    
+    // Обновление UI в зависимости от статуса авторизации
+    function updateAuthUI(isLoggedIn = !!currentUser) {
+        if (isLoggedIn && currentUser) {
+            authSection.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div class="user-avatar">${(currentUser.email?.[0] || 'U').toUpperCase()}</div>
+                    <span style="font-size: 0.85rem;">${currentUser.email?.split('@')[0]}</span>
+                    <a href="#" id="logoutBtn" class="btn-outline" style="padding: 6px 14px;">Выйти</a>
+                    <a href="#" id="profileBtn" class="btn-outline" style="padding: 6px 14px;">Профиль</a>
+                </div>
+            `;
+            document.getElementById('logoutBtn')?.addEventListener('click', logout);
+            document.getElementById('profileBtn')?.addEventListener('click', () => {
+                alert('Страница профиля будет доступна в следующей версии!');
+            });
+        } else {
+            authSection.innerHTML = '<a href="#" id="loginBtn" class="btn-outline">Войти / Регистрация</a>';
+            document.getElementById('loginBtn')?.addEventListener('click', openModal);
+        }
+    }
+    
+    // Выход
+    async function logout() {
+        await supabaseClient.auth.signOut();
+        currentUser = null;
+        updateAuthUI(false);
+    }
+    
+    // Открытие модального окна
+    function openModal() {
+        modal.classList.add('active');
+        modalError.textContent = '';
+        emailInput.value = '';
+        passwordInput.value = '';
+    }
+    
+    // Закрытие модального окна
+    function closeModalFunc() {
+        modal.classList.remove('active');
+    }
+    
+    // Переключение между входом и регистрацией
+    function switchMode() {
+        isLoginMode = !isLoginMode;
+        if (isLoginMode) {
+            modalTitle.textContent = 'Вход';
+            modalActionBtn.textContent = 'Войти';
+            switchAuthMode.textContent = 'Нет аккаунта? Зарегистрироваться';
+        } else {
+            modalTitle.textContent = 'Регистрация';
+            modalActionBtn.textContent = 'Зарегистрироваться';
+            switchAuthMode.textContent = 'Уже есть аккаунт? Войти';
+        }
+        modalError.textContent = '';
+    }
+    
+    // Обработка входа/регистрации
+    async function handleAuth() {
+        const email = emailInput.value.trim();
+        const password = passwordInput.value.trim();
+        
+        if (!email || !password) {
+            modalError.textContent = 'Заполните все поля';
+            return;
+        }
+        
+        if (password.length < 6) {
+            modalError.textContent = 'Пароль должен быть не менее 6 символов';
+            return;
+        }
+        
+        try {
+            if (isLoginMode) {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+                currentUser = data.user;
+                updateAuthUI(true);
+                closeModalFunc();
+            } else {
+                const { data, error } = await supabaseClient.auth.signUp({ email, password });
+                if (error) throw error;
+                if (data.user) {
+                    await createProfile(data.user.id, email);
+                    currentUser = data.user;
+                    updateAuthUI(true);
+                    closeModalFunc();
+                    alert('Регистрация успешна! Вы вошли в систему.');
+                }
+            }
+        } catch (err) {
+            modalError.textContent = err.message;
+        }
+    }
+    
+    // Загрузка секций
+    async function loadSections(searchQuery = '') {
+        sectionsContainer.innerHTML = '<div class="loading">Загрузка секций...</div>';
+        
+        try {
+            let query = supabaseClient.from('sections').select('*').order('created_at', { ascending: false });
+            if (searchQuery) {
+                query = query.ilike('name', `%${searchQuery}%`);
+            }
+            const { data: sections, error } = await query;
+            if (error) throw error;
+            if (!sections || sections.length === 0) {
+                sectionsContainer.innerHTML = '<div class="loading">😕 Ничего не найдено. Попробуйте другой запрос.</div>';
+                return;
+            }
+            sectionsContainer.innerHTML = sections.map(section => `
+                <div class="card">
+                    <div class="card-icon">${getIconForSection(section.name)}</div>
+                    <div class="card-title">${escapeHtml(section.name)}</div>
+                    <div class="card-address">
+                        <i class="fas fa-map-marker-alt"></i> ${escapeHtml(section.metro || 'Адрес не указан')}
+                        ${section.address ? `, ${escapeHtml(section.address)}` : ''}
+                    </div>
+                    <div class="card-stats">
+                        ${section.trainer_name ? `👨‍🏫 ${escapeHtml(section.trainer_name)}` : ''}
+                        ${section.rating && section.rating > 0 ? ` • ⭐ ${section.rating}` : ''}
+                    </div>
+                    ${section.max_chat_link ? 
+                        `<a href="${escapeHtml(section.max_chat_link)}" target="_blank" class="btn-max" style="margin-top: 12px; display: inline-block;">
+                            <i class="fab fa-telegram-plane"></i> Вступить в MAX-чат →
+                        </a>` : 
+                        `<button class="btn-outline" style="margin-top: 12px; width: 100%;" disabled>Чат пока не создан</button>`
+                    }
+                </div>
+            `).join('');
+        } catch (error) {
+            console.error('Ошибка загрузки секций:', error);
+            sectionsContainer.innerHTML = '<div class="loading">❌ Ошибка загрузки. Проверьте подключение к Supabase.</div>';
+        }
+    }
+    
+    function getIconForSection(name) {
+        const lower = name.toLowerCase();
+        if (lower.includes('бег')) return '🏃';
+        if (lower.includes('шахмат')) return '♟️';
+        if (lower.includes('танц')) return '💃';
+        if (lower.includes('карате')) return '🥋';
+        return '🏆';
+    }
+    
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    // Обработчики событий
+    document.getElementById('searchBtn').addEventListener('click', () => {
+        currentSearchQuery = document.getElementById('searchInput').value;
+        loadSections(currentSearchQuery);
+    });
+    document.getElementById('searchInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            currentSearchQuery = e.target.value;
+            loadSections(currentSearchQuery);
+        }
+    });
+    document.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            const interest = chip.getAttribute('data-interest');
+            if (interest) {
+                document.getElementById('searchInput').value = interest;
+                currentSearchQuery = interest;
+                loadSections(currentSearchQuery);
+            }
+        });
+    });
+    closeModal.addEventListener('click', closeModalFunc);
+    modalActionBtn.addEventListener('click', handleAuth);
+    switchAuthMode.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchMode();
+    });
+    window.addEventListener('click', (e) => { if (e.target === modal) closeModalFunc(); });
+    
+    // Запуск
+    checkSession();
+    loadSections();
+</script>
+</body>
+</html>
