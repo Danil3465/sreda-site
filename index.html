@@ -1019,12 +1019,9 @@
                     upsert: true
                 });
             
-            if (uploadError) {
-                console.error('Ошибка загрузки в Storage:', uploadError);
-                throw uploadError;
-            }
+            if (uploadError) throw uploadError;
             
-            console.log('2. Файл загружен, получаем публичный URL');
+            console.log('2. Файл загружен');
             
             const { data: { publicUrl } } = supabaseClient.storage
                 .from('section-avatars')
@@ -1032,26 +1029,44 @@
             
             console.log('3. Public URL:', publicUrl);
             
-            console.log('4. Обновляем cover_image в таблице sections...');
+            // Используем RPC функцию для обновления (обходит RLS)
+            const { data: rpcResult, error: rpcError } = await supabaseClient.rpc('update_section_avatar', {
+                p_section_id: sectionId,
+                p_cover_image: publicUrl
+            });
             
-            const { error: updateError } = await supabaseClient
+            if (rpcError) {
+                console.error('RPC ошибка:', rpcError);
+                // Пробуем обычный update как запасной вариант
+                const { error: updateError } = await supabaseClient
+                    .from('sections')
+                    .update({ cover_image: publicUrl })
+                    .eq('id', sectionId);
+                
+                if (updateError) throw updateError;
+            }
+            
+            console.log('4. Проверяем, обновилось ли...');
+            
+            const { data: check } = await supabaseClient
                 .from('sections')
-                .update({ cover_image: publicUrl })
-                .eq('id', sectionId);
+                .select('cover_image')
+                .eq('id', sectionId)
+                .single();
             
-            if (updateError) {
-                console.error('Ошибка обновления таблицы:', updateError);
-                throw updateError;
+            console.log('5. Текущее cover_image в БД:', check?.cover_image);
+            
+            if (check?.cover_image === publicUrl) {
+                console.log('✅ Аватар успешно обновлён!');
+                if (currentSection && currentSection.id === sectionId) {
+                    currentSection.cover_image = publicUrl;
+                }
+                alert('Аватар обновлён!');
+                loadSection(sectionId);
+            } else {
+                console.log('❌ Обновление не применилось');
+                alert('Не удалось сохранить аватар. Попробуйте ещё раз.');
             }
-            
-            console.log('5. Аватар успешно обновлён!');
-            
-            if (currentSection && currentSection.id === sectionId) {
-                currentSection.cover_image = publicUrl;
-            }
-            
-            alert('Аватар обновлён!');
-            loadSection(sectionId);
             
         } catch (error) {
             console.error('Итоговая ошибка:', error);
