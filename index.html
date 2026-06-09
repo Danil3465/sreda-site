@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Среда — сообщества по интересам и секции</title>
+    <title>Среда — профиль секции</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -33,10 +33,6 @@
             --border-light: #DEE6DE;
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.03);
             --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.05);
-            --status-green: #2e7d32;
-            --status-green-bg: #e8f5e9;
-            --status-red: #c62828;
-            --status-red-bg: #ffebee;
         }
 
         .container {
@@ -66,10 +62,6 @@
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
             cursor: pointer;
         }
 
@@ -101,8 +93,6 @@
             font-weight: 600;
             cursor: pointer;
             transition: background 0.2s;
-            text-decoration: none;
-            display: inline-block;
             font-size: 0.85rem;
         }
 
@@ -118,7 +108,6 @@
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s;
-            text-decoration: none;
             color: var(--text-dark);
             font-size: 0.85rem;
         }
@@ -137,169 +126,31 @@
             font-weight: 600;
             text-decoration: none;
             display: inline-block;
-            transition: background 0.2s;
         }
 
-        .hero {
-            text-align: center;
-            padding: 60px 0 48px;
-        }
-
-        .hero h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            margin-bottom: 20px;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            color: var(--text-gray);
-            max-width: 640px;
-            margin: 0 auto 32px;
-        }
-
-        .search-bar {
-            max-width: 600px;
-            margin: 0 auto 24px;
-            display: flex;
-            background: white;
-            border: 1px solid var(--border-light);
-            border-radius: 60px;
-            padding: 6px 6px 6px 24px;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .search-bar input {
-            flex: 1;
-            border: none;
-            padding: 14px 0;
-            font-size: 1rem;
-            outline: none;
-            background: transparent;
-        }
-
-        .search-bar button {
-            background: var(--primary);
-            border: none;
-            border-radius: 60px;
-            padding: 10px 28px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .chips {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .chip {
-            background: var(--gray-bg);
-            padding: 8px 18px;
-            border-radius: 40px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-        }
-
-        .section-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin: 40px 0 12px;
-        }
-
-        .section-sub {
-            color: var(--text-gray);
-            margin-bottom: 32px;
-            font-size: 1rem;
-        }
-
-        .grid-3 {
+        /* Карточка секции */
+        .section-profile {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 28px;
-            margin: 32px 0 24px;
+            grid-template-columns: 360px 1fr;
+            gap: 32px;
+            margin: 32px 0;
         }
 
-        .card {
-            background: white;
-            border-radius: 24px;
-            padding: 24px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-light);
-            transition: all 0.25s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .card-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--primary-light);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 16px;
-            color: var(--primary);
-            font-size: 1.25rem;
-        }
-
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .card-address {
-            font-size: 0.75rem;
-            color: var(--text-gray);
-            margin-bottom: 12px;
-        }
-
-        .card-stats {
-            color: var(--text-gray);
-            font-size: 0.75rem;
-            margin: 12px 0;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 60px;
-            color: var(--text-gray);
-        }
-
-        .dashboard {
-            display: none;
-        }
-        .dashboard.active {
-            display: block;
-        }
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 320px 1fr;
-            gap: 24px;
-            margin: 24px 0;
-        }
-        .profile-card {
+        .section-info-card {
             background: white;
             border-radius: 28px;
             padding: 28px;
             box-shadow: var(--shadow-sm);
             border: 1px solid var(--border-light);
             text-align: center;
+            height: fit-content;
         }
-        .avatar {
+
+        .section-avatar {
             width: 120px;
             height: 120px;
             background: var(--primary-light);
-            border-radius: 50%;
+            border-radius: 60px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -310,11 +161,13 @@
             overflow: hidden;
             position: relative;
         }
-        .avatar img {
+
+        .section-avatar img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
+
         .avatar-upload-label {
             position: absolute;
             bottom: 0;
@@ -329,74 +182,59 @@
             opacity: 0;
             transition: opacity 0.2s;
         }
-        .avatar:hover .avatar-upload-label {
+
+        .section-avatar:hover .avatar-upload-label {
             opacity: 1;
         }
-        .status-switch {
-            display: inline-block;
-            padding: 6px 18px;
-            border-radius: 40px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            margin: 12px 0;
-            transition: all 0.2s ease;
-            border: 1px solid transparent;
-        }
-        .status-switch.online {
-            background: var(--status-green-bg);
-            color: var(--status-green);
-            border-color: var(--status-green);
-        }
-        .status-switch.offline {
-            background: var(--status-red-bg);
-            color: var(--status-red);
-            border-color: var(--status-red);
-        }
-        .widget-card {
-            background: white;
-            border-radius: 24px;
-            padding: 24px;
-            margin-bottom: 24px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-light);
-        }
-        .widget-title {
-            font-size: 1.1rem;
+
+        .section-name {
+            font-size: 1.3rem;
             font-weight: 700;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            margin: 12px 0 8px;
         }
+
+        .trainer-name {
+            color: var(--text-gray);
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+        }
+
+        .rating {
+            margin-bottom: 20px;
+            color: #ffb800;
+        }
+
         .info-row {
             display: flex;
             align-items: center;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
+            margin-bottom: 14px;
+            text-align: left;
         }
-        .info-label {
-            font-size: 0.85rem;
-            color: var(--text-gray);
-            min-width: 100px;
-            margin-left: 8px;
-        }
-        .info-value {
-            flex: 1;
-            font-size: 0.9rem;
-            color: var(--text-dark);
-            margin-left: 8px;
-        }
-        .edit-icon {
+
+        .info-row .edit-icon {
             color: #9e9e9e;
             cursor: pointer;
             font-size: 0.7rem;
             transition: color 0.2s;
-            margin-right: 4px;
+            margin-right: 8px;
         }
-        .edit-icon:hover {
+
+        .info-row .edit-icon:hover {
             color: var(--primary);
         }
+
+        .info-row .info-label {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+            min-width: 70px;
+        }
+
+        .info-row .info-value {
+            flex: 1;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+        }
+
         .info-edit-input {
             flex: 1;
             padding: 6px 10px;
@@ -404,13 +242,14 @@
             border-radius: 12px;
             font-size: 0.85rem;
             font-family: 'Inter', sans-serif;
-            margin-left: 8px;
         }
+
         .edit-actions {
             display: flex;
             gap: 6px;
             margin-left: 8px;
         }
+
         .edit-actions button {
             background: none;
             border: none;
@@ -420,50 +259,81 @@
             border-radius: 6px;
             color: #9e9e9e;
         }
-        .edit-actions button:hover {
-            opacity: 0.7;
+
+        .chat-card {
+            background: var(--primary-ultralight);
+            border-radius: 20px;
+            padding: 16px;
+            text-align: center;
+            margin: 16px 0;
         }
-        .interests-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 8px;
-            width: 100%;
+
+        .groups-widget {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
         }
-        .interest-item {
+
+        .widget-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
-            margin-bottom: 12px;
+            gap: 8px;
         }
-        .interest-name {
-            font-size: 0.9rem;
-            color: var(--text-dark);
-            margin-left: 8px;
-            flex: 1;
+
+        .group-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
         }
-        .edit-interest {
+
+        .group-item .edit-icon {
             color: #9e9e9e;
             cursor: pointer;
             font-size: 0.7rem;
-            transition: color 0.2s;
-            margin-right: 4px;
+            margin-right: 8px;
         }
-        .edit-interest:hover {
+
+        .group-age {
+            font-weight: 600;
+            min-width: 140px;
+            font-size: 0.85rem;
+        }
+
+        .group-schedule {
+            flex: 1;
+            font-size: 0.8rem;
+            color: var(--text-gray);
+        }
+
+        .group-price {
+            font-weight: 700;
             color: var(--primary);
+            font-size: 0.85rem;
+            min-width: 80px;
+            text-align: right;
         }
-        .add-interest {
+
+        .add-group {
             display: flex;
             gap: 8px;
             margin-top: 16px;
-            width: 100%;
+            flex-wrap: wrap;
         }
-        .add-interest input {
-            flex: 1;
+
+        .add-group input {
             padding: 8px 12px;
             border: 1px solid var(--border-light);
             border-radius: 40px;
             font-size: 0.8rem;
         }
+
         .btn-small {
             background: var(--primary);
             color: white;
@@ -473,27 +343,31 @@
             font-size: 0.75rem;
             cursor: pointer;
         }
-        .favorite-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+
+        .review-item {
             padding: 12px 0;
             border-bottom: 1px solid var(--border-light);
         }
-        .favorite-avatar {
-            width: 40px;
-            height: 40px;
-            background: var(--primary-light);
-            border-radius: 10px;
+
+        .review-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .review-avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--gray-bg);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1rem;
-            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.8rem;
         }
-        .favorite-info {
-            flex: 1;
-        }
+
         .modal {
             display: none;
             position: fixed;
@@ -506,9 +380,11 @@
             align-items: center;
             justify-content: center;
         }
+
         .modal.active {
             display: flex;
         }
+
         .modal-content {
             background: white;
             border-radius: 32px;
@@ -516,6 +392,7 @@
             max-width: 400px;
             width: 90%;
         }
+
         .modal-content input {
             width: 100%;
             padding: 12px;
@@ -524,6 +401,7 @@
             border-radius: 12px;
             font-size: 1rem;
         }
+
         .footer {
             border-top: 1px solid var(--border-light);
             padding: 40px 0 32px;
@@ -535,21 +413,21 @@
             font-size: 0.8rem;
             color: var(--text-gray);
         }
+
         .footer-links {
             display: flex;
             gap: 32px;
             flex-wrap: wrap;
         }
+
         .footer-links a {
             text-decoration: none;
             color: var(--text-gray);
         }
+
         @media (max-width: 900px) {
-            .dashboard-grid { grid-template-columns: 1fr; }
+            .section-profile { grid-template-columns: 1fr; }
             .container { padding: 0 16px; }
-            .hero h1 { font-size: 2rem; }
-            .header-inner { flex-direction: column; align-items: flex-start; }
-            .nav { width: 100%; justify-content: space-between; }
         }
     </style>
 </head>
@@ -558,10 +436,10 @@
 <div class="header">
     <div class="container">
         <div class="header-inner">
-            <div class="logo" id="logoBtn">Среда</div>
-            <div class="nav" id="navSection">
-                <a href="#" id="mainPageBtn">Главная</a>
-                <a href="#" id="profileNavBtn">Профиль</a>
+            <div class="logo" onclick="window.location.href='/'">Среда</div>
+            <div class="nav">
+                <a href="#">Сообщества</a>
+                <a href="#">Секции</a>
                 <div id="authSection">
                     <a href="#" id="loginBtn" class="btn-outline">Войти</a>
                 </div>
@@ -571,33 +449,8 @@
 </div>
 
 <main>
-    <div id="mainPage" class="container" style="display: block;">
-        <div class="hero">
-            <h1>Найди своих по интересам</h1>
-            <p>Бег, шахматы, танцы, единоборства — выбирай увлечение, находи людей рядом и занимайтесь вместе.</p>
-            <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Поиск по названию секции...">
-                <button id="searchBtn">Найти</button>
-            </div>
-            <div class="chips">
-                <div class="chip" data-interest="бег">Бег</div>
-                <div class="chip" data-interest="шахматы">Шахматы</div>
-                <div class="chip" data-interest="танцы">Танцы</div>
-                <div class="chip" data-interest="карате">Карате</div>
-                <div class="chip" data-interest="вело">Вело</div>
-            </div>
-        </div>
-        <div>
-            <div class="section-title">Секции и кружки рядом</div>
-            <div class="section-sub">Конкретные места, где можно заниматься. Отзывы — в чатах участников.</div>
-            <div id="sectionsContainer" class="grid-3">
-                <div class="loading">Загрузка секций...</div>
-            </div>
-        </div>
-    </div>
-
-    <div id="dashboard" class="container dashboard">
-        <div class="dashboard-grid" id="dashboardContent"></div>
+    <div class="container" id="sectionContainer">
+        <div class="loading" style="text-align: center; padding: 60px;">Загрузка секции...</div>
     </div>
 </main>
 
@@ -634,178 +487,125 @@
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     
     let currentUser = null;
-    let currentUserProfile = null;
+    let currentSection = null;
     let isLoginMode = true;
-    let currentSearchQuery = '';
-    let favorites = [];
     let editingField = null;
+    let editingGroupId = null;
 
-    const mainPage = document.getElementById('mainPage');
-    const dashboard = document.getElementById('dashboard');
-    const sectionsContainer = document.getElementById('sectionsContainer');
-    const authSection = document.getElementById('authSection');
+    // Параметр sectionId из URL (для демо используем id=1)
+    const sectionId = 1;
     
-    async function updateProfileField(field, value) {
-        if (!currentUser) return false;
-        const updateData = {};
-        updateData[field] = value;
-        const { error } = await supabaseClient
-            .from('profiles')
-            .update(updateData)
-            .eq('id', currentUser.id);
-        if (error) {
-            console.error('Ошибка обновления:', error);
-            return false;
-        }
-        return true;
-    }
-
     async function checkSession() {
         const { data: { session } } = await supabaseClient.auth.getSession();
         if (session) {
             currentUser = session.user;
-            await loadUserProfile();
-            await loadFavorites();
             updateAuthUI(true);
-            showDashboard();
         } else {
             currentUser = null;
             updateAuthUI(false);
-            showMainPage();
         }
+        loadSection();
     }
 
-    async function loadUserProfile() {
-        if (!currentUser) return;
-        const { data, error } = await supabaseClient
-            .from('profiles')
+    async function loadSection() {
+        const { data: section, error } = await supabaseClient
+            .from('sections')
             .select('*')
-            .eq('id', currentUser.id)
+            .eq('id', sectionId)
             .single();
-        if (error && error.code !== 'PGRST116') {
-            console.error('Ошибка загрузки профиля:', error);
-        } else if (data) {
-            currentUserProfile = data;
-        } else {
-            currentUserProfile = { 
-                id: currentUser.id, 
-                full_name: currentUser.email.split('@')[0], 
-                interests: [], 
-                status: 'offline',
-                birthdate: '',
-                city: '',
-                about: '',
-                avatar_url: ''
-            };
-            await supabaseClient.from('profiles').insert([currentUserProfile]);
+        
+        if (error || !section) {
+            document.getElementById('sectionContainer').innerHTML = '<div class="loading">Ошибка загрузки секции</div>';
+            return;
         }
+        
+        currentSection = section;
+        
+        // Загружаем группы
+        const { data: groups } = await supabaseClient
+            .from('section_groups')
+            .select('*')
+            .eq('section_id', sectionId)
+            .order('age_min', { ascending: true });
+        
+        currentSection.groups = groups || [];
+        
+        renderSection();
     }
 
-    async function loadFavorites() {
-        if (!currentUser) return;
-        const { data, error } = await supabaseClient
-            .from('user_favorites')
-            .select('section_id');
+    async function updateSectionField(field, value) {
+        if (!currentSection) return false;
+        const updateData = {};
+        updateData[field] = value;
+        const { error } = await supabaseClient
+            .from('sections')
+            .update(updateData)
+            .eq('id', sectionId);
         if (error) {
-            console.error('Ошибка загрузки избранного:', error);
+            console.error('Ошибка обновления:', error);
+            alert('Ошибка сохранения: ' + error.message);
+            return false;
+        }
+        currentSection[field] = value;
+        return true;
+    }
+
+    async function updateGroupField(groupId, field, value) {
+        const { error } = await supabaseClient
+            .from('section_groups')
+            .update({ [field]: value })
+            .eq('id', groupId);
+        if (error) {
+            console.error('Ошибка обновления группы:', error);
+            alert('Ошибка сохранения: ' + error.message);
+            return false;
+        }
+        const group = currentSection.groups.find(g => g.id === groupId);
+        if (group) group[field] = value;
+        return true;
+    }
+
+    async function addGroup() {
+        const ageMin = prompt('Минимальный возраст:');
+        const ageMax = prompt('Максимальный возраст:');
+        const schedule = prompt('Расписание (например: Пн/Ср 19:00):');
+        const price = prompt('Цена в месяц (руб):');
+        
+        if (!ageMin && !schedule) return;
+        
+        const { data, error } = await supabaseClient
+            .from('section_groups')
+            .insert([{
+                section_id: sectionId,
+                age_min: parseInt(ageMin) || null,
+                age_max: parseInt(ageMax) || null,
+                schedule: schedule || '',
+                price: parseInt(price) || 0,
+                group_type: 'adult'
+            }])
+            .select()
+            .single();
+        
+        if (error) {
+            alert('Ошибка добавления: ' + error.message);
         } else {
-            favorites = data.map(f => f.section_id);
+            currentSection.groups.push(data);
+            renderSection();
         }
     }
 
-    async function addFavorite(sectionId) {
-        if (!currentUser) { openModal(); return; }
+    async function deleteGroup(groupId) {
+        if (!confirm('Удалить группу?')) return;
         const { error } = await supabaseClient
-            .from('user_favorites')
-            .insert([{ user_id: currentUser.id, section_id: sectionId }]);
-        if (error) alert('Ошибка: ' + error.message);
-        else {
-            await loadFavorites();
-            renderDashboard();
-            loadSections(currentSearchQuery);
-        }
-    }
-
-    async function removeFavorite(sectionId) {
-        const { error } = await supabaseClient
-            .from('user_favorites')
+            .from('section_groups')
             .delete()
-            .eq('user_id', currentUser.id)
-            .eq('section_id', sectionId);
-        if (error) alert('Ошибка: ' + error.message);
-        else {
-            await loadFavorites();
-            renderDashboard();
-            loadSections(currentSearchQuery);
+            .eq('id', groupId);
+        if (error) {
+            alert('Ошибка удаления: ' + error.message);
+        } else {
+            currentSection.groups = currentSection.groups.filter(g => g.id !== groupId);
+            renderSection();
         }
-    }
-
-    async function toggleStatus() {
-        if (!currentUserProfile) return;
-        const newStatus = currentUserProfile.status === 'online' ? 'offline' : 'online';
-        await updateProfileField('status', newStatus);
-        currentUserProfile.status = newStatus;
-        renderDashboard();
-    }
-
-    function showDashboard() {
-        mainPage.style.display = 'none';
-        dashboard.style.display = 'block';
-        renderDashboard();
-    }
-
-    function showMainPage() {
-        mainPage.style.display = 'block';
-        dashboard.style.display = 'none';
-        loadSections(currentSearchQuery);
-    }
-
-    function getIconForSection(name) {
-        const lower = name.toLowerCase();
-        if (lower.includes('бег')) return '<i class="fas fa-running"></i>';
-        if (lower.includes('шахмат')) return '<i class="fas fa-chess"></i>';
-        if (lower.includes('танц')) return '<i class="fas fa-music"></i>';
-        if (lower.includes('карате')) return '<i class="fas fa-fist-raised"></i>';
-        return '<i class="fas fa-location-dot"></i>';
-    }
-
-    async function updateAvatar(file) {
-        if (!file || !currentUser) return;
-        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/heic', 'image/heif', 'image/webp'];
-        if (!allowedTypes.includes(file.type)) {
-            alert('Поддерживаются форматы: JPEG, PNG, HEIC, WEBP');
-            return;
-        }
-        if (file.size > 5 * 1024 * 1024) {
-            alert('Файл не должен превышать 5MB');
-            return;
-        }
-        try {
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${currentUser.id}_${Date.now()}.${fileExt}`;
-            const { error: uploadError } = await supabaseClient.storage
-                .from('avatars')
-                .upload(fileName, file);
-            if (uploadError) throw uploadError;
-            const { data: { publicUrl } } = supabaseClient.storage
-                .from('avatars')
-                .getPublicUrl(fileName);
-            await updateProfileField('avatar_url', publicUrl);
-            currentUserProfile.avatar_url = publicUrl;
-            renderDashboard();
-            alert('Аватар обновлён!');
-        } catch (error) {
-            console.error('Ошибка загрузки аватара:', error);
-            alert('Ошибка при загрузке аватара.');
-        }
-    }
-
-    function formatDate(dateString) {
-        if (!dateString) return 'Не указано';
-        const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
-        const date = new Date(dateString);
-        if (isNaN(date.getTime())) return dateString;
-        return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
     }
 
     function startEditField(field, currentValue) {
@@ -816,26 +616,15 @@
         const valueSpan = row.querySelector('.info-value');
         const editIcon = row.querySelector('.edit-icon');
         
-        let input;
-        if (field === 'birthdate') {
-            input = document.createElement('input');
-            input.type = 'date';
-            input.value = currentValue || '';
-            input.className = 'info-edit-input';
-        } else {
-            input = document.createElement('input');
-            input.type = 'text';
-            input.value = currentValue || '';
-            input.className = 'info-edit-input';
-        }
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = currentValue || '';
+        input.className = 'info-edit-input';
         
         const saveBtn = document.createElement('button');
         saveBtn.innerHTML = '<i class="fas fa-check"></i>';
-        saveBtn.className = 'edit-actions-btn';
-        
         const cancelBtn = document.createElement('button');
         cancelBtn.innerHTML = '<i class="fas fa-times"></i>';
-        cancelBtn.className = 'edit-actions-btn';
         
         const actionsDiv = document.createElement('div');
         actionsDiv.className = 'edit-actions';
@@ -857,21 +646,17 @@
         input.focus();
         
         const saveHandler = async () => {
-            let newValue = input.value.trim();
-            if (field === 'birthdate' && newValue) {
-                // Сохраняем в формате YYYY-MM-DD
-            }
+            const newValue = input.value.trim();
             if (newValue !== currentValue) {
-                await updateProfileField(field, newValue);
-                currentUserProfile[field] = newValue;
+                await updateSectionField(field, newValue);
             }
             editingField = null;
-            renderDashboard();
+            renderSection();
         };
         
         const cancelHandler = () => {
             editingField = null;
-            renderDashboard();
+            renderSection();
         };
         
         saveBtn.onclick = saveHandler;
@@ -879,63 +664,60 @@
         input.onkeypress = (e) => { if (e.key === 'Enter') saveHandler(); };
     }
 
-    function startEditInterest(index, currentValue) {
-        if (editingField !== null) return;
-        editingField = `interest-${index}`;
-        const interestDiv = document.getElementById(`interest-${index}`);
-        if (!interestDiv) return;
-        const interestNameSpan = interestDiv.querySelector('.interest-name');
-        const editIcon = interestDiv.querySelector('.edit-interest');
+    function startEditGroup(groupId, field, currentValue) {
+        if (editingGroupId !== null) return;
+        editingGroupId = groupId;
+        const groupDiv = document.getElementById(`group-${groupId}-${field}`);
+        if (!groupDiv) return;
+        const span = groupDiv.querySelector('.group-value');
+        const editIcon = groupDiv.querySelector('.edit-icon');
         
         const input = document.createElement('input');
-        input.type = 'text';
-        input.value = currentValue;
-        input.className = 'info-edit-input';
-        input.style.flex = '1';
+        input.type = field === 'price' ? 'number' : 'text';
+        input.value = currentValue || '';
+        input.style.padding = '4px 8px';
+        input.style.border = '1px solid var(--border-light)';
+        input.style.borderRadius = '12px';
+        input.style.fontSize = '0.8rem';
+        input.style.width = '120px';
         
         const saveBtn = document.createElement('button');
         saveBtn.innerHTML = '<i class="fas fa-check"></i>';
-        saveBtn.className = 'edit-actions-btn';
-        
         const cancelBtn = document.createElement('button');
         cancelBtn.innerHTML = '<i class="fas fa-times"></i>';
-        cancelBtn.className = 'edit-actions-btn';
         
         const actionsDiv = document.createElement('div');
         actionsDiv.className = 'edit-actions';
         actionsDiv.appendChild(saveBtn);
         actionsDiv.appendChild(cancelBtn);
         
-        interestNameSpan.style.display = 'none';
+        span.style.display = 'none';
         editIcon.style.display = 'none';
         
         const container = document.createElement('div');
         container.style.display = 'flex';
         container.style.alignItems = 'center';
-        container.style.flex = '1';
-        container.style.gap = '8px';
+        container.style.gap = '6px';
         container.appendChild(input);
         container.appendChild(actionsDiv);
         
-        interestDiv.appendChild(container);
+        groupDiv.appendChild(container);
         
         input.focus();
         
         const saveHandler = async () => {
-            const newValue = input.value.trim();
-            if (newValue && newValue !== currentValue) {
-                const interests = [...(currentUserProfile.interests || [])];
-                interests[index] = newValue;
-                await updateProfileField('interests', interests);
-                currentUserProfile.interests = interests;
+            let newValue = input.value.trim();
+            if (field === 'price') newValue = parseInt(newValue) || 0;
+            if (newValue != currentValue) {
+                await updateGroupField(groupId, field, newValue);
             }
-            editingField = null;
-            renderDashboard();
+            editingGroupId = null;
+            renderSection();
         };
         
         const cancelHandler = () => {
-            editingField = null;
-            renderDashboard();
+            editingGroupId = null;
+            renderSection();
         };
         
         saveBtn.onclick = saveHandler;
@@ -943,161 +725,171 @@
         input.onkeypress = (e) => { if (e.key === 'Enter') saveHandler(); };
     }
 
-    function renderDashboard() {
-        if (!currentUserProfile) return;
-        const statusClass = currentUserProfile.status === 'online' ? 'online' : 'offline';
-        const statusText = currentUserProfile.status === 'online' ? 'Готов к общению' : 'Не беспокоить';
-        const interests = currentUserProfile.interests || [];
+    async function updateSectionAvatar(file) {
+        if (!file || !currentUser) {
+            alert('Войдите, чтобы изменить аватар');
+            openModal();
+            return;
+        }
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/heic', 'image/heif', 'image/webp'];
+        if (!allowedTypes.includes(file.type)) {
+            alert('Поддерживаются форматы: JPEG, PNG, HEIC, WEBP');
+            return;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+            alert('Файл не должен превышать 5MB');
+            return;
+        }
+        try {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `section_${sectionId}_${Date.now()}.${fileExt}`;
+            const { error: uploadError } = await supabaseClient.storage
+                .from('section-avatars')
+                .upload(fileName, file);
+            if (uploadError) throw uploadError;
+            const { data: { publicUrl } } = supabaseClient.storage
+                .from('section-avatars')
+                .getPublicUrl(fileName);
+            await updateSectionField('cover_image', publicUrl);
+            renderSection();
+            alert('Аватар обновлён!');
+        } catch (error) {
+            console.error('Ошибка загрузки аватара:', error);
+            alert('Ошибка при загрузке аватара.');
+        }
+    }
+
+    function renderSection() {
+        if (!currentSection) return;
         
-        document.getElementById('dashboardContent').innerHTML = `
-            <div class="profile-card">
-                <div class="avatar" id="avatarContainer">
-                    ${currentUserProfile.avatar_url ? 
-                        `<img src="${currentUserProfile.avatar_url}" alt="avatar">` : 
-                        `${(currentUserProfile.full_name?.[0] || 'U').toUpperCase()}`
-                    }
-                    <div class="avatar-upload-label" onclick="document.getElementById('avatarInput').click()">
-                        <i class="fas fa-camera"></i> Изменить
-                    </div>
-                </div>
-                <input type="file" id="avatarInput" accept="image/jpeg,image/jpg,image/png,image/heic,image/heif,image/webp" style="display:none">
-                <h2>${escapeHtml(currentUserProfile.full_name || 'Пользователь')}</h2>
-                <div class="status-switch ${statusClass}" onclick="window.toggleStatus()">
-                    ${statusText}
-                </div>
-                <div style="color: var(--text-gray); font-size: 0.8rem;">${escapeHtml(currentUser.email)}</div>
-            </div>
-            <div>
-                <div class="widget-card">
-                    <div class="widget-title">Личная информация</div>
-                    <div id="row-full_name" class="info-row">
-                        <i class="fas fa-pencil-alt edit-icon" onclick="window.startEditField('full_name', '${escapeHtml(currentUserProfile.full_name || '').replace(/'/g, "\\'")}')"></i>
-                        <span class="info-label">Полное имя</span>
-                        <span class="info-value">${escapeHtml(currentUserProfile.full_name || 'Не указано')}</span>
-                    </div>
-                    <div id="row-birthdate" class="info-row">
-                        <i class="fas fa-pencil-alt edit-icon" onclick="window.startEditField('birthdate', '${currentUserProfile.birthdate || ''}')"></i>
-                        <span class="info-label">Дата рождения</span>
-                        <span class="info-value">${formatDate(currentUserProfile.birthdate)}</span>
-                    </div>
-                    <div id="row-city" class="info-row">
-                        <i class="fas fa-pencil-alt edit-icon" onclick="window.startEditField('city', '${escapeHtml(currentUserProfile.city || '').replace(/'/g, "\\'")}')"></i>
-                        <span class="info-label">Город</span>
-                        <span class="info-value">${escapeHtml(currentUserProfile.city || 'Не указано')}</span>
-                    </div>
-                    <div id="row-about" class="info-row">
-                        <i class="fas fa-pencil-alt edit-icon" onclick="window.startEditField('about', '${escapeHtml(currentUserProfile.about || '').replace(/'/g, "\\'")}')"></i>
-                        <span class="info-label">О себе</span>
-                        <span class="info-value">${escapeHtml(currentUserProfile.about || 'Не указано')}</span>
-                    </div>
-                    
-                    <div class="info-row" style="flex-wrap: wrap;">
-                        <div style="width: 100%;">
-                            <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                                <span class="info-label" style="margin-left: 0;">Интересы</span>
-                            </div>
-                            <div id="interestsContainer" class="interests-list"></div>
-                            <div class="add-interest">
-                                <input type="text" id="newInterest" placeholder="Новый интерес (например, бег, шахматы)">
-                                <button class="btn-small" onclick="window.addInterest()">Добавить</button>
-                            </div>
+        const groups = currentSection.groups || [];
+        
+        const container = document.getElementById('sectionContainer');
+        container.innerHTML = `
+            <div class="section-profile">
+                <div class="section-info-card">
+                    <div class="section-avatar" id="avatarContainer">
+                        ${currentSection.cover_image ? 
+                            `<img src="${currentSection.cover_image}" alt="avatar">` : 
+                            '<i class="fas fa-fist-raised" style="font-size: 3rem;"></i>'
+                        }
+                        <div class="avatar-upload-label" onclick="document.getElementById('avatarInput').click()">
+                            <i class="fas fa-camera"></i> Изменить
                         </div>
                     </div>
+                    <input type="file" id="avatarInput" accept="image/jpeg,image/jpg,image/png,image/heic,image/heif,image/webp" style="display:none">
+                    
+                    <div class="section-name">${escapeHtml(currentSection.name || 'Без названия')}</div>
+                    <div class="trainer-name">${escapeHtml(currentSection.trainer_name || 'Тренер не указан')}</div>
+                    <div class="rating">${currentSection.rating ? '⭐ ' + currentSection.rating : '⭐ 0.0'}</div>
+                    
+                    <div id="row-address" class="info-row">
+                        <i class="fas fa-pencil-alt edit-icon" onclick="window.startEditField('address', '${escapeHtml(currentSection.address || '').replace(/'/g, "\\'")}')"></i>
+                        <span class="info-label">Адрес</span>
+                        <span class="info-value">${escapeHtml(currentSection.address || 'Не указан')}</span>
+                    </div>
+                    <div id="row-metro" class="info-row">
+                        <i class="fas fa-pencil-alt edit-icon" onclick="window.startEditField('metro', '${escapeHtml(currentSection.metro || '').replace(/'/g, "\\'")}')"></i>
+                        <span class="info-label">Метро</span>
+                        <span class="info-value">${escapeHtml(currentSection.metro || 'Не указано')}</span>
+                    </div>
+                    <div id="row-phone" class="info-row">
+                        <i class="fas fa-pencil-alt edit-icon" onclick="window.startEditField('phone', '${escapeHtml(currentSection.phone || '').replace(/'/g, "\\'")}')"></i>
+                        <span class="info-label">Телефон</span>
+                        <span class="info-value">${escapeHtml(currentSection.phone || 'Не указан')}</span>
+                    </div>
+                    <div id="row-email" class="info-row">
+                        <i class="fas fa-pencil-alt edit-icon" onclick="window.startEditField('email', '${escapeHtml(currentSection.email || '').replace(/'/g, "\\'")}')"></i>
+                        <span class="info-label">Email</span>
+                        <span class="info-value">${escapeHtml(currentSection.email || 'Не указан')}</span>
+                    </div>
+                    <div id="row-website" class="info-row">
+                        <i class="fas fa-pencil-alt edit-icon" onclick="window.startEditField('website', '${escapeHtml(currentSection.website || '').replace(/'/g, "\\'")}')"></i>
+                        <span class="info-label">Сайт</span>
+                        <span class="info-value">${escapeHtml(currentSection.website || 'Не указан')}</span>
+                    </div>
+                    
+                    <div class="chat-card">
+                        <i class="fab fa-telegram-plane" style="font-size: 1.5rem; color: #1A73E8;"></i>
+                        <div style="font-weight: 600; margin: 8px 0;">Чат в MAX</div>
+                        <div style="font-size: 0.7rem;">Обсуждайте тренировки с участниками</div>
+                        <a href="${currentSection.max_chat_link || '#'}" target="_blank" class="btn-primary" style="margin-top: 12px; display: inline-block;">Вступить в чат →</a>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="info-label"></span>
+                        <span class="info-value"></span>
+                    </div>
                 </div>
-                <div class="widget-card">
-                    <div class="widget-title">Избранные секции</div>
-                    <div id="favoritesList"></div>
+                
+                <div>
+                    <div class="groups-widget">
+                        <div class="widget-title">Группы и расписание</div>
+                        <div id="groupsContainer"></div>
+                        <div class="add-group">
+                            <button class="btn-small" onclick="window.addGroup()">+ Добавить группу</button>
+                        </div>
+                    </div>
+                    
+                    <div class="groups-widget">
+                        <div class="widget-title">О секции</div>
+                        <div id="row-description" class="info-row" style="flex-wrap: wrap;">
+                            <i class="fas fa-pencil-alt edit-icon" onclick="window.startEditField('description', '${escapeHtml(currentSection.description || '').replace(/'/g, "\\'")}')"></i>
+                            <span class="info-label" style="width: 100%; margin-bottom: 8px;">Описание</span>
+                            <span class="info-value" style="width: 100%; font-size: 0.9rem; line-height: 1.5;">${escapeHtml(currentSection.description || 'Нет описания')}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="groups-widget">
+                        <div class="widget-title">Отзывы (${Math.floor(Math.random() * 30) + 10})</div>
+                        <div class="review-item">
+                            <div class="review-header">
+                                <div class="review-avatar">АК</div>
+                                <div><strong>Анна К.</strong> <span style="color:#ffb800;">★★★★★</span></div>
+                            </div>
+                            <p style="font-size: 0.8rem;">Отличный тренер! Ребёнок ходит с удовольствием, прогресс виден.</p>
+                        </div>
+                        <div class="review-item">
+                            <div class="review-header">
+                                <div class="review-avatar">ДМ</div>
+                                <div><strong>Дмитрий М.</strong> <span style="color:#ffb800;">★★★★☆</span></div>
+                            </div>
+                            <p style="font-size: 0.8rem;">Хорошая атмосфера, но иногда многолюдно.</p>
+                        </div>
+                        <button class="btn-outline" style="margin-top: 16px; width: 100%;">Все отзывы →</button>
+                    </div>
                 </div>
             </div>
         `;
         
-        const interestsContainer = document.getElementById('interestsContainer');
-        if (interestsContainer) {
-            if (interests.length === 0) {
-                interestsContainer.innerHTML = '<div style="color: var(--text-gray); font-size: 0.85rem; padding: 8px 0;">Добавьте ваши интересы</div>';
+        // Заполняем группы
+        const groupsContainer = document.getElementById('groupsContainer');
+        if (groupsContainer) {
+            if (groups.length === 0) {
+                groupsContainer.innerHTML = '<div style="color: var(--text-gray); padding: 12px 0;">Группы не добавлены</div>';
             } else {
-                interestsContainer.innerHTML = interests.map((interest, idx) => `
-                    <div class="interest-item" id="interest-${idx}">
-                        <i class="fas fa-pencil-alt edit-interest" onclick="window.startEditInterest(${idx}, '${escapeHtml(interest).replace(/'/g, "\\'")}')"></i>
-                        <span class="interest-name">${escapeHtml(interest)}</span>
+                groupsContainer.innerHTML = groups.map(group => `
+                    <div class="group-item">
+                        <div style="display: flex; align-items: center; flex: 1; gap: 12px;">
+                            <span style="font-weight: 600; min-width: 130px;">${group.age_min || ''}${group.age_min ? '-' : ''}${group.age_max || ''} лет</span>
+                            <div id="group-${group.id}-schedule" style="display: flex; align-items: center; gap: 6px;">
+                                <i class="fas fa-pencil-alt edit-icon" onclick="window.startEditGroup(${group.id}, 'schedule', '${escapeHtml(group.schedule || '').replace(/'/g, "\\'")}')"></i>
+                                <span class="group-value">${escapeHtml(group.schedule || '—')}</span>
+                            </div>
+                            <div id="group-${group.id}-price" style="display: flex; align-items: center; gap: 6px; margin-left: auto;">
+                                <i class="fas fa-pencil-alt edit-icon" onclick="window.startEditGroup(${group.id}, 'price', '${group.price || 0}')"></i>
+                                <span class="group-value" style="font-weight: 700; color: var(--primary);">${group.price ? group.price + ' ₽' : '—'}</span>
+                            </div>
+                            <i class="fas fa-trash-alt edit-icon" style="color: #e57373;" onclick="window.deleteGroup(${group.id})"></i>
+                        </div>
                     </div>
                 `).join('');
             }
-        }
-        
-        const favoritesList = document.getElementById('favoritesList');
-        if (favorites.length === 0) {
-            favoritesList.innerHTML = '<div style="padding: 12px 0; color: var(--text-gray);">Нет избранных секций</div>';
-        } else {
-            Promise.all(favorites.map(async id => {
-                const { data } = await supabaseClient.from('sections').select('*').eq('id', id).single();
-                return data;
-            })).then(sections => {
-                favoritesList.innerHTML = sections.filter(s => s).map(section => `
-                    <div class="favorite-item">
-                        <div class="favorite-avatar">${getIconForSection(section.name)}</div>
-                        <div class="favorite-info">
-                            <div style="font-weight:600;">${escapeHtml(section.name)}</div>
-                            <div style="font-size:0.7rem; color:var(--text-gray);">${escapeHtml(section.metro || '')}</div>
-                        </div>
-                        <button class="btn-outline" style="padding:4px 12px;" onclick="window.removeFavorite(${section.id})">Удалить</button>
-                    </div>
-                `).join('');
-            });
         }
         
         document.getElementById('avatarInput')?.addEventListener('change', (e) => {
-            if (e.target.files && e.target.files[0]) updateAvatar(e.target.files[0]);
+            if (e.target.files && e.target.files[0]) updateSectionAvatar(e.target.files[0]);
         });
-    }
-
-    window.startEditField = startEditField;
-    window.startEditInterest = startEditInterest;
-
-    window.addInterest = async function() {
-        const input = document.getElementById('newInterest');
-        const interest = input.value.trim();
-        if (!interest) return;
-        const interests = currentUserProfile.interests || [];
-        if (!interests.includes(interest)) {
-            interests.push(interest);
-            await updateProfileField('interests', interests);
-            currentUserProfile.interests = interests;
-            renderDashboard();
-        }
-        input.value = '';
-    };
-
-    async function loadSections(searchQuery = '') {
-        if (!sectionsContainer) return;
-        sectionsContainer.innerHTML = '<div class="loading">Загрузка секций...</div>';
-        try {
-            let query = supabaseClient.from('sections').select('*').order('created_at', { ascending: false });
-            if (searchQuery) query = query.ilike('name', `%${searchQuery}%`);
-            const { data: sections, error } = await query;
-            if (error) throw error;
-            if (!sections || sections.length === 0) {
-                sectionsContainer.innerHTML = '<div class="loading">Ничего не найдено.</div>';
-                return;
-            }
-            sectionsContainer.innerHTML = sections.map(section => `
-                <div class="card">
-                    <div class="card-icon">${getIconForSection(section.name)}</div>
-                    <div class="card-title">${escapeHtml(section.name)}</div>
-                    <div class="card-address">${escapeHtml(section.metro || 'Адрес не указан')}</div>
-                    <div class="card-stats">${section.trainer_name ? escapeHtml(section.trainer_name) : ''}</div>
-                    <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
-                        ${section.max_chat_link ? `<a href="${escapeHtml(section.max_chat_link)}" target="_blank" class="btn-max">Чат в MAX</a>` : ''}
-                        ${currentUser && favorites.includes(section.id) ? 
-                            `<button class="btn-outline" onclick="window.removeFavorite(${section.id})">В избранном</button>` :
-                            `<button class="btn-outline" onclick="window.addFavorite(${section.id})">В избранное</button>`
-                        }
-                    </div>
-                </div>
-            `).join('');
-        } catch (error) {
-            sectionsContainer.innerHTML = '<div class="loading">Ошибка загрузки</div>';
-        }
     }
 
     function escapeHtml(text) {
@@ -1107,6 +899,7 @@
         return div.innerHTML;
     }
 
+    // Авторизация
     const modal = document.getElementById('authModal');
     const modalTitle = document.getElementById('modalTitle');
     const emailInput = document.getElementById('emailInput');
@@ -1136,22 +929,15 @@
                 const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
                 if (error) throw error;
                 currentUser = data.user;
-                await loadUserProfile();
-                await loadFavorites();
                 updateAuthUI(true);
                 closeModalFunc();
-                showDashboard();
             } else {
                 const { data, error } = await supabaseClient.auth.signUp({ email, password });
                 if (error) throw error;
                 if (data.user) {
                     currentUser = data.user;
-                    currentUserProfile = { id: data.user.id, full_name: email.split('@')[0], interests: [], status: 'offline', birthdate: '', city: '', about: '', avatar_url: '' };
-                    await supabaseClient.from('profiles').insert([currentUserProfile]);
-                    await loadFavorites();
                     updateAuthUI(true);
                     closeModalFunc();
-                    showDashboard();
                     alert('Регистрация успешна!');
                 }
             }
@@ -1161,12 +947,11 @@
     async function logout() {
         await supabaseClient.auth.signOut();
         currentUser = null;
-        currentUserProfile = null;
         updateAuthUI(false);
-        showMainPage();
     }
 
     function updateAuthUI(isLoggedIn) {
+        const authSection = document.getElementById('authSection');
         if (isLoggedIn && currentUser) {
             authSection.innerHTML = `
                 <div style="display: flex; align-items: center; gap: 12px;">
@@ -1181,43 +966,17 @@
         }
     }
 
-    document.getElementById('searchBtn')?.addEventListener('click', () => {
-        currentSearchQuery = document.getElementById('searchInput')?.value || '';
-        loadSections(currentSearchQuery);
-    });
-    document.getElementById('searchInput')?.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            currentSearchQuery = e.target.value;
-            loadSections(currentSearchQuery);
-        }
-    });
-    document.querySelectorAll('.chip').forEach(chip => {
-        chip.addEventListener('click', () => {
-            const interest = chip.getAttribute('data-interest');
-            if (interest && document.getElementById('searchInput')) {
-                document.getElementById('searchInput').value = interest;
-                currentSearchQuery = interest;
-                loadSections(currentSearchQuery);
-            }
-        });
-    });
-    document.getElementById('logoBtn')?.addEventListener('click', showMainPage);
-    document.getElementById('mainPageBtn')?.addEventListener('click', showMainPage);
-    document.getElementById('profileNavBtn')?.addEventListener('click', () => {
-        if (currentUser) showDashboard();
-        else openModal();
-    });
+    window.startEditField = startEditField;
+    window.startEditGroup = startEditGroup;
+    window.addGroup = addGroup;
+    window.deleteGroup = deleteGroup;
+
     closeModal?.addEventListener('click', closeModalFunc);
     modalActionBtn?.addEventListener('click', handleAuth);
     switchAuthMode?.addEventListener('click', (e) => { e.preventDefault(); switchMode(); });
     window.addEventListener('click', (e) => { if (e.target === modal) closeModalFunc(); });
-    
-    window.addFavorite = addFavorite;
-    window.removeFavorite = removeFavorite;
-    window.toggleStatus = toggleStatus;
 
     checkSession();
-    loadSections();
 </script>
 </body>
 </html>
