@@ -21,7 +21,6 @@
             line-height: 1.4;
         }
 
-        /* МЯТНАЯ ЦВЕТОВАЯ СХЕМА */
         :root {
             --primary: #4CAF7F;
             --primary-dark: #3d8c64;
@@ -276,7 +275,6 @@
             color: var(--text-gray);
         }
 
-        /* Дашборд */
         .dashboard {
             display: none;
         }
@@ -393,31 +391,36 @@
             resize: vertical;
             min-height: 60px;
         }
-        .interests-tags {
+        .interests-list {
             display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
+            flex-direction: column;
+            gap: 12px;
             margin-top: 8px;
         }
-        .interest-tag {
-            background: var(--primary-light);
-            padding: 6px 14px;
-            border-radius: 40px;
-            font-size: 0.8rem;
-            display: inline-flex;
+        .interest-item {
+            display: flex;
             align-items: center;
-            gap: 6px;
-            cursor: pointer;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-light);
         }
-        .interest-tag .remove {
+        .interest-name {
+            font-size: 0.9rem;
+            color: var(--text-dark);
+        }
+        .edit-interest {
+            color: #9e9e9e;
             cursor: pointer;
-            font-size: 0.7rem;
-            opacity: 0.6;
+            font-size: 0.8rem;
+            transition: color 0.2s;
+        }
+        .edit-interest:hover {
+            color: var(--primary);
         }
         .add-interest {
             display: flex;
             gap: 8px;
-            margin-top: 12px;
+            margin-top: 16px;
         }
         .add-interest input {
             flex: 1;
@@ -437,14 +440,21 @@
         }
         .favorite-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 12px;
             padding: 12px 0;
             border-bottom: 1px solid var(--border-light);
         }
-        .favorite-emoji {
-            font-size: 1.5rem;
-            margin-right: 12px;
+        .favorite-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-light);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: var(--primary);
         }
         .favorite-info {
             flex: 1;
@@ -518,7 +528,7 @@
                 <a href="#" id="mainPageBtn">Главная</a>
                 <a href="#" id="profileNavBtn">Профиль</a>
                 <div id="authSection">
-                    <a href="#" id="loginBtn" class="btn-outline">Войти / Регистрация</a>
+                    <a href="#" id="loginBtn" class="btn-outline">Войти</a>
                 </div>
             </div>
         </div>
@@ -526,7 +536,6 @@
 </div>
 
 <main>
-    <!-- Главная страница -->
     <div id="mainPage" class="container" style="display: block;">
         <div class="hero">
             <h1>Найди своих по интересам</h1>
@@ -552,15 +561,11 @@
         </div>
     </div>
 
-    <!-- Дашборд профиля -->
     <div id="dashboard" class="container dashboard">
-        <div class="dashboard-grid" id="dashboardContent">
-            <!-- Заполняется через JS -->
-        </div>
+        <div class="dashboard-grid" id="dashboardContent"></div>
     </div>
 </main>
 
-<!-- Модальное окно -->
 <div id="authModal" class="modal">
     <div class="modal-content">
         <h3 id="modalTitle">Вход</h3>
@@ -589,10 +594,8 @@
 </footer>
 
 <script>
-    // ========== НАСТРОЙКИ SUPABASE ==========
     const SUPABASE_URL = 'https://zweulqmupkljowyfwzqs.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_CQDuw-BNAqeYUTr8HyzaoQ_JTw_Qv05';
-    
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     
     let currentUser = null;
@@ -600,15 +603,16 @@
     let isLoginMode = true;
     let currentSearchQuery = '';
     let favorites = [];
+    let editingInterestIndex = null;
+    let editInput = null;
 
     const mainPage = document.getElementById('mainPage');
     const dashboard = document.getElementById('dashboard');
     const sectionsContainer = document.getElementById('sectionsContainer');
     const authSection = document.getElementById('authSection');
     
-    // Дополнительные поля профиля
     async function updateProfileField(field, value) {
-        if (!currentUser) return;
+        if (!currentUser) return false;
         const updateData = {};
         updateData[field] = value;
         const { error } = await supabaseClient
@@ -676,16 +680,12 @@
     }
 
     async function addFavorite(sectionId) {
-        if (!currentUser) {
-            openModal();
-            return;
-        }
+        if (!currentUser) { openModal(); return; }
         const { error } = await supabaseClient
             .from('user_favorites')
             .insert([{ user_id: currentUser.id, section_id: sectionId }]);
-        if (error) {
-            alert('Ошибка: ' + error.message);
-        } else {
+        if (error) alert('Ошибка: ' + error.message);
+        else {
             await loadFavorites();
             renderDashboard();
             loadSections(currentSearchQuery);
@@ -698,9 +698,8 @@
             .delete()
             .eq('user_id', currentUser.id)
             .eq('section_id', sectionId);
-        if (error) {
-            alert('Ошибка: ' + error.message);
-        } else {
+        if (error) alert('Ошибка: ' + error.message);
+        else {
             await loadFavorites();
             renderDashboard();
             loadSections(currentSearchQuery);
@@ -727,59 +726,104 @@
         loadSections(currentSearchQuery);
     }
 
-    function getEmojiForSection(name) {
+    function getIconForSection(name) {
         const lower = name.toLowerCase();
-        if (lower.includes('бег')) return '🏃';
-        if (lower.includes('шахмат')) return '♟️';
-        if (lower.includes('танц')) return '💃';
-        if (lower.includes('карате')) return '🥋';
-        if (lower.includes('вело')) return '🚴';
-        return '🏆';
+        if (lower.includes('бег')) return '<i class="fas fa-running"></i>';
+        if (lower.includes('шахмат')) return '<i class="fas fa-chess"></i>';
+        if (lower.includes('танц')) return '<i class="fas fa-music"></i>';
+        if (lower.includes('карате')) return '<i class="fas fa-fist-raised"></i>';
+        return '<i class="fas fa-location-dot"></i>';
     }
 
     async function updateAvatar(file) {
         if (!file || !currentUser) return;
-        
-        // Проверка типа файла
         const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/heic', 'image/heif', 'image/webp'];
         if (!allowedTypes.includes(file.type)) {
             alert('Поддерживаются форматы: JPEG, PNG, HEIC, WEBP');
             return;
         }
-        
-        // Проверка размера (максимум 5MB)
         if (file.size > 5 * 1024 * 1024) {
             alert('Файл не должен превышать 5MB');
             return;
         }
-        
         try {
-            // Генерируем уникальное имя файла
             const fileExt = file.name.split('.').pop();
             const fileName = `${currentUser.id}_${Date.now()}.${fileExt}`;
-            
-            // Загружаем файл в Storage
-            const { data: uploadData, error: uploadError } = await supabaseClient.storage
+            const { error: uploadError } = await supabaseClient.storage
                 .from('avatars')
                 .upload(fileName, file);
-            
             if (uploadError) throw uploadError;
-            
-            // Получаем публичный URL
             const { data: { publicUrl } } = supabaseClient.storage
                 .from('avatars')
                 .getPublicUrl(fileName);
-            
-            // Обновляем профиль
             await updateProfileField('avatar_url', publicUrl);
             currentUserProfile.avatar_url = publicUrl;
-            
             renderDashboard();
             alert('Аватар обновлён!');
         } catch (error) {
             console.error('Ошибка загрузки аватара:', error);
-            alert('Ошибка при загрузке аватара. Попробуйте позже.');
+            alert('Ошибка при загрузке аватара.');
         }
+    }
+
+    function startEditInterest(index, currentValue) {
+        if (editingInterestIndex !== null) return;
+        editingInterestIndex = index;
+        const interestDiv = document.getElementById(`interest-${index}`);
+        if (!interestDiv) return;
+        const interestNameSpan = interestDiv.querySelector('.interest-name');
+        const editIcon = interestDiv.querySelector('.edit-interest');
+        const originalText = currentValue;
+        
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = originalText;
+        input.className = 'interest-edit-input';
+        input.style.cssText = 'flex:1; padding:4px 8px; border:1px solid var(--border-light); border-radius:8px; font-size:0.9rem;';
+        
+        const saveBtn = document.createElement('button');
+        saveBtn.innerHTML = '<i class="fas fa-check"></i>';
+        saveBtn.className = 'save-interest-btn';
+        saveBtn.style.cssText = 'background: var(--primary); color:white; border:none; border-radius:6px; padding:4px 8px; margin-left:8px; cursor:pointer;';
+        
+        const cancelBtn = document.createElement('button');
+        cancelBtn.innerHTML = '<i class="fas fa-times"></i>';
+        cancelBtn.className = 'cancel-interest-btn';
+        cancelBtn.style.cssText = 'background: #ccc; color:white; border:none; border-radius:6px; padding:4px 8px; margin-left:4px; cursor:pointer;';
+        
+        interestNameSpan.style.display = 'none';
+        editIcon.style.display = 'none';
+        const container = document.createElement('div');
+        container.style.display = 'flex';
+        container.style.alignItems = 'center';
+        container.style.flex = '1';
+        container.appendChild(input);
+        container.appendChild(saveBtn);
+        container.appendChild(cancelBtn);
+        interestDiv.insertBefore(container, editIcon);
+        
+        input.focus();
+        
+        const saveHandler = async () => {
+            const newValue = input.value.trim();
+            if (newValue && newValue !== originalText) {
+                const interests = [...(currentUserProfile.interests || [])];
+                interests[index] = newValue;
+                await updateProfileField('interests', interests);
+                currentUserProfile.interests = interests;
+                renderDashboard();
+            }
+            editingInterestIndex = null;
+        };
+        
+        const cancelHandler = () => {
+            editingInterestIndex = null;
+            renderDashboard();
+        };
+        
+        saveBtn.onclick = saveHandler;
+        cancelBtn.onclick = cancelHandler;
+        input.onkeypress = (e) => { if (e.key === 'Enter') saveHandler(); };
     }
 
     function renderDashboard() {
@@ -808,26 +852,26 @@
             </div>
             <div>
                 <div class="widget-card">
-                    <div class="widget-title">📝 Личная информация</div>
+                    <div class="widget-title">Личная информация</div>
                     <div class="profile-field">
                         <label>Полное имя</label>
                         <input type="text" id="fullName" value="${escapeHtml(currentUserProfile.full_name || '')}" placeholder="Как вас зовут?">
                     </div>
                     <div class="profile-field">
-                        <label>📅 Дата рождения</label>
+                        <label>Дата рождения</label>
                         <input type="date" id="birthdate" value="${currentUserProfile.birthdate || ''}">
                     </div>
                     <div class="profile-field">
-                        <label>🏙️ Город</label>
+                        <label>Город</label>
                         <input type="text" id="city" value="${escapeHtml(currentUserProfile.city || '')}" placeholder="Москва, Санкт-Петербург...">
                     </div>
                     <div class="profile-field">
-                        <label>📖 О себе</label>
+                        <label>О себе</label>
                         <textarea id="about" placeholder="Расскажите о своих увлечениях, целях и о том, кого хотите найти...">${escapeHtml(currentUserProfile.about || '')}</textarea>
                     </div>
                     <div class="profile-field">
-                        <label>🏷️ Интересы</label>
-                        <div class="interests-tags" id="interestsContainer"></div>
+                        <label>Интересы</label>
+                        <div id="interestsContainer" class="interests-list"></div>
                         <div class="add-interest">
                             <input type="text" id="newInterest" placeholder="Новый интерес (например, бег, шахматы)">
                             <button class="btn-small" onclick="window.addInterest()">Добавить</button>
@@ -836,28 +880,26 @@
                     <button class="btn-primary" style="margin-top: 16px; width:100%;" onclick="window.saveProfileInfo()">Сохранить изменения</button>
                 </div>
                 <div class="widget-card">
-                    <div class="widget-title">❤️ Избранные секции</div>
+                    <div class="widget-title">Избранные секции</div>
                     <div id="favoritesList"></div>
                 </div>
             </div>
         `;
         
-        // Заполняем интересы
         const interestsContainer = document.getElementById('interestsContainer');
         if (interestsContainer) {
             if (interests.length === 0) {
-                interestsContainer.innerHTML = '<span style="color: var(--text-gray); font-size: 0.8rem;">Добавьте ваши интересы</span>';
+                interestsContainer.innerHTML = '<div style="color: var(--text-gray); font-size: 0.85rem; padding: 8px 0;">Добавьте ваши интересы</div>';
             } else {
-                interestsContainer.innerHTML = interests.map(interest => `
-                    <span class="interest-tag">
-                        ${escapeHtml(interest)}
-                        <span class="remove" onclick="window.removeInterest('${escapeHtml(interest)}')">×</span>
-                    </span>
+                interestsContainer.innerHTML = interests.map((interest, idx) => `
+                    <div class="interest-item" id="interest-${idx}">
+                        <span class="interest-name">${escapeHtml(interest)}</span>
+                        <i class="fas fa-pencil-alt edit-interest" onclick="window.startEditInterest(${idx}, '${escapeHtml(interest).replace(/'/g, "\\'")}')" style="cursor: pointer; font-size: 0.7rem; color: #9e9e9e;"></i>
+                    </div>
                 `).join('');
             }
         }
         
-        // Заполняем избранное
         const favoritesList = document.getElementById('favoritesList');
         if (favorites.length === 0) {
             favoritesList.innerHTML = '<div style="padding: 12px 0; color: var(--text-gray);">Нет избранных секций</div>';
@@ -868,7 +910,7 @@
             })).then(sections => {
                 favoritesList.innerHTML = sections.filter(s => s).map(section => `
                     <div class="favorite-item">
-                        <div class="favorite-emoji">${getEmojiForSection(section.name)}</div>
+                        <div class="favorite-avatar">${getIconForSection(section.name)}</div>
                         <div class="favorite-info">
                             <div style="font-weight:600;">${escapeHtml(section.name)}</div>
                             <div style="font-size:0.7rem; color:var(--text-gray);">${escapeHtml(section.metro || '')}</div>
@@ -879,11 +921,8 @@
             });
         }
         
-        // Обработчик загрузки аватара
         document.getElementById('avatarInput')?.addEventListener('change', (e) => {
-            if (e.target.files && e.target.files[0]) {
-                updateAvatar(e.target.files[0]);
-            }
+            if (e.target.files && e.target.files[0]) updateAvatar(e.target.files[0]);
         });
     }
 
@@ -891,7 +930,6 @@
         const input = document.getElementById('newInterest');
         const interest = input.value.trim();
         if (!interest) return;
-        
         const interests = currentUserProfile.interests || [];
         if (!interests.includes(interest)) {
             interests.push(interest);
@@ -902,13 +940,7 @@
         input.value = '';
     };
 
-    window.removeInterest = async function(interest) {
-        let interests = currentUserProfile.interests || [];
-        interests = interests.filter(i => i !== interest);
-        await updateProfileField('interests', interests);
-        currentUserProfile.interests = interests;
-        renderDashboard();
-    };
+    window.startEditInterest = startEditInterest;
 
     window.saveProfileInfo = async function() {
         const fullName = document.getElementById('fullName')?.value;
@@ -916,27 +948,28 @@
         const city = document.getElementById('city')?.value;
         const about = document.getElementById('about')?.value;
         
-        if (fullName) await updateProfileField('full_name', fullName);
-        if (birthdate !== undefined) await updateProfileField('birthdate', birthdate);
-        if (city !== undefined) await updateProfileField('city', city);
-        if (about !== undefined) await updateProfileField('about', about);
+        const updateData = {};
+        if (fullName !== undefined) updateData.full_name = fullName;
+        if (birthdate !== undefined) updateData.birthdate = birthdate;
+        if (city !== undefined) updateData.city = city;
+        if (about !== undefined) updateData.about = about;
         
-        if (fullName) currentUserProfile.full_name = fullName;
-        if (birthdate !== undefined) currentUserProfile.birthdate = birthdate;
-        if (city !== undefined) currentUserProfile.city = city;
-        if (about !== undefined) currentUserProfile.about = about;
+        const { error } = await supabaseClient
+            .from('profiles')
+            .update(updateData)
+            .eq('id', currentUser.id);
         
-        renderDashboard();
-        alert('Информация сохранена!');
+        if (error) {
+            alert('Ошибка сохранения: ' + error.message);
+        } else {
+            if (fullName) currentUserProfile.full_name = fullName;
+            if (birthdate) currentUserProfile.birthdate = birthdate;
+            if (city) currentUserProfile.city = city;
+            if (about) currentUserProfile.about = about;
+            alert('Информация сохранена!');
+            renderDashboard();
+        }
     };
-
-    async function updateProfile() {
-        const newName = document.getElementById('editName')?.value;
-        if (!newName || !currentUser) return;
-        await updateProfileField('full_name', newName);
-        currentUserProfile.full_name = newName;
-        renderDashboard();
-    }
 
     async function loadSections(searchQuery = '') {
         if (!sectionsContainer) return;
@@ -954,13 +987,13 @@
                 <div class="card">
                     <div class="card-icon">${getIconForSection(section.name)}</div>
                     <div class="card-title">${escapeHtml(section.name)}</div>
-                    <div class="card-address">📍 ${escapeHtml(section.metro || 'Адрес не указан')}</div>
+                    <div class="card-address">${escapeHtml(section.metro || 'Адрес не указан')}</div>
                     <div class="card-stats">${section.trainer_name ? escapeHtml(section.trainer_name) : ''}</div>
                     <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
                         ${section.max_chat_link ? `<a href="${escapeHtml(section.max_chat_link)}" target="_blank" class="btn-max">Чат в MAX</a>` : ''}
                         ${currentUser && favorites.includes(section.id) ? 
-                            `<button class="btn-outline" onclick="window.removeFavorite(${section.id})">❤️ В избранном</button>` :
-                            `<button class="btn-outline" onclick="window.addFavorite(${section.id})">🤍 В избранное</button>`
+                            `<button class="btn-outline" onclick="window.removeFavorite(${section.id})">В избранном</button>` :
+                            `<button class="btn-outline" onclick="window.addFavorite(${section.id})">В избранное</button>`
                         }
                     </div>
                 </div>
@@ -968,15 +1001,6 @@
         } catch (error) {
             sectionsContainer.innerHTML = '<div class="loading">Ошибка загрузки</div>';
         }
-    }
-
-    function getIconForSection(name) {
-        const lower = name.toLowerCase();
-        if (lower.includes('бег')) return '<i class="fas fa-running"></i>';
-        if (lower.includes('шахмат')) return '<i class="fas fa-chess"></i>';
-        if (lower.includes('танц')) return '<i class="fas fa-music"></i>';
-        if (lower.includes('карате')) return '<i class="fas fa-fist-raised"></i>';
-        return '<i class="fas fa-location-dot"></i>';
     }
 
     function escapeHtml(text) {
@@ -1055,7 +1079,7 @@
             `;
             document.getElementById('logoutBtn')?.addEventListener('click', logout);
         } else {
-            authSection.innerHTML = '<a href="#" id="loginBtn" class="btn-outline">Войти / Регистрация</a>';
+            authSection.innerHTML = '<a href="#" id="loginBtn" class="btn-outline">Войти</a>';
             document.getElementById('loginBtn')?.addEventListener('click', openModal);
         }
     }
@@ -1094,7 +1118,6 @@
     window.addFavorite = addFavorite;
     window.removeFavorite = removeFavorite;
     window.toggleStatus = toggleStatus;
-    window.updateProfile = updateProfile;
 
     checkSession();
     loadSections();
