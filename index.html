@@ -276,7 +276,6 @@
             color: var(--text-gray);
         }
 
-        /* Дашборд */
         .dashboard {
             display: none;
         }
@@ -541,7 +540,6 @@
             color: var(--text-gray);
         }
 
-        /* Профиль секции */
         .section-profile {
             display: grid;
             grid-template-columns: 360px 1fr;
@@ -615,6 +613,18 @@
             text-align: center;
             margin: 16px 0;
         }
+        .chat-link-input {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .chat-link-input input {
+            flex: 1;
+            padding: 6px 10px;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
         .groups-widget {
             background: white;
             border-radius: 24px;
@@ -628,6 +638,11 @@
             align-items: center;
             margin-bottom: 16px;
             flex-wrap: wrap;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .group-item:last-child {
+            border-bottom: none;
         }
         .group-item .edit-icon {
             color: #9e9e9e;
@@ -652,6 +667,11 @@
             min-width: 80px;
             text-align: right;
         }
+        .price-label {
+            font-size: 0.7rem;
+            color: var(--text-gray);
+            margin-left: 8px;
+        }
         .add-group {
             display: flex;
             gap: 8px;
@@ -663,6 +683,17 @@
             border: 1px solid var(--border-light);
             border-radius: 40px;
             font-size: 0.8rem;
+        }
+        .individual-section {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-light);
+        }
+        .individual-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 12px;
         }
         .review-item {
             padding: 12px 0;
@@ -713,7 +744,6 @@
 </div>
 
 <main>
-    <!-- Главная страница -->
     <div id="mainPage" class="container" style="display: block;">
         <div class="hero">
             <h1>Найди своих по интересам</h1>
@@ -739,18 +769,15 @@
         </div>
     </div>
 
-    <!-- Дашборд профиля -->
     <div id="dashboard" class="container dashboard">
         <div class="dashboard-grid" id="dashboardContent"></div>
     </div>
 
-    <!-- Страница секции -->
     <div id="sectionPage" class="container" style="display: none;">
         <div id="sectionContainer"></div>
     </div>
 </main>
 
-<!-- Модальное окно -->
 <div id="authModal" class="modal">
     <div class="modal-content">
         <h3 id="modalTitle">Вход</h3>
@@ -1032,7 +1059,7 @@
         const ageMin = prompt('Минимальный возраст:');
         const ageMax = prompt('Максимальный возраст:');
         const schedule = prompt('Расписание (например: Пн/Ср 19:00):');
-        const price = prompt('Цена в месяц (руб):');
+        const price = prompt('Стоимость в месяц (руб):');
         
         const { data, error } = await supabaseClient
             .from('section_groups')
@@ -1263,6 +1290,69 @@
         input.onkeypress = (e) => { if (e.key === 'Enter') saveHandler(); };
     }
 
+    function startEditIndividualPrice(sectionId, currentValue) {
+        if (editingField !== null) return;
+        editingField = 'individual_price';
+        const row = document.getElementById(`individual-price-row`);
+        if (!row) return;
+        const span = row.querySelector('.individual-price-value');
+        const editIcon = row.querySelector('.edit-icon');
+        
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.value = currentValue || 0;
+        input.style.padding = '4px 8px';
+        input.style.border = '1px solid var(--border-light)';
+        input.style.borderRadius = '12px';
+        input.style.fontSize = '0.8rem';
+        input.style.width = '100px';
+        
+        const saveBtn = document.createElement('button');
+        saveBtn.innerHTML = '<i class="fas fa-check"></i>';
+        const cancelBtn = document.createElement('button');
+        cancelBtn.innerHTML = '<i class="fas fa-times"></i>';
+        
+        const actionsDiv = document.createElement('div');
+        actionsDiv.className = 'edit-actions';
+        actionsDiv.appendChild(saveBtn);
+        actionsDiv.appendChild(cancelBtn);
+        
+        span.style.display = 'none';
+        editIcon.style.display = 'none';
+        
+        const container = document.createElement('div');
+        container.style.display = 'flex';
+        container.style.alignItems = 'center';
+        container.style.gap = '6px';
+        container.appendChild(input);
+        container.appendChild(actionsDiv);
+        
+        row.appendChild(container);
+        
+        input.focus();
+        
+        const saveHandler = async () => {
+            const newValue = parseInt(input.value) || 0;
+            await updateSectionField(sectionId, 'individual_price', newValue);
+            editingField = null;
+            loadSection(sectionId);
+        };
+        
+        const cancelHandler = () => {
+            editingField = null;
+            loadSection(sectionId);
+        };
+        
+        saveBtn.onclick = saveHandler;
+        cancelBtn.onclick = cancelHandler;
+        input.onkeypress = (e) => { if (e.key === 'Enter') saveHandler(); };
+    }
+
+    async function updateChatLink(sectionId, newLink) {
+        await updateSectionField(sectionId, 'max_chat_link', newLink);
+        loadSection(sectionId);
+    }
+
     function startEditInterest(index, currentValue) {
         if (editingField !== null) return;
         editingField = `interest-${index}`;
@@ -1445,6 +1535,7 @@
         }
         
         currentSection = section;
+        if (!currentSection.individual_price) currentSection.individual_price = 0;
         
         const { data: groups } = await supabaseClient
             .from('section_groups')
@@ -1453,8 +1544,6 @@
             .order('age_min', { ascending: true });
         
         currentSection.groups = groups || [];
-        
-        const isOwner = true;
         
         const container = document.getElementById('sectionContainer');
         container.innerHTML = `
@@ -1505,16 +1594,31 @@
                         <i class="fab fa-telegram-plane" style="font-size: 1.5rem; color: #1A73E8;"></i>
                         <div style="font-weight: 600; margin: 8px 0;">Чат в MAX</div>
                         <div style="font-size: 0.7rem;">Обсуждайте тренировки с участниками</div>
-                        <a href="${currentSection.max_chat_link || '#'}" target="_blank" class="btn-primary" style="margin-top: 12px; display: inline-block;">Вступить в чат →</a>
+                        <div class="chat-link-input">
+                            <input type="text" id="chatLinkInput" placeholder="Ссылка на чат в MAX" value="${escapeHtml(currentSection.max_chat_link || '')}">
+                            <button class="btn-small" onclick="window.updateChatLink(${sectionId}, document.getElementById('chatLinkInput').value)">Сохранить</button>
+                        </div>
+                        ${currentSection.max_chat_link ? `<a href="${escapeHtml(currentSection.max_chat_link)}" target="_blank" class="btn-primary" style="margin-top: 12px; display: inline-block;">Вступить в чат →</a>` : ''}
                     </div>
                 </div>
                 
                 <div>
                     <div class="groups-widget">
-                        <div class="widget-title">Группы и расписание</div>
+                        <div class="widget-title">Групповые тренировки</div>
+                        <div class="price-label" style="margin-bottom: 12px;">Стоимость указана за месяц занятий</div>
                         <div id="groupsContainer"></div>
                         <div class="add-group">
                             <button class="btn-small" onclick="window.addGroup(${sectionId})">+ Добавить группу</button>
+                        </div>
+                        
+                        <div class="individual-section">
+                            <div class="widget-title" style="margin-bottom: 8px;">Индивидуальные тренировки</div>
+                            <div class="price-label" style="margin-bottom: 12px;">Стоимость указана за одно занятие</div>
+                            <div id="individual-price-row" class="individual-row">
+                                <span class="info-label">Цена:</span>
+                                <span class="individual-price-value" style="font-weight: 700; color: var(--primary);">${currentSection.individual_price || 0} ₽</span>
+                                <i class="fas fa-pencil-alt edit-icon" onclick="window.startEditIndividualPrice(${sectionId}, ${currentSection.individual_price || 0})"></i>
+                            </div>
                         </div>
                     </div>
                     
@@ -1556,7 +1660,7 @@
         } else {
             groupsContainer.innerHTML = groupsList.map(group => `
                 <div class="group-item">
-                    <div style="display: flex; align-items: center; flex: 1; gap: 12px;">
+                    <div style="display: flex; align-items: center; flex: 1; gap: 12px; flex-wrap: wrap;">
                         <span class="group-age" style="min-width: 130px;">${group.age_min || ''}${group.age_min ? '-' : ''}${group.age_max || ''} лет</span>
                         <div id="group-${group.id}-schedule" style="display: flex; align-items: center; gap: 6px;">
                             <i class="fas fa-pencil-alt edit-icon" onclick="window.startEditGroupField(${group.id}, 'schedule', '${escapeHtml(group.schedule || '').replace(/'/g, "\\'")}', ${sectionId})"></i>
@@ -1565,6 +1669,7 @@
                         <div id="group-${group.id}-price" style="display: flex; align-items: center; gap: 6px; margin-left: auto;">
                             <i class="fas fa-pencil-alt edit-icon" onclick="window.startEditGroupField(${group.id}, 'price', '${group.price || 0}', ${sectionId})"></i>
                             <span class="group-value" style="font-weight: 700; color: var(--primary);">${group.price ? group.price + ' ₽' : '—'}</span>
+                            <span class="price-label">/мес</span>
                         </div>
                         <i class="fas fa-trash-alt edit-icon" style="color: #e57373;" onclick="window.deleteGroup(${group.id}, ${sectionId})"></i>
                     </div>
@@ -1743,8 +1848,10 @@
     window.showSectionPage = showSectionPage;
     window.startEditSectionField = startEditSectionField;
     window.startEditGroupField = startEditGroupField;
+    window.startEditIndividualPrice = startEditIndividualPrice;
     window.addGroup = addGroup;
     window.deleteGroup = deleteGroup;
+    window.updateChatLink = updateChatLink;
 
     checkSession();
     loadSections();
