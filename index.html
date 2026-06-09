@@ -203,6 +203,12 @@
             font-size: 0.9rem;
             font-weight: 500;
             cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chip:hover {
+            background: var(--primary-light);
+            color: var(--primary-dark);
         }
 
         .section-title {
@@ -268,6 +274,26 @@
             color: var(--text-gray);
             font-size: 0.75rem;
             margin: 12px 0;
+        }
+
+        .card-avatar {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-light);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            color: var(--primary);
+            font-size: 1.25rem;
+            overflow: hidden;
+        }
+
+        .card-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .loading {
@@ -485,6 +511,12 @@
             justify-content: center;
             font-size: 1rem;
             color: var(--primary);
+            overflow: hidden;
+        }
+        .favorite-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .favorite-info {
             flex: 1;
@@ -518,6 +550,9 @@
             border: 1px solid var(--border-light);
             border-radius: 12px;
             font-size: 1rem;
+        }
+        .group-modal-content {
+            max-width: 450px;
         }
         .footer {
             border-top: 1px solid var(--border-light);
@@ -752,13 +787,7 @@
                 <input type="text" id="searchInput" placeholder="Поиск по названию секции...">
                 <button id="searchBtn">Найти</button>
             </div>
-            <div class="chips">
-                <div class="chip" data-interest="бег">Бег</div>
-                <div class="chip" data-interest="шахматы">Шахматы</div>
-                <div class="chip" data-interest="танцы">Танцы</div>
-                <div class="chip" data-interest="карате">Карате</div>
-                <div class="chip" data-interest="вело">Вело</div>
-            </div>
+            <div id="chipsContainer" class="chips"></div>
         </div>
         <div>
             <div class="section-title">Секции и кружки рядом</div>
@@ -777,6 +806,21 @@
         <div id="sectionContainer"></div>
     </div>
 </main>
+
+<!-- Модальное окно для добавления группы -->
+<div id="groupModal" class="modal">
+    <div class="modal-content group-modal-content">
+        <h3 style="margin-bottom: 20px;">Добавить группу</h3>
+        <input type="text" id="groupAgeMin" placeholder="Мин. возраст (лет)">
+        <input type="text" id="groupAgeMax" placeholder="Макс. возраст (лет)">
+        <input type="text" id="groupSchedule" placeholder="Расписание (например: Пн/Ср 19:00)">
+        <input type="number" id="groupPrice" placeholder="Стоимость в месяц (руб)">
+        <div style="display: flex; gap: 12px; margin-top: 20px;">
+            <button id="saveGroupBtn" class="btn-primary" style="flex: 1;">Сохранить</button>
+            <button id="cancelGroupBtn" class="btn-outline" style="flex: 1;">Отмена</button>
+        </div>
+    </div>
+</div>
 
 <div id="authModal" class="modal">
     <div class="modal-content">
@@ -818,6 +862,43 @@
     let editingField = null;
     let currentSection = null;
     let editingGroupId = null;
+    let pendingGroupSectionId = null;
+
+    // Список интересов для рандомных чипсов
+    const allInterests = [
+        'Бег', 'Шахматы', 'Танцы', 'Карате', 'Вело', 'Йога', 'Футбол', 'Баскетбол',
+        'Теннис', 'Плавание', 'Лыжи', 'Сноуборд', 'Скейтборд', 'Ролики', 'Бокс',
+        'ММА', 'Кроссфит', 'Стретчинг', 'Пилатес', 'Фитнес', 'Скалолазание', 'Гольф'
+    ];
+
+    function getRandomChips() {
+        const shuffled = [...allInterests];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled.slice(0, 7);
+    }
+
+    function renderChips() {
+        const chipsContainer = document.getElementById('chipsContainer');
+        if (!chipsContainer) return;
+        const chips = getRandomChips();
+        chipsContainer.innerHTML = chips.map(interest => 
+            `<div class="chip" data-interest="${interest.toLowerCase()}">${interest}</div>`
+        ).join('');
+        
+        document.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                const interest = chip.getAttribute('data-interest');
+                if (interest && document.getElementById('searchInput')) {
+                    document.getElementById('searchInput').value = interest;
+                    currentSearchQuery = interest;
+                    loadSections(currentSearchQuery);
+                }
+            });
+        });
+    }
 
     const mainPage = document.getElementById('mainPage');
     const dashboard = document.getElementById('dashboard');
@@ -938,6 +1019,7 @@
         mainPage.style.display = 'block';
         dashboard.style.display = 'none';
         sectionPage.style.display = 'none';
+        renderChips();
         loadSections(currentSearchQuery);
     }
 
@@ -955,6 +1037,13 @@
         if (lower.includes('танц')) return '<i class="fas fa-music"></i>';
         if (lower.includes('карате')) return '<i class="fas fa-fist-raised"></i>';
         return '<i class="fas fa-location-dot"></i>';
+    }
+
+    function getAvatarHtml(section) {
+        if (section.cover_image) {
+            return `<img src="${section.cover_image}" alt="avatar">`;
+        }
+        return getIconForSection(section.name);
     }
 
     async function updateAvatar(file) {
@@ -1036,6 +1125,7 @@
             
             alert('Аватар обновлён!');
             loadSection(sectionId);
+            loadSections(currentSearchQuery);
             
         } catch (error) {
             console.error('Ошибка загрузки аватара:', error);
@@ -1076,16 +1166,25 @@
         return true;
     }
 
-    async function addGroup(sectionId) {
-        const ageMin = prompt('Минимальный возраст:');
-        const ageMax = prompt('Максимальный возраст:');
-        const schedule = prompt('Расписание (например: Пн/Ср 19:00):');
-        const price = prompt('Стоимость в месяц (руб):');
+    function showGroupModal(sectionId) {
+        pendingGroupSectionId = sectionId;
+        document.getElementById('groupAgeMin').value = '';
+        document.getElementById('groupAgeMax').value = '';
+        document.getElementById('groupSchedule').value = '';
+        document.getElementById('groupPrice').value = '';
+        document.getElementById('groupModal').classList.add('active');
+    }
+
+    async function saveGroupFromModal() {
+        const ageMin = document.getElementById('groupAgeMin').value;
+        const ageMax = document.getElementById('groupAgeMax').value;
+        const schedule = document.getElementById('groupSchedule').value;
+        const price = document.getElementById('groupPrice').value;
         
         const { data, error } = await supabaseClient
             .from('section_groups')
             .insert([{
-                section_id: sectionId,
+                section_id: pendingGroupSectionId,
                 age_min: parseInt(ageMin) || null,
                 age_max: parseInt(ageMax) || null,
                 schedule: schedule || '',
@@ -1098,11 +1197,14 @@
         if (error) {
             alert('Ошибка добавления: ' + error.message);
         } else {
-            if (currentSection && currentSection.id === sectionId) {
+            if (currentSection && currentSection.id === pendingGroupSectionId) {
                 currentSection.groups.push(data);
             }
-            loadSection(sectionId);
+            loadSection(pendingGroupSectionId);
         }
+        
+        document.getElementById('groupModal').classList.remove('active');
+        pendingGroupSectionId = null;
     }
 
     async function deleteGroup(groupId, sectionId) {
@@ -1527,7 +1629,7 @@
             })).then(sections => {
                 favoritesList.innerHTML = sections.filter(s => s).map(section => `
                     <div class="favorite-item" onclick="window.showSectionPage(${section.id})" style="cursor: pointer;">
-                        <div class="favorite-avatar">${getIconForSection(section.name)}</div>
+                        <div class="favorite-avatar">${getAvatarHtml(section)}</div>
                         <div class="favorite-info">
                             <div style="font-weight:600;">${escapeHtml(section.name)}</div>
                             <div style="font-size:0.7rem; color:var(--text-gray);">${escapeHtml(section.metro || '')}</div>
@@ -1629,7 +1731,7 @@
                         <div class="price-label" style="margin-bottom: 12px;">Стоимость указана за месяц занятий</div>
                         <div id="groupsContainer"></div>
                         <div class="add-group">
-                            <button class="btn-small" onclick="window.addGroup(${sectionId})">+ Добавить группу</button>
+                            <button class="btn-small" onclick="window.showGroupModal(${sectionId})">+ Добавить группу</button>
                         </div>
                         
                         <div class="individual-section">
@@ -1731,7 +1833,7 @@
             }
             sectionsContainer.innerHTML = sections.map(section => `
                 <div class="card" onclick="window.showSectionPage(${section.id})">
-                    <div class="card-icon">${getIconForSection(section.name)}</div>
+                    <div class="card-avatar">${getAvatarHtml(section)}</div>
                     <div class="card-title">${escapeHtml(section.name)}</div>
                     <div class="card-address">${escapeHtml(section.metro || 'Адрес не указан')}</div>
                     <div class="card-stats">${section.trainer_name ? escapeHtml(section.trainer_name) : ''}</div>
@@ -1764,9 +1866,13 @@
     const switchAuthMode = document.getElementById('switchAuthMode');
     const modalError = document.getElementById('modalError');
     const closeModal = document.getElementById('closeModal');
+    const groupModal = document.getElementById('groupModal');
+    const saveGroupBtn = document.getElementById('saveGroupBtn');
+    const cancelGroupBtn = document.getElementById('cancelGroupBtn');
 
     function openModal() { modal.classList.add('active'); modalError.textContent = ''; emailInput.value = ''; passwordInput.value = ''; }
     function closeModalFunc() { modal.classList.remove('active'); }
+    function closeGroupModal() { groupModal.classList.remove('active'); pendingGroupSectionId = null; }
     function switchMode() {
         isLoginMode = !isLoginMode;
         modalTitle.textContent = isLoginMode ? 'Вход' : 'Регистрация';
@@ -1840,16 +1946,6 @@
             loadSections(currentSearchQuery);
         }
     });
-    document.querySelectorAll('.chip').forEach(chip => {
-        chip.addEventListener('click', () => {
-            const interest = chip.getAttribute('data-interest');
-            if (interest && document.getElementById('searchInput')) {
-                document.getElementById('searchInput').value = interest;
-                currentSearchQuery = interest;
-                loadSections(currentSearchQuery);
-            }
-        });
-    });
     document.getElementById('logoBtn')?.addEventListener('click', showMainPage);
     document.getElementById('mainPageBtn')?.addEventListener('click', showMainPage);
     document.getElementById('profileNavBtn')?.addEventListener('click', () => {
@@ -1859,7 +1955,9 @@
     closeModal?.addEventListener('click', closeModalFunc);
     modalActionBtn?.addEventListener('click', handleAuth);
     switchAuthMode?.addEventListener('click', (e) => { e.preventDefault(); switchMode(); });
-    window.addEventListener('click', (e) => { if (e.target === modal) closeModalFunc(); });
+    window.addEventListener('click', (e) => { if (e.target === modal) closeModalFunc(); if (e.target === groupModal) closeGroupModal(); });
+    saveGroupBtn?.addEventListener('click', saveGroupFromModal);
+    cancelGroupBtn?.addEventListener('click', closeGroupModal);
     
     window.addFavorite = addFavorite;
     window.removeFavorite = removeFavorite;
@@ -1870,10 +1968,11 @@
     window.startEditSectionField = startEditSectionField;
     window.startEditGroupField = startEditGroupField;
     window.startEditIndividualPrice = startEditIndividualPrice;
-    window.addGroup = addGroup;
     window.deleteGroup = deleteGroup;
     window.updateChatLink = updateChatLink;
+    window.showGroupModal = showGroupModal;
 
+    renderChips();
     checkSession();
     loadSections();
 </script>
