@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Твоя среда — найди своих по интересам</title>
+    <title>Твоя среда — сообщества по интересам</title>
     <meta name="description" content="Твоя среда — сообщества по интересам и секции. Бег, шахматы, танцы, единоборства — находи единомышленников рядом.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -120,13 +120,195 @@
         .review-item { padding: 12px 0; border-bottom: 1px solid var(--border-light); }
         .review-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
         .review-avatar { width: 36px; height: 36px; background: var(--gray-bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.8rem; }
-        .community-card { background: white; border-radius: 24px; padding: 24px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); transition: all 0.25s ease; }
+        .community-card { background: white; border-radius: 24px; padding: 24px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); transition: all 0.25s ease; cursor: pointer; }
         .community-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
         .community-avatar { width: 64px; height: 64px; background: var(--primary-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; color: var(--primary); font-size: 2rem; overflow: hidden; }
         .community-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .community-name { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
         .community-desc { font-size: 0.8rem; color: var(--text-gray); margin-bottom: 12px; line-height: 1.4; }
         .community-stats { display: flex; gap: 16px; margin-bottom: 16px; font-size: 0.7rem; color: var(--text-gray); }
+        
+        /* Страница сообщества */
+        .community-profile-page { display: none; }
+        .community-header {
+            background: white;
+            border-radius: 32px;
+            padding: 32px;
+            margin: 24px 0;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+        }
+        .community-header-content {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .community-header-avatar {
+            width: 100px;
+            height: 100px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--primary);
+        }
+        .community-header-info {
+            flex: 1;
+        }
+        .community-header-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .community-tabs {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-light);
+            margin-bottom: 24px;
+            background: white;
+            border-radius: 60px;
+            padding: 4px;
+            width: fit-content;
+        }
+        .community-tab {
+            padding: 10px 24px;
+            border-radius: 60px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-gray);
+        }
+        .community-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+        .community-tab-content {
+            display: none;
+        }
+        .community-tab-content.active {
+            display: block;
+        }
+        .forum-topic {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .forum-topic:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        .forum-topic-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        .forum-topic-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 0.7rem;
+            color: var(--text-gray);
+        }
+        .event-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .event-date {
+            background: var(--primary-light);
+            border-radius: 16px;
+            padding: 12px 20px;
+            text-align: center;
+            min-width: 100px;
+        }
+        .event-day {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .event-month {
+            font-size: 0.7rem;
+            color: var(--text-gray);
+        }
+        .event-info {
+            flex: 1;
+        }
+        .event-title {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .event-location {
+            font-size: 0.7rem;
+            color: var(--text-gray);
+        }
+        .chat-message {
+            background: white;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            display: flex;
+            gap: 12px;
+        }
+        .chat-message-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        .chat-message-content {
+            flex: 1;
+        }
+        .chat-message-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+        .chat-message-text {
+            font-size: 0.85rem;
+            color: var(--text-dark);
+        }
+        .chat-message-time {
+            font-size: 0.65rem;
+            color: var(--text-gray);
+            margin-top: 4px;
+        }
+        .chat-input {
+            background: white;
+            border-radius: 60px;
+            padding: 8px 8px 8px 20px;
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            border: 1px solid var(--border-light);
+        }
+        .chat-input input {
+            flex: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            padding: 10px 0;
+        }
+        
         @media (max-width: 900px) { .dashboard-grid, .section-profile { grid-template-columns: 1fr; } .container { padding: 0 16px; } .hero h1 { font-size: 2rem; } .header-inner { flex-direction: column; align-items: flex-start; } .nav { width: 100%; justify-content: space-between; } }
         .hidden-init { display: none; }
     </style>
@@ -150,7 +332,7 @@
 </div>
 
 <main>
-    <!-- Страница сообществ -->
+    <!-- Страница сообществ (список) -->
     <div id="communitiesPage" class="container hidden-init">
         <div class="hero">
             <h1>Сообщества по интересам</h1>
@@ -159,13 +341,17 @@
                 <input type="text" id="communitiesSearchInput" placeholder="Поиск сообщества...">
                 <button id="communitiesSearchBtn">Найти</button>
             </div>
-            <div id="communitiesChipsContainer" class="chips"></div>
         </div>
         <div>
             <div class="section-title">Популярные сообщества</div>
             <div class="section-sub">Общайтесь, делитесь опытом, находите единомышленников — вступайте в чаты MAX</div>
             <div id="communitiesContainer" class="grid-3"></div>
         </div>
+    </div>
+
+    <!-- Страница отдельного сообщества -->
+    <div id="communityPage" class="container hidden-init">
+        <div id="communityContainer"></div>
     </div>
 
     <!-- Страница секций (главная) -->
@@ -224,41 +410,24 @@
     let currentPage = 'main';
     let currentSectionId = null;
     let currentCommunitiesSearchQuery = '';
+    let currentCommunityId = null;
+    let currentCommunityTab = 'chat';
 
     // Тестовые данные для сообществ
     const communitiesData = [
-        { id: 1, name: 'Бег в Москве', description: 'Обсуждаем маршруты, делимся результатами, организуем совместные пробежки по паркам и набережным', members: 2340, events: 12, icon: '🏃', chatLink: 'https://max.ru/join/running_msk' },
-        { id: 2, name: 'Шахматы в парках', description: 'Любители шахмат встречаются в городских парках, проводят турниры и учат новичков', members: 890, events: 5, icon: '♟️', chatLink: 'https://max.ru/join/chess' },
-        { id: 3, name: 'Танцы для взрослых', description: 'Сальса, бачата, кизомба, хастл. Ищем партнёров, обсуждаем мастер-классы и вечеринки', members: 1520, events: 8, icon: '💃', chatLink: 'https://max.ru/join/dance' },
-        { id: 4, name: 'Единоборства ЮЗАО', description: 'Карате, кудо, дзюдо, бокс. Тренировки, соревнования, обмен опытом', members: 670, events: 4, icon: '🥋', chatLink: 'https://max.ru/join/martial' },
-        { id: 5, name: 'Велосипед и город', description: 'Велопрогулки по Москве, велоэкскурсии, обсуждение маршрутов и ремонт велосипедов', members: 1120, events: 9, icon: '🚴', chatLink: 'https://max.ru/join/bike' },
-        { id: 6, name: 'Театр любителей', description: 'Студенческие постановки, читки пьес, театральные мастер-классы и обсуждение спектаклей', members: 430, events: 3, icon: '🎭', chatLink: 'https://max.ru/join/theater' },
-        { id: 7, name: 'Йога и медитация', description: 'Практики осознанности, утренние занятия в парках, обмен техниками и советами', members: 2100, events: 15, icon: '🧘', chatLink: 'https://max.ru/join/yoga' },
-        { id: 8, name: 'Фотографы Москвы', description: 'Фотопрогулки, обсуждение техники, портфолио и совместные проекты', members: 1850, events: 7, icon: '📷', chatLink: 'https://max.ru/join/photo' },
-        { id: 9, name: 'Книжный клуб', description: 'Обсуждаем прочитанное, делимся рекомендациями, встречаемся в библиотеках и кафе', members: 760, events: 6, icon: '📚', chatLink: 'https://max.ru/join/books' }
+        { id: 1, name: 'Бег в Москве', description: 'Обсуждаем маршруты, делимся результатами, организуем совместные пробежки по паркам и набережным', members: 2340, events: 12, icon: '🏃', chatLink: 'https://max.ru/join/running_msk', chatMessages: [
+            { user: 'Анна', avatar: 'А', text: 'Всем привет! Кто завтра бежит в Сокольниках?', time: '10:45' },
+            { user: 'Максим', avatar: 'М', text: 'Я планирую в 8 утра, присоединяйся!', time: '11:20' }
+        ], topics: [
+            { title: 'Лучшие маршруты для пробежки в центре', author: 'Дмитрий', replies: 12, views: 45, lastActivity: '2 часа назад' },
+            { title: 'Как подготовиться к полумарафону за месяц', author: 'Елена', replies: 8, views: 32, lastActivity: 'вчера' }
+        ], events: [
+            { date: '15 июня', day: '15', month: 'июня', title: 'Утренняя пробежка в Сокольниках', location: 'Сокольники, главный вход', time: '08:00' },
+            { date: '22 июня', day: '22', month: 'июня', title: 'Парковый забег на 5 км', location: 'Парк Горького', time: '10:00' }
+        ] },
+        { id: 2, name: 'Шахматы в парках', description: 'Любители шахмат встречаются в городских парках, проводят турниры и учат новичков', members: 890, events: 5, icon: '♟️', chatLink: 'https://max.ru/join/chess', chatMessages: [], topics: [], events: [] },
+        { id: 3, name: 'Танцы для взрослых', description: 'Сальса, бачата, кизомба, хастл. Ищем партнёров, обсуждаем мастер-классы и вечеринки', members: 1520, events: 8, icon: '💃', chatLink: 'https://max.ru/join/dance', chatMessages: [], topics: [], events: [] }
     ];
-
-    function getRandomCommunitiesChips() {
-        const chips = communitiesData.map(c => c.name).slice(0, 7);
-        return chips;
-    }
-
-    function renderCommunitiesChips() {
-        const chipsContainer = document.getElementById('communitiesChipsContainer');
-        if (!chipsContainer) return;
-        const chips = getRandomCommunitiesChips();
-        chipsContainer.innerHTML = chips.map(name => `<div class="chip" data-community="${name.toLowerCase()}">${name}</div>`).join('');
-        document.querySelectorAll('#communitiesChipsContainer .chip').forEach(chip => {
-            chip.addEventListener('click', () => {
-                const interest = chip.getAttribute('data-community');
-                if (interest && document.getElementById('communitiesSearchInput')) {
-                    document.getElementById('communitiesSearchInput').value = interest;
-                    currentCommunitiesSearchQuery = interest;
-                    loadCommunities(currentCommunitiesSearchQuery);
-                }
-            });
-        });
-    }
 
     function loadCommunities(searchQuery = '') {
         const container = document.getElementById('communitiesContainer');
@@ -276,7 +445,7 @@
         }
         
         container.innerHTML = filtered.map(community => `
-            <div class="community-card">
+            <div class="community-card" onclick="window.showCommunityPage(${community.id})">
                 <div class="community-avatar">
                     <span style="font-size: 2rem;">${community.icon}</span>
                 </div>
@@ -286,21 +455,135 @@
                     <span><i class="fas fa-users"></i> ${community.members} участников</span>
                     <span><i class="fas fa-calendar-alt"></i> ${community.events} событий</span>
                 </div>
-                <a href="${community.chatLink}" target="_blank" class="btn-max" style="display: inline-block; margin-top: 8px;"><i class="fab fa-telegram-plane"></i> Вступить в MAX-чат →</a>
+                <a href="${community.chatLink}" target="_blank" class="btn-max" style="display: inline-block; margin-top: 8px;" onclick="event.stopPropagation()"><i class="fab fa-telegram-plane"></i> Вступить в MAX-чат →</a>
             </div>
         `).join('');
+    }
+
+    function showCommunityPage(communityId) {
+        currentCommunityId = communityId;
+        currentCommunityTab = 'chat';
+        currentPage = 'community';
+        saveState();
+        
+        const community = communitiesData.find(c => c.id === communityId);
+        if (!community) return;
+        
+        document.getElementById('communitiesPage').style.display = 'none';
+        document.getElementById('mainPage').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'none';
+        document.getElementById('sectionPage').style.display = 'none';
+        document.getElementById('communityPage').style.display = 'block';
+        
+        renderCommunityPage(community);
+    }
+
+    function renderCommunityPage(community) {
+        const container = document.getElementById('communityContainer');
+        if (!container) return;
+        
+        const chatMessages = community.chatMessages || [];
+        const topics = community.topics || [];
+        const events = community.events || [];
+        
+        container.innerHTML = `
+            <div class="community-header">
+                <div class="community-header-content">
+                    <div class="community-header-avatar">
+                        <span style="font-size: 3rem;">${community.icon}</span>
+                    </div>
+                    <div class="community-header-info">
+                        <div class="community-header-name">${escapeHtml(community.name)}</div>
+                        <div style="color: var(--text-gray); margin-bottom: 16px;">${escapeHtml(community.description)}</div>
+                        <div style="display: flex; gap: 24px; flex-wrap: wrap;">
+                            <span><i class="fas fa-users"></i> ${community.members} участников</span>
+                            <span><i class="fas fa-calendar-alt"></i> ${community.events} событий</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="community-tabs">
+                <div class="community-tab ${currentCommunityTab === 'chat' ? 'active' : ''}" data-tab="chat">💬 Чат</div>
+                <div class="community-tab ${currentCommunityTab === 'topics' ? 'active' : ''}" data-tab="topics">📝 Темы</div>
+                <div class="community-tab ${currentCommunityTab === 'events' ? 'active' : ''}" data-tab="events">🎉 События</div>
+            </div>
+            
+            <div id="communityTabChat" class="community-tab-content ${currentCommunityTab === 'chat' ? 'active' : ''}">
+                <div style="background: var(--primary-ultralight); border-radius: 20px; padding: 16px; margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                        <i class="fab fa-telegram-plane" style="font-size: 1.5rem; color: #1A73E8;"></i>
+                        <span>Быстрое общение происходит в чате MAX</span>
+                        <a href="${community.chatLink}" target="_blank" class="btn-max" style="margin-left: auto;">Перейти в MAX-чат →</a>
+                    </div>
+                </div>
+                <div class="chat-message-list">
+                    ${chatMessages.map(msg => `
+                        <div class="chat-message">
+                            <div class="chat-message-avatar">${escapeHtml(msg.avatar)}</div>
+                            <div class="chat-message-content">
+                                <div class="chat-message-name">${escapeHtml(msg.user)}</div>
+                                <div class="chat-message-text">${escapeHtml(msg.text)}</div>
+                                <div class="chat-message-time">${escapeHtml(msg.time)}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="chat-input">
+                    <input type="text" placeholder="Написать сообщение... (откроется MAX)" readonly>
+                    <button class="btn-primary" onclick="window.open('${community.chatLink}', '_blank')" style="border-radius: 60px; padding: 8px 20px;">Отправить</button>
+                </div>
+            </div>
+            
+            <div id="communityTabTopics" class="community-tab-content ${currentCommunityTab === 'topics' ? 'active' : ''}">
+                ${topics.length > 0 ? topics.map(topic => `
+                    <div class="forum-topic">
+                        <div class="forum-topic-title">${escapeHtml(topic.title)}</div>
+                        <div class="forum-topic-meta">
+                            <span><i class="fas fa-user"></i> ${escapeHtml(topic.author)}</span>
+                            <span><i class="fas fa-reply"></i> ${topic.replies} ответов</span>
+                            <span><i class="fas fa-eye"></i> ${topic.views} просмотров</span>
+                            <span><i class="fas fa-clock"></i> ${escapeHtml(topic.lastActivity)}</span>
+                        </div>
+                    </div>
+                `).join('') : '<div class="loading">Пока нет тем. Будьте первым!</div>'}
+                <button class="btn-outline" style="margin-top: 20px; width: 100%;">+ Создать новую тему</button>
+            </div>
+            
+            <div id="communityTabEvents" class="community-tab-content ${currentCommunityTab === 'events' ? 'active' : ''}">
+                ${events.length > 0 ? events.map(event => `
+                    <div class="event-card">
+                        <div class="event-date">
+                            <div class="event-day">${escapeHtml(event.day)}</div>
+                            <div class="event-month">${escapeHtml(event.month)}</div>
+                        </div>
+                        <div class="event-info">
+                            <div class="event-title">${escapeHtml(event.title)}</div>
+                            <div class="event-location"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(event.location)} • ${escapeHtml(event.time)}</div>
+                        </div>
+                        <button class="btn-outline" style="padding: 6px 16px;">Пойду →</button>
+                    </div>
+                `).join('') : '<div class="loading">Пока нет событий. Следите за обновлениями!</div>'}
+                <button class="btn-outline" style="margin-top: 20px; width: 100%;">+ Предложить событие</button>
+            </div>
+        `;
+        
+        document.querySelectorAll('.community-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.getAttribute('data-tab');
+                currentCommunityTab = tabName;
+                renderCommunityPage(community);
+            });
+        });
     }
 
     function normalizeSearchQuery(query) {
         if (!query) return '';
         const lower = query.toLowerCase();
         const stems = {
-            'бег': 'бег', 'бега': 'бег', 'бегу': 'бег', 'бегом': 'бег', 'беге': 'бег',
-            'шахмат': 'шахмат', 'шахматы': 'шахмат', 'шахматам': 'шахмат',
-            'танц': 'танц', 'танцы': 'танц', 'танцев': 'танц', 'танцам': 'танц', 'танцами': 'танц', 'танцах': 'танц',
-            'карате': 'карате', 'кудо': 'кудо', 'вело': 'вело', 'велосипед': 'вело',
-            'йога': 'йога', 'футбол': 'футбол', 'баскетбол': 'баскетбол', 'теннис': 'теннис',
-            'плавание': 'плаван', 'лыжи': 'лыж', 'бокс': 'бокс', 'кроссфит': 'кроссфит'
+            'бег': 'бег', 'шахмат': 'шахмат', 'шахматы': 'шахмат',
+            'танц': 'танц', 'танцы': 'танц', 'карате': 'карате',
+            'кудо': 'кудо', 'вело': 'вело', 'йога': 'йога'
         };
         for (const [word, stem] of Object.entries(stems)) {
             if (lower.includes(word)) return stem;
@@ -352,14 +635,22 @@
         sessionStorage.setItem('currentPage', currentPage);
         if (currentSectionId) sessionStorage.setItem('currentSectionId', currentSectionId);
         else sessionStorage.removeItem('currentSectionId');
+        if (currentCommunityId) sessionStorage.setItem('currentCommunityId', currentCommunityId);
+        else sessionStorage.removeItem('currentCommunityId');
+        if (currentCommunityTab) sessionStorage.setItem('currentCommunityTab', currentCommunityTab);
     }
 
     async function restoreState() {
         const savedPage = sessionStorage.getItem('currentPage');
         const savedSectionId = sessionStorage.getItem('currentSectionId');
+        const savedCommunityId = sessionStorage.getItem('currentCommunityId');
+        const savedCommunityTab = sessionStorage.getItem('currentCommunityTab');
         
         if (savedPage === 'communities') {
             showCommunitiesPage();
+        } else if (savedPage === 'community' && savedCommunityId) {
+            currentCommunityTab = savedCommunityTab || 'chat';
+            showCommunityPage(parseInt(savedCommunityId));
         } else if (savedPage === 'dashboard' && currentUser) {
             showDashboard();
         } else if (savedPage === 'section' && savedSectionId) {
@@ -369,24 +660,24 @@
         }
     }
 
+    function showCommunitiesPage() {
+        currentPage = 'communities';
+        currentCommunityId = null;
+        saveState();
+        document.getElementById('communitiesPage').style.display = 'block';
+        document.getElementById('mainPage').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'none';
+        document.getElementById('sectionPage').style.display = 'none';
+        document.getElementById('communityPage').style.display = 'none';
+        loadCommunities(currentCommunitiesSearchQuery);
+    }
+
     const communitiesPage = document.getElementById('communitiesPage');
     const mainPage = document.getElementById('mainPage');
     const dashboard = document.getElementById('dashboard');
     const sectionPage = document.getElementById('sectionPage');
     const sectionsContainer = document.getElementById('sectionsContainer');
     const authSection = document.getElementById('authSection');
-
-    function showCommunitiesPage() {
-        currentPage = 'communities';
-        currentSectionId = null;
-        saveState();
-        communitiesPage.style.display = 'block';
-        mainPage.style.display = 'none';
-        dashboard.style.display = 'none';
-        sectionPage.style.display = 'none';
-        renderCommunitiesChips();
-        loadCommunities(currentCommunitiesSearchQuery);
-    }
 
     async function updateProfileField(field, value) { if (!currentUser) return false; const updateData = {}; updateData[field] = value; const { error } = await supabaseClient.from('profiles').update(updateData).eq('id', currentUser.id); if (error) { console.error('Ошибка обновления:', error); return false; } return true; }
 
@@ -402,19 +693,15 @@
 
     async function toggleStatus() { if (!currentUserProfile) return; const newStatus = currentUserProfile.status === 'online' ? 'offline' : 'online'; await updateProfileField('status', newStatus); currentUserProfile.status = newStatus; renderDashboard(); }
 
-    function showDashboard() { currentPage = 'dashboard'; currentSectionId = null; saveState(); communitiesPage.style.display = 'none'; mainPage.style.display = 'none'; dashboard.style.display = 'block'; sectionPage.style.display = 'none'; renderDashboard(); }
+    function showDashboard() { currentPage = 'dashboard'; currentSectionId = null; saveState(); document.getElementById('communitiesPage').style.display = 'none'; document.getElementById('mainPage').style.display = 'none'; dashboard.style.display = 'block'; document.getElementById('sectionPage').style.display = 'none'; document.getElementById('communityPage').style.display = 'none'; renderDashboard(); }
 
-    function showMainPage() { currentPage = 'main'; currentSectionId = null; saveState(); communitiesPage.style.display = 'none'; mainPage.style.display = 'block'; dashboard.style.display = 'none'; sectionPage.style.display = 'none'; renderChips(); loadSections(currentSearchQuery); }
+    function showMainPage() { currentPage = 'main'; currentSectionId = null; saveState(); document.getElementById('communitiesPage').style.display = 'none'; mainPage.style.display = 'block'; dashboard.style.display = 'none'; document.getElementById('sectionPage').style.display = 'none'; document.getElementById('communityPage').style.display = 'none'; renderChips(); loadSections(currentSearchQuery); }
 
-    async function showSectionPage(sectionId) { currentPage = 'section'; currentSectionId = sectionId; saveState(); communitiesPage.style.display = 'none'; mainPage.style.display = 'none'; dashboard.style.display = 'none'; sectionPage.style.display = 'block'; await loadSection(sectionId); }
+    async function showSectionPage(sectionId) { currentPage = 'section'; currentSectionId = sectionId; saveState(); document.getElementById('communitiesPage').style.display = 'none'; mainPage.style.display = 'none'; dashboard.style.display = 'none'; sectionPage.style.display = 'block'; document.getElementById('communityPage').style.display = 'none'; await loadSection(sectionId); }
 
     function getIconForSection(name) { const lower = name.toLowerCase(); if (lower.includes('бег')) return '<i class="fas fa-running"></i>'; if (lower.includes('шахмат')) return '<i class="fas fa-chess"></i>'; if (lower.includes('танц')) return '<i class="fas fa-music"></i>'; if (lower.includes('карате')) return '<i class="fas fa-fist-raised"></i>'; if (lower.includes('кудо')) return '<i class="fas fa-fist-raised"></i>'; return '<i class="fas fa-location-dot"></i>'; }
 
     function getAvatarHtml(section) { if (section.cover_image) return `<img src="${section.cover_image}" alt="avatar">`; return getIconForSection(section.name); }
-
-    async function deleteOldAvatar(avatarUrl) { if (!avatarUrl) return; try { const fileName = avatarUrl.split('/section-avatars/').pop(); if (fileName) await supabaseClient.storage.from('section-avatars').remove([fileName]); } catch (error) { console.error('Ошибка удаления старого аватара:', error); } }
-
-    function compressImage(file, quality = 0.7) { return new Promise((resolve) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = (e) => { const img = new Image(); img.src = e.target.result; img.onload = () => { const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d'); const maxSize = 400; let width = img.width; let height = img.height; if (width > height) { if (width > maxSize) { height = (height * maxSize) / width; width = maxSize; } } else { if (height > maxSize) { width = (width * maxSize) / height; height = maxSize; } } canvas.width = width; canvas.height = height; ctx.drawImage(img, 0, 0, width, height); canvas.toBlob((blob) => { resolve(blob); }, 'image/jpeg', quality); }; }; }); }
 
     function showCropModal(file, callback) { currentCropFile = file; currentCropCallback = callback; const imageUrl = URL.createObjectURL(file); const imgElement = document.getElementById('cropImage'); imgElement.src = imageUrl; const modal = document.getElementById('cropModal'); modal.classList.add('active'); setTimeout(() => { if (cropper) cropper.destroy(); cropper = new Cropper(imgElement, { aspectRatio: 1, viewMode: 1, dragMode: 'move', autoCropArea: 1, cropBoxMovable: true, cropBoxResizable: true, background: false }); }, 100); }
 
@@ -490,6 +777,7 @@
     cancelGroupBtn?.addEventListener('click', closeGroupModal);
     
     window.addFavorite = addFavorite; window.removeFavorite = removeFavorite; window.toggleStatus = toggleStatus; window.startEditField = startEditField; window.startEditInterest = startEditInterest; window.showSectionPage = showSectionPage; window.startEditSectionField = startEditSectionField; window.startEditGroupField = startEditGroupField; window.startEditIndividualPrice = startEditIndividualPrice; window.deleteGroup = deleteGroup; window.updateChatLink = updateChatLink; window.showGroupModal = showGroupModal;
+    window.showCommunityPage = showCommunityPage;
 
     document.querySelectorAll('.hidden-init').forEach(el => el.classList.remove('hidden-init'));
     renderChips();
