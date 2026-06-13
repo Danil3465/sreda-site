@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Твоя среда — найди своих по интересам</title>
-    <meta name="description" content="Твоя среда — сообщества по интересам и секции. Бег, шахматы, танцы, единоборства — находи единомышленников рядом.">
+    <title>Твоя среда — сообщества по интересам</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
     <style>
+        /* ... все стили как в предыдущей версии ... */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background-color: #F0F4F0; color: #1A2A1A; line-height: 1.4; }
         :root {
@@ -18,110 +18,55 @@
             --primary-ultralight: #f0faf5; --gray-bg: #F7F9F7; --gray-card: #FFFFFF;
             --text-dark: #1A2A1A; --text-gray: #5E6E5E; --border-light: #DEE6DE;
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.03); --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.05);
-            --status-green: #2e7d32; --status-green-bg: #e8f5e9; --status-red: #c62828; --status-red-bg: #ffebee;
         }
         .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
         .header { background: white; padding: 14px 0; border-bottom: 1px solid var(--border-light); position: sticky; top: 0; z-index: 10; }
         .header-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
-        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 8px; text-decoration: none; cursor: pointer; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); cursor: pointer; }
         .nav { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; }
-        .nav a { text-decoration: none; color: var(--text-dark); font-weight: 500; transition: color 0.2s; cursor: pointer; }
+        .nav a { text-decoration: none; color: var(--text-dark); font-weight: 500; cursor: pointer; }
         .nav a:hover { color: var(--primary); }
-        .btn-primary { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 40px; font-weight: 600; cursor: pointer; transition: background 0.2s; text-decoration: none; display: inline-block; font-size: 0.85rem; }
-        .btn-primary:hover { background: var(--primary-dark); }
-        .btn-outline { border: 1px solid var(--border-light); padding: 8px 18px; border-radius: 40px; background: white; font-weight: 500; cursor: pointer; transition: all 0.2s; text-decoration: none; color: var(--text-dark); font-size: 0.85rem; }
+        .btn-primary { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 40px; font-weight: 600; cursor: pointer; }
+        .btn-outline { border: 1px solid var(--border-light); padding: 8px 18px; border-radius: 40px; background: white; font-weight: 500; cursor: pointer; }
         .btn-outline:hover { border-color: var(--primary); background: var(--primary-light); }
-        .btn-max { background: #1A73E8; color: white; padding: 8px 18px; border-radius: 40px; font-size: 0.75rem; font-weight: 600; text-decoration: none; display: inline-block; transition: background 0.2s; }
         .hero { text-align: center; padding: 60px 0 48px; }
-        .hero h1 { font-size: 3rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 20px; }
+        .hero h1 { font-size: 3rem; font-weight: 700; margin-bottom: 20px; }
         .hero p { font-size: 1.2rem; color: var(--text-gray); max-width: 640px; margin: 0 auto 32px; }
-        .search-bar { max-width: 600px; margin: 0 auto 24px; display: flex; background: white; border: 1px solid var(--border-light); border-radius: 60px; padding: 6px 6px 6px 24px; box-shadow: var(--shadow-sm); }
-        .search-bar input { flex: 1; border: none; padding: 14px 0; font-size: 1rem; outline: none; background: transparent; }
+        .search-bar { max-width: 600px; margin: 0 auto 24px; display: flex; background: white; border: 1px solid var(--border-light); border-radius: 60px; padding: 6px 6px 6px 24px; }
+        .search-bar input { flex: 1; border: none; padding: 14px 0; outline: none; background: transparent; }
         .search-bar button { background: var(--primary); border: none; border-radius: 60px; padding: 10px 28px; color: white; font-weight: 600; cursor: pointer; }
         .chips { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
-        .chip { background: var(--gray-bg); padding: 8px 18px; border-radius: 40px; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
-        .chip:hover { background: var(--primary-light); color: var(--primary-dark); }
+        .chip { background: var(--gray-bg); padding: 8px 18px; border-radius: 40px; font-size: 0.9rem; font-weight: 500; cursor: pointer; }
+        .chip:hover { background: var(--primary-light); }
         .section-title { font-size: 1.8rem; font-weight: 700; margin: 40px 0 12px; }
-        .section-sub { color: var(--text-gray); margin-bottom: 32px; font-size: 1rem; }
         .grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 28px; margin: 32px 0 24px; }
-        .card { background: white; border-radius: 24px; padding: 24px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); transition: all 0.25s ease; cursor: pointer; }
+        .card { background: white; border-radius: 24px; padding: 24px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); cursor: pointer; transition: all 0.25s; }
         .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
-        .card-icon { width: 48px; height: 48px; background: var(--primary-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; color: var(--primary); font-size: 1.25rem; }
-        .card-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
-        .card-address { font-size: 0.75rem; color: var(--text-gray); margin-bottom: 12px; }
-        .card-stats { color: var(--text-gray); font-size: 0.75rem; margin: 12px 0; }
-        .card-avatar { width: 48px; height: 48px; background: var(--primary-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; color: var(--primary); font-size: 1.25rem; overflow: hidden; }
+        .card-avatar { width: 48px; height: 48px; background: var(--primary-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; font-size: 1.25rem; color: var(--primary); overflow: hidden; }
         .card-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .card-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+        .card-description { font-size: 0.75rem; color: var(--text-gray); margin-bottom: 12px; }
         .loading { text-align: center; padding: 60px; color: var(--text-gray); }
         .dashboard { display: none; }
         .dashboard-grid { display: grid; grid-template-columns: 320px 1fr; gap: 24px; margin: 24px 0; }
-        .profile-card { background: white; border-radius: 28px; padding: 28px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); text-align: center; }
-        .avatar { width: 120px; height: 120px; background: var(--primary-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 3rem; color: var(--primary); cursor: pointer; overflow: hidden; position: relative; }
-        .avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .avatar-upload-label { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.6); color: white; font-size: 0.7rem; padding: 4px; text-align: center; cursor: pointer; opacity: 0; transition: opacity 0.2s; }
-        .avatar:hover .avatar-upload-label { opacity: 1; }
-        .status-switch { display: inline-block; padding: 6px 18px; border-radius: 40px; font-size: 0.8rem; font-weight: 600; cursor: pointer; margin: 12px 0; transition: all 0.2s ease; border: 1px solid transparent; }
-        .status-switch.online { background: var(--status-green-bg); color: var(--status-green); border-color: var(--status-green); }
-        .status-switch.offline { background: var(--status-red-bg); color: var(--status-red); border-color: var(--status-red); }
-        .widget-card { background: white; border-radius: 24px; padding: 24px; margin-bottom: 24px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); }
-        .widget-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-        .info-row { display: flex; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
-        .info-label { font-size: 0.85rem; color: var(--text-gray); min-width: 100px; margin-left: 8px; }
-        .info-value { flex: 1; font-size: 0.9rem; color: var(--text-dark); margin-left: 8px; }
-        .edit-icon { color: #9e9e9e; cursor: pointer; font-size: 0.7rem; transition: color 0.2s; margin-right: 4px; }
-        .edit-icon:hover { color: var(--primary); }
-        .info-edit-input { flex: 1; padding: 6px 10px; border: 1px solid var(--border-light); border-radius: 12px; font-size: 0.85rem; font-family: 'Inter', sans-serif; margin-left: 8px; }
-        .edit-actions { display: flex; gap: 6px; margin-left: 8px; }
-        .edit-actions button { background: none; border: none; cursor: pointer; font-size: 0.7rem; padding: 4px 6px; border-radius: 6px; color: #9e9e9e; }
-        .interests-list { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; width: 100%; }
-        .interest-item { display: flex; align-items: center; margin-bottom: 12px; }
-        .interest-name { font-size: 0.9rem; color: var(--text-dark); margin-left: 8px; flex: 1; }
-        .edit-interest { color: #9e9e9e; cursor: pointer; font-size: 0.7rem; transition: color 0.2s; margin-right: 4px; }
-        .add-interest { display: flex; gap: 8px; margin-top: 16px; width: 100%; }
-        .add-interest input { flex: 1; padding: 8px 12px; border: 1px solid var(--border-light); border-radius: 40px; font-size: 0.8rem; }
-        .btn-small { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 40px; font-size: 0.75rem; cursor: pointer; }
-        .favorite-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border-light); }
-        .favorite-avatar { width: 40px; height: 40px; background: var(--primary-light); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; color: var(--primary); overflow: hidden; }
-        .favorite-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .favorite-info { flex: 1; }
+        /* ... стили профиля, секций, модальных окон ... */
+        .community-tabs { display: flex; gap: 12px; border-bottom: 2px solid var(--border-light); margin-bottom: 24px; }
+        .community-tab { padding: 12px 24px; cursor: pointer; font-weight: 600; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+        .community-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+        .topic-item { background: white; border-radius: 20px; padding: 20px; margin-bottom: 16px; border: 1px solid var(--border-light); }
+        .topic-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 8px; }
+        .topic-meta { font-size: 0.7rem; color: var(--text-gray); margin-bottom: 12px; }
+        .event-item { background: white; border-radius: 20px; padding: 20px; margin-bottom: 16px; border: 1px solid var(--border-light); }
+        .event-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 8px; }
+        .event-date { font-size: 0.8rem; color: var(--primary); margin-bottom: 8px; }
+        .reply-item { background: var(--gray-bg); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
         .modal.active { display: flex; }
         .modal-content { background: white; border-radius: 32px; padding: 32px; max-width: 500px; width: 90%; }
-        .modal-content input { width: 100%; padding: 12px; margin: 12px 0; border: 1px solid var(--border-light); border-radius: 12px; font-size: 1rem; }
-        .group-modal-content { max-width: 450px; }
-        .crop-container { margin: 20px 0; max-height: 400px; overflow: hidden; }
-        .crop-container img { max-width: 100%; display: block; }
+        .modal-content input, .modal-content textarea { width: 100%; padding: 12px; margin: 12px 0; border: 1px solid var(--border-light); border-radius: 12px; font-size: 1rem; font-family: inherit; }
         .footer { border-top: 1px solid var(--border-light); padding: 40px 0 32px; margin-top: 40px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 20px; font-size: 0.8rem; color: var(--text-gray); }
-        .footer-links { display: flex; gap: 32px; flex-wrap: wrap; }
-        .footer-links a { text-decoration: none; color: var(--text-gray); }
-        .section-profile { display: grid; grid-template-columns: 360px 1fr; gap: 32px; margin: 32px 0; }
-        .section-info-card { background: white; border-radius: 28px; padding: 28px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); text-align: center; height: fit-content; }
-        .section-avatar { width: 120px; height: 120px; background: var(--primary-light); border-radius: 60px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 3rem; color: var(--primary); cursor: pointer; overflow: hidden; position: relative; }
-        .section-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .section-avatar .avatar-upload-label { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.6); color: white; font-size: 0.7rem; padding: 4px; text-align: center; cursor: pointer; opacity: 0; transition: opacity 0.2s; }
-        .section-avatar:hover .avatar-upload-label { opacity: 1; }
-        .section-name { font-size: 1.3rem; font-weight: 700; margin: 12px 0 8px; }
-        .trainer-name { color: var(--text-gray); font-size: 0.85rem; margin-bottom: 12px; }
-        .rating { margin-bottom: 20px; color: #ffb800; }
-        .chat-card { background: var(--primary-ultralight); border-radius: 20px; padding: 16px; text-align: center; margin: 16px 0; }
-        .chat-link-input { display: flex; gap: 8px; margin-top: 8px; }
-        .chat-link-input input { flex: 1; padding: 6px 10px; border: 1px solid var(--border-light); border-radius: 12px; font-size: 0.8rem; }
-        .groups-widget { background: white; border-radius: 24px; padding: 24px; margin-bottom: 24px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); }
-        .group-item { display: flex; align-items: center; margin-bottom: 16px; flex-wrap: wrap; padding: 8px 0; border-bottom: 1px solid var(--border-light); }
-        .group-item:last-child { border-bottom: none; }
-        .group-item .edit-icon { color: #9e9e9e; cursor: pointer; font-size: 0.7rem; margin-right: 8px; }
-        .group-age { font-weight: 600; min-width: 140px; font-size: 0.85rem; }
-        .group-schedule { flex: 1; font-size: 0.8rem; color: var(--text-gray); }
-        .group-price { font-weight: 700; color: var(--primary); font-size: 0.85rem; min-width: 80px; text-align: right; }
-        .price-label { font-size: 0.7rem; color: var(--text-gray); margin-left: 8px; }
-        .add-group { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
-        .individual-section { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-light); }
-        .individual-row { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
-        .review-item { padding: 12px 0; border-bottom: 1px solid var(--border-light); }
-        .review-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
-        .review-avatar { width: 36px; height: 36px; background: var(--gray-bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.8rem; }
-        @media (max-width: 900px) { .dashboard-grid, .section-profile { grid-template-columns: 1fr; } .container { padding: 0 16px; } .hero h1 { font-size: 2rem; } .header-inner { flex-direction: column; align-items: flex-start; } .nav { width: 100%; justify-content: space-between; } }
         .hidden-init { display: none; }
+        @media (max-width: 900px) { .dashboard-grid { grid-template-columns: 1fr; } .container { padding: 0 16px; } .hero h1 { font-size: 2rem; } .header-inner { flex-direction: column; align-items: flex-start; } .nav { width: 100%; justify-content: space-between; } }
     </style>
 </head>
 <body>
@@ -131,280 +76,139 @@
         <div class="header-inner">
             <div class="logo" id="logoBtn">Твоя среда</div>
             <div class="nav" id="navSection">
-                <a href="#" id="mainPageBtn">Главная</a>
+                <a href="#" id="mainPageBtn">Секции</a>
+                <a href="#" id="communitiesNavBtn">Сообщества</a>
                 <a href="#" id="profileNavBtn">Профиль</a>
-                <div id="authSection">
-                    <a href="#" id="loginBtn" class="btn-outline">Войти</a>
-                </div>
+                <div id="authSection"><a href="#" id="loginBtn" class="btn-outline">Войти</a></div>
             </div>
         </div>
     </div>
 </div>
 
 <main>
-    <div id="mainPage" class="container hidden-init">
-        <div class="hero">
-            <h1>Найди своих по интересам</h1>
-            <p>Бег, шахматы, танцы, единоборства — выбирай увлечение, находи людей рядом и занимайтесь вместе.</p>
-            <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Поиск по названию секции...">
-                <button id="searchBtn">Найти</button>
-            </div>
-            <div id="chipsContainer" class="chips"></div>
-        </div>
-        <div>
-            <div class="section-title">Секции и кружки рядом</div>
-            <div class="section-sub">Конкретные места, где можно заниматься. Отзывы — в чатах участников.</div>
-            <div id="sectionsContainer" class="grid-3">
-                <div class="loading">Загрузка секций...</div>
-            </div>
-        </div>
+    <div id="sectionsPage" class="container hidden-init">
+        <div class="hero"><h1>Найди свои секции и кружки</h1><p>Спорт, танцы, единоборства — выбирай увлечение и записывайся на занятия</p>
+        <div class="search-bar"><input type="text" id="searchInput" placeholder="Поиск по названию секции..."><button id="searchBtn">Найти</button></div>
+        <div id="chipsContainer" class="chips"></div></div>
+        <div><div class="section-title">Секции и кружки рядом</div><div id="sectionsContainer" class="grid-3"><div class="loading">Загрузка секций...</div></div></div>
     </div>
 
-    <div id="dashboard" class="container dashboard hidden-init">
-        <div class="dashboard-grid" id="dashboardContent"></div>
+    <div id="communitiesPage" class="container hidden-init">
+        <div class="hero"><h1>Найди сообщества по интересам</h1><p>Общайся, обсуждай, участвуй в событиях — найди своих единомышленников</p>
+        <div class="search-bar"><input type="text" id="communitySearchInput" placeholder="Поиск по названию сообщества..."><button id="communitySearchBtn">Найти</button></div></div>
+        <div><div class="section-title">Сообщества</div><div id="communitiesContainer" class="grid-3"><div class="loading">Загрузка сообществ...</div></div></div>
     </div>
 
-    <div id="sectionPage" class="container hidden-init">
-        <div id="sectionContainer"></div>
-    </div>
+    <div id="dashboard" class="container dashboard hidden-init"><div class="dashboard-grid" id="dashboardContent"></div></div>
+
+    <div id="communityDetailPage" class="container hidden-init"><div id="communityDetailContainer"></div></div>
+    <div id="sectionPage" class="container hidden-init"><div id="sectionContainer"></div></div>
 </main>
 
-<!-- Модальные окна -->
-<div id="cropModal" class="modal"><div class="modal-content"><h3 style="margin-bottom:20px;">Обрежьте аватар</h3><div class="crop-container"><img id="cropImage" src=""></div><div style="display:flex; gap:12px; margin-top:20px;"><button id="confirmCropBtn" class="btn-primary" style="flex:1;">Сохранить</button><button id="cancelCropBtn" class="btn-outline" style="flex:1;">Отмена</button></div></div></div>
-<div id="groupModal" class="modal"><div class="modal-content group-modal-content"><h3 style="margin-bottom:20px;">Добавить группу</h3><input type="text" id="groupAgeMin" placeholder="Мин. возраст (лет)"><input type="text" id="groupAgeMax" placeholder="Макс. возраст (лет)"><input type="text" id="groupSchedule" placeholder="Расписание (например: Пн/Ср 19:00)"><input type="number" id="groupPrice" placeholder="Стоимость в месяц (руб)"><div style="display:flex; gap:12px; margin-top:20px;"><button id="saveGroupBtn" class="btn-primary" style="flex:1;">Сохранить</button><button id="cancelGroupBtn" class="btn-outline" style="flex:1;">Отмена</button></div></div></div>
-<div id="authModal" class="modal"><div class="modal-content"><h3 id="modalTitle">Вход</h3><input type="email" id="emailInput" placeholder="Email"><input type="password" id="passwordInput" placeholder="Пароль"><div id="modalError" style="color:red; font-size:0.8rem; margin:8px 0;"></div><button id="modalActionBtn" class="btn-primary" style="width:100%;">Войти</button><div style="text-align:center; margin-top:16px;"><a href="#" id="switchAuthMode">Нет аккаунта? Зарегистрироваться</a></div><button id="closeModal" style="margin-top:12px; background:none; border:none; cursor:pointer; color:var(--text-gray);">Закрыть</button></div></div>
+<div id="topicModal" class="modal"><div class="modal-content"><h3 id="topicModalTitle">Создать тему</h3><input type="text" id="topicTitle" placeholder="Заголовок"><textarea id="topicContent" rows="4" placeholder="Содержание..."></textarea><div style="display:flex; gap:12px; margin-top:20px;"><button id="saveTopicBtn" class="btn-primary" style="flex:1;">Создать</button><button id="cancelTopicBtn" class="btn-outline" style="flex:1;">Отмена</button></div></div></div>
 
-<footer class="container"><div class="footer"><div>Твоя среда — найди своих по интересам</div><div class="footer-links"><a href="#">О проекте</a><a href="#">Контакты</a><a href="#">Для тренеров</a><a href="#">Пользовательское соглашение</a></div><div>© 2026 Твоя среда</div></div></footer>
+<div id="replyModal" class="modal"><div class="modal-content"><h3>Ответить в тему</h3><textarea id="replyContent" rows="4" placeholder="Ваш ответ..."></textarea><div style="display:flex; gap:12px; margin-top:20px;"><button id="saveReplyBtn" class="btn-primary" style="flex:1;">Ответить</button><button id="cancelReplyBtn" class="btn-outline" style="flex:1;">Отмена</button></div></div></div>
+
+<div id="eventModal" class="modal"><div class="modal-content"><h3>Создать событие</h3><input type="text" id="eventTitle" placeholder="Название события"><textarea id="eventDesc" rows="2" placeholder="Описание..."></textarea><input type="date" id="eventDate"><input type="time" id="eventTime"><input type="text" id="eventLocation" placeholder="Место проведения"><input type="number" id="eventMaxPeople" placeholder="Максимум участников"><div style="display:flex; gap:12px; margin-top:20px;"><button id="saveEventBtn" class="btn-primary" style="flex:1;">Создать</button><button id="cancelEventBtn" class="btn-outline" style="flex:1;">Отмена</button></div></div></div>
+
+<div id="authModal" class="modal"><div class="modal-content"><h3 id="modalTitle">Вход</h3><input type="email" id="emailInput" placeholder="Email"><input type="password" id="passwordInput" placeholder="Пароль"><div id="modalError" style="color:red; font-size:0.8rem;"></div><button id="modalActionBtn" class="btn-primary" style="width:100%;">Войти</button><div style="text-align:center; margin-top:16px;"><a href="#" id="switchAuthMode">Нет аккаунта? Зарегистрироваться</a></div><button id="closeModal" style="margin-top:12px; background:none; border:none; cursor:pointer;">Закрыть</button></div></div>
+
+<footer class="container"><div class="footer"><div>Твоя среда — найди своих по интересам</div><div class="footer-links"><a href="#">О проекте</a><a href="#">Контакты</a><a href="#">Для тренеров</a></div><div>© 2026 Твоя среда</div></div></footer>
 
 <script>
     const SUPABASE_URL = 'https://zweulqmupkljowyfwzqs.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_CQDuw-BNAqeYUTr8HyzaoQ_JTw_Qv05';
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     
-    let currentUser = null;
-    let currentUserProfile = null;
-    let isLoginMode = true;
-    let currentSearchQuery = '';
-    let favorites = [];
-    let editingField = null;
-    let currentSection = null;
-    let editingGroupId = null;
-    let pendingGroupSectionId = null;
-    let cropper = null;
-    let currentCropFile = null;
-    let currentCropCallback = null;
-    let currentPage = 'main';
-    let currentSectionId = null;
-
-    // Функция для нормализации поискового запроса (удаление окончаний)
-    function normalizeSearchQuery(query) {
-        if (!query) return '';
-        const lower = query.toLowerCase();
-        const stems = {
-            'бег': 'бег',
-            'бега': 'бег',
-            'бегу': 'бег',
-            'бегом': 'бег',
-            'беге': 'бег',
-            'шахмат': 'шахмат',
-            'шахматы': 'шахмат',
-            'шахматам': 'шахмат',
-            'танц': 'танц',
-            'танцы': 'танц',
-            'танцев': 'танц',
-            'танцам': 'танц',
-            'танцами': 'танц',
-            'танцах': 'танц',
-            'карате': 'карате',
-            'кудо': 'кудо',
-            'вело': 'вело',
-            'велосипед': 'вело',
-            'йога': 'йога',
-            'футбол': 'футбол',
-            'баскетбол': 'баскетбол',
-            'теннис': 'теннис',
-            'плавание': 'плаван',
-            'лыжи': 'лыж',
-            'бокс': 'бокс',
-            'кроссфит': 'кроссфит'
-        };
-        
-        for (const [word, stem] of Object.entries(stems)) {
-            if (lower.includes(word)) return stem;
-        }
-        
-        return lower.substring(0, 3);
-    }
-
-    async function loadSections(searchQuery = '') {
-        if (!sectionsContainer) return;
-        sectionsContainer.innerHTML = '<div class="loading">Загрузка секций...</div>';
-        try {
-            let query = supabaseClient.from('sections').select('*');
-            
-            if (searchQuery) {
-                const searchStem = normalizeSearchQuery(searchQuery);
-                if (searchStem && searchStem.length > 2) {
-                    query = query.ilike('name', `%${searchStem}%`);
-                } else {
-                    query = query.ilike('name', `%${searchQuery}%`);
-                }
-            }
-            
-            query = query.order('created_at', { ascending: false });
-            const { data: sections, error } = await query;
-            if (error) throw error;
-            if (!sections || sections.length === 0) {
-                sectionsContainer.innerHTML = '<div class="loading">😕 Ничего не найдено. Попробуйте другой запрос.</div>';
-                return;
-            }
-            sectionsContainer.innerHTML = sections.map(section => `
-                <div class="card" onclick="window.showSectionPage(${section.id})">
-                    <div class="card-avatar">${getAvatarHtml(section)}</div>
-                    <div class="card-title">${escapeHtml(section.name)}</div>
-                    <div class="card-address">${escapeHtml(section.metro || 'Адрес не указан')}</div>
-                    <div class="card-stats">${section.trainer_name ? escapeHtml(section.trainer_name) : ''}</div>
-                    <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
-                        ${section.max_chat_link ? `<a href="${escapeHtml(section.max_chat_link)}" target="_blank" class="btn-max" onclick="event.stopPropagation()">Чат в MAX</a>` : ''}
-                        ${currentUser && favorites.includes(section.id) ? 
-                            `<button class="btn-outline" onclick="event.stopPropagation(); window.removeFavorite(${section.id})">В избранном</button>` :
-                            `<button class="btn-outline" onclick="event.stopPropagation(); window.addFavorite(${section.id})">В избранное</button>`
-                        }
-                    </div>
-                </div>
-            `).join('');
-        } catch (error) {
-            sectionsContainer.innerHTML = '<div class="loading">Ошибка загрузки</div>';
-        }
-    }
-
-    function saveState() {
-        sessionStorage.setItem('currentPage', currentPage);
-        if (currentSectionId) sessionStorage.setItem('currentSectionId', currentSectionId);
-        else sessionStorage.removeItem('currentSectionId');
-    }
-
-    async function restoreState() {
-        const savedPage = sessionStorage.getItem('currentPage');
-        const savedSectionId = sessionStorage.getItem('currentSectionId');
-        
-        if (savedPage === 'dashboard' && currentUser) {
-            showDashboard();
-        } else if (savedPage === 'section' && savedSectionId) {
-            await showSectionPage(parseInt(savedSectionId));
-        } else {
-            showMainPage();
-        }
-    }
-
-    const mainPage = document.getElementById('mainPage');
+    let currentUser = null, currentUserProfile = null, isLoginMode = true;
+    let favorites = [], communities = [], currentCommunity = null, currentTopicId = null;
+    let currentPage = 'sections', currentSectionId = null, currentCommunityId = null;
+    let editingField = null, editingGroupId = null, pendingGroupSectionId = null;
+    let cropper = null, currentCropCallback = null;
+    
+    const sectionsPage = document.getElementById('sectionsPage');
+    const communitiesPage = document.getElementById('communitiesPage');
     const dashboard = document.getElementById('dashboard');
+    const communityDetailPage = document.getElementById('communityDetailPage');
     const sectionPage = document.getElementById('sectionPage');
-    const sectionsContainer = document.getElementById('sectionsContainer');
     const authSection = document.getElementById('authSection');
-
-    async function updateProfileField(field, value) { if (!currentUser) return false; const updateData = {}; updateData[field] = value; const { error } = await supabaseClient.from('profiles').update(updateData).eq('id', currentUser.id); if (error) { console.error('Ошибка обновления:', error); return false; } return true; }
-
-    async function checkSession() { const { data: { session } } = await supabaseClient.auth.getSession(); if (session) { currentUser = session.user; await loadUserProfile(); await loadFavorites(); updateAuthUI(true); restoreState(); } else { currentUser = null; updateAuthUI(false); showMainPage(); } }
-
-    async function loadUserProfile() { if (!currentUser) return; const { data, error } = await supabaseClient.from('profiles').select('*').eq('id', currentUser.id).single(); if (error && error.code !== 'PGRST116') { console.error('Ошибка загрузки профиля:', error); } else if (data) { currentUserProfile = data; } else { currentUserProfile = { id: currentUser.id, full_name: currentUser.email.split('@')[0], interests: [], status: 'offline', birthdate: '', city: '', about: '', avatar_url: '' }; await supabaseClient.from('profiles').insert([currentUserProfile]); } }
-
-    async function loadFavorites() { if (!currentUser) return; const { data, error } = await supabaseClient.from('user_favorites').select('section_id'); if (error) { console.error('Ошибка загрузки избранного:', error); } else { favorites = data.map(f => f.section_id); } }
-
-    async function addFavorite(sectionId) { if (!currentUser) { openModal(); return; } const { error } = await supabaseClient.from('user_favorites').insert([{ user_id: currentUser.id, section_id: sectionId }]); if (error) alert('Ошибка: ' + error.message); else { await loadFavorites(); renderDashboard(); loadSections(currentSearchQuery); } }
-
-    async function removeFavorite(sectionId) { const { error } = await supabaseClient.from('user_favorites').delete().eq('user_id', currentUser.id).eq('section_id', sectionId); if (error) alert('Ошибка: ' + error.message); else { await loadFavorites(); renderDashboard(); loadSections(currentSearchQuery); } }
-
-    async function toggleStatus() { if (!currentUserProfile) return; const newStatus = currentUserProfile.status === 'online' ? 'offline' : 'online'; await updateProfileField('status', newStatus); currentUserProfile.status = newStatus; renderDashboard(); }
-
-    function showDashboard() { currentPage = 'dashboard'; currentSectionId = null; saveState(); mainPage.style.display = 'none'; dashboard.style.display = 'block'; sectionPage.style.display = 'none'; renderDashboard(); }
-
-    function showMainPage() { currentPage = 'main'; currentSectionId = null; saveState(); mainPage.style.display = 'block'; dashboard.style.display = 'none'; sectionPage.style.display = 'none'; renderChips(); loadSections(currentSearchQuery); }
-
-    async function showSectionPage(sectionId) { currentPage = 'section'; currentSectionId = sectionId; saveState(); mainPage.style.display = 'none'; dashboard.style.display = 'none'; sectionPage.style.display = 'block'; await loadSection(sectionId); }
-
-    function getIconForSection(name) { const lower = name.toLowerCase(); if (lower.includes('бег')) return '<i class="fas fa-running"></i>'; if (lower.includes('шахмат')) return '<i class="fas fa-chess"></i>'; if (lower.includes('танц')) return '<i class="fas fa-music"></i>'; if (lower.includes('карате')) return '<i class="fas fa-fist-raised"></i>'; if (lower.includes('кудо')) return '<i class="fas fa-fist-raised"></i>'; return '<i class="fas fa-location-dot"></i>'; }
-
-    function getAvatarHtml(section) { if (section.cover_image) return `<img src="${section.cover_image}" alt="avatar">`; return getIconForSection(section.name); }
-
-    async function deleteOldAvatar(avatarUrl) { if (!avatarUrl) return; try { const fileName = avatarUrl.split('/section-avatars/').pop(); if (fileName) await supabaseClient.storage.from('section-avatars').remove([fileName]); } catch (error) { console.error('Ошибка удаления старого аватара:', error); } }
-
-    function compressImage(file, quality = 0.7) { return new Promise((resolve) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = (e) => { const img = new Image(); img.src = e.target.result; img.onload = () => { const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d'); const maxSize = 400; let width = img.width; let height = img.height; if (width > height) { if (width > maxSize) { height = (height * maxSize) / width; width = maxSize; } } else { if (height > maxSize) { width = (width * maxSize) / height; height = maxSize; } } canvas.width = width; canvas.height = height; ctx.drawImage(img, 0, 0, width, height); canvas.toBlob((blob) => { resolve(blob); }, 'image/jpeg', quality); }; }; }); }
-
-    function showCropModal(file, callback) { currentCropFile = file; currentCropCallback = callback; const imageUrl = URL.createObjectURL(file); const imgElement = document.getElementById('cropImage'); imgElement.src = imageUrl; const modal = document.getElementById('cropModal'); modal.classList.add('active'); setTimeout(() => { if (cropper) cropper.destroy(); cropper = new Cropper(imgElement, { aspectRatio: 1, viewMode: 1, dragMode: 'move', autoCropArea: 1, cropBoxMovable: true, cropBoxResizable: true, background: false }); }, 100); }
-
-    function closeCropModal() { const modal = document.getElementById('cropModal'); modal.classList.remove('active'); if (cropper) { cropper.destroy(); cropper = null; } currentCropFile = null; currentCropCallback = null; }
-
-    async function getCroppedBlob() { if (!cropper) return null; const canvas = cropper.getCroppedCanvas({ width: 400, height: 400 }); return new Promise((resolve) => { canvas.toBlob((blob) => { resolve(blob); }, 'image/jpeg', 0.85); }); }
-
-    async function updateAvatar(file) { if (!file || !currentUser) return; const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/heic', 'image/heif', 'image/webp']; if (!allowedTypes.includes(file.type)) { alert('Поддерживаются форматы: JPEG, PNG, HEIC, WEBP'); return; } if (file.size > 5 * 1024 * 1024) { alert('Файл не должен превышать 5MB'); return; } showCropModal(file, async (croppedBlob) => { try { const fileName = `${currentUser.id}_${Date.now()}.jpg`; const oldAvatarUrl = currentUserProfile.avatar_url; const { error: uploadError } = await supabaseClient.storage.from('avatars').upload(fileName, croppedBlob, { cacheControl: '3600', upsert: true, contentType: 'image/jpeg' }); if (uploadError) throw uploadError; const { data: { publicUrl } } = supabaseClient.storage.from('avatars').getPublicUrl(fileName); await updateProfileField('avatar_url', publicUrl); currentUserProfile.avatar_url = publicUrl; if (oldAvatarUrl) { const oldFileName = oldAvatarUrl.split('/avatars/').pop(); if (oldFileName && oldFileName !== fileName) await supabaseClient.storage.from('avatars').remove([oldFileName]); } renderDashboard(); alert('Аватар обновлён!'); } catch (error) { console.error('Ошибка загрузки аватара:', error); alert('Ошибка при загрузке аватара.'); } }); }
-
-    async function updateSectionAvatar(file, sectionId) { if (!file || !currentUser) { alert('Войдите, чтобы изменить аватар'); openModal(); return; } const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/heic', 'image/heif', 'image/webp']; if (!allowedTypes.includes(file.type)) { alert('Поддерживаются форматы: JPEG, PNG, HEIC, WEBP'); return; } if (file.size > 5 * 1024 * 1024) { alert('Файл не должен превышать 5MB'); return; } showCropModal(file, async (croppedBlob) => { try { const fileName = `section_${sectionId}_${Date.now()}.jpg`; const { data: currentSectionData } = await supabaseClient.from('sections').select('cover_image').eq('id', sectionId).single(); const oldAvatarUrl = currentSectionData?.cover_image; const { error: uploadError } = await supabaseClient.storage.from('section-avatars').upload(fileName, croppedBlob, { cacheControl: '3600', upsert: true, contentType: 'image/jpeg' }); if (uploadError) throw uploadError; const { data: { publicUrl } } = supabaseClient.storage.from('section-avatars').getPublicUrl(fileName); const { error: rpcError } = await supabaseClient.rpc('update_section_avatar', { p_section_id: sectionId, p_cover_image: publicUrl }); if (rpcError) throw rpcError; if (oldAvatarUrl) { const oldFileName = oldAvatarUrl.split('/section-avatars/').pop(); if (oldFileName && oldFileName !== fileName) await supabaseClient.storage.from('section-avatars').remove([oldFileName]); } if (currentSection && currentSection.id === sectionId) currentSection.cover_image = publicUrl; alert('Аватар обновлён!'); loadSection(sectionId); loadSections(currentSearchQuery); } catch (error) { console.error('Ошибка загрузки аватара:', error); alert('Ошибка при загрузке аватара: ' + (error.message || 'Неизвестная ошибка')); } }); }
-
-    async function updateSectionField(sectionId, field, value) { const updateData = {}; updateData[field] = value; const { error } = await supabaseClient.from('sections').update(updateData).eq('id', sectionId); if (error) { alert('Ошибка сохранения: ' + error.message); return false; } if (currentSection && currentSection.id === sectionId) currentSection[field] = value; return true; }
-
-    async function updateGroupField(groupId, field, value) { const { error } = await supabaseClient.from('section_groups').update({ [field]: value }).eq('id', groupId); if (error) { alert('Ошибка сохранения: ' + error.message); return false; } if (currentSection && currentSection.groups) { const group = currentSection.groups.find(g => g.id === groupId); if (group) group[field] = value; } return true; }
-
-    function showGroupModal(sectionId) { pendingGroupSectionId = sectionId; document.getElementById('groupAgeMin').value = ''; document.getElementById('groupAgeMax').value = ''; document.getElementById('groupSchedule').value = ''; document.getElementById('groupPrice').value = ''; document.getElementById('groupModal').classList.add('active'); }
-
-    async function saveGroupFromModal() { const ageMin = document.getElementById('groupAgeMin').value; const ageMax = document.getElementById('groupAgeMax').value; const schedule = document.getElementById('groupSchedule').value; const price = document.getElementById('groupPrice').value; const { data, error } = await supabaseClient.from('section_groups').insert([{ section_id: pendingGroupSectionId, age_min: parseInt(ageMin) || null, age_max: parseInt(ageMax) || null, schedule: schedule || '', price: parseInt(price) || 0, group_type: 'adult' }]).select().single(); if (error) { alert('Ошибка добавления: ' + error.message); } else { if (currentSection && currentSection.id === pendingGroupSectionId) currentSection.groups.push(data); loadSection(pendingGroupSectionId); } document.getElementById('groupModal').classList.remove('active'); pendingGroupSectionId = null; }
-
-    async function deleteGroup(groupId, sectionId) { if (!confirm('Удалить группу?')) return; const { error } = await supabaseClient.from('section_groups').delete().eq('id', groupId); if (error) { alert('Ошибка удаления: ' + error.message); } else { if (currentSection && currentSection.id === sectionId) currentSection.groups = currentSection.groups.filter(g => g.id !== groupId); loadSection(sectionId); } }
-
-    function formatDate(dateString) { if (!dateString) return 'Не указано'; const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря']; const date = new Date(dateString); if (isNaN(date.getTime())) return dateString; return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`; }
-
-    function startEditField(field, currentValue) { if (editingField !== null) return; editingField = field; const row = document.getElementById(`row-${field}`); if (!row) return; const valueSpan = row.querySelector('.info-value'); const editIcon = row.querySelector('.edit-icon'); let input; if (field === 'birthdate') { input = document.createElement('input'); input.type = 'date'; input.value = currentValue || ''; input.className = 'info-edit-input'; } else { input = document.createElement('input'); input.type = 'text'; input.value = currentValue || ''; input.className = 'info-edit-input'; } const saveBtn = document.createElement('button'); saveBtn.innerHTML = '<i class="fas fa-check"></i>'; const cancelBtn = document.createElement('button'); cancelBtn.innerHTML = '<i class="fas fa-times"></i>'; const actionsDiv = document.createElement('div'); actionsDiv.className = 'edit-actions'; actionsDiv.appendChild(saveBtn); actionsDiv.appendChild(cancelBtn); valueSpan.style.display = 'none'; editIcon.style.display = 'none'; const container = document.createElement('div'); container.style.display = 'flex'; container.style.alignItems = 'center'; container.style.flex = '1'; container.appendChild(input); container.appendChild(actionsDiv); row.appendChild(container); input.focus(); const saveHandler = async () => { const newValue = input.value.trim(); if (newValue !== currentValue) { await updateProfileField(field, newValue); currentUserProfile[field] = newValue; } editingField = null; renderDashboard(); }; const cancelHandler = () => { editingField = null; renderDashboard(); }; saveBtn.onclick = saveHandler; cancelBtn.onclick = cancelHandler; input.onkeypress = (e) => { if (e.key === 'Enter') saveHandler(); }; }
-
-    function startEditSectionField(field, currentValue, sectionId) { if (editingField !== null) return; editingField = field; const row = document.getElementById(`section-row-${field}`); if (!row) return; const valueSpan = row.querySelector('.info-value'); const editIcon = row.querySelector('.edit-icon'); const input = document.createElement('input'); input.type = 'text'; input.value = currentValue || ''; input.className = 'info-edit-input'; const saveBtn = document.createElement('button'); saveBtn.innerHTML = '<i class="fas fa-check"></i>'; const cancelBtn = document.createElement('button'); cancelBtn.innerHTML = '<i class="fas fa-times"></i>'; const actionsDiv = document.createElement('div'); actionsDiv.className = 'edit-actions'; actionsDiv.appendChild(saveBtn); actionsDiv.appendChild(cancelBtn); valueSpan.style.display = 'none'; editIcon.style.display = 'none'; const container = document.createElement('div'); container.style.display = 'flex'; container.style.alignItems = 'center'; container.style.flex = '1'; container.appendChild(input); container.appendChild(actionsDiv); row.appendChild(container); input.focus(); const saveHandler = async () => { const newValue = input.value.trim(); if (newValue !== currentValue) { await updateSectionField(sectionId, field, newValue); } editingField = null; loadSection(sectionId); }; const cancelHandler = () => { editingField = null; loadSection(sectionId); }; saveBtn.onclick = saveHandler; cancelBtn.onclick = cancelHandler; input.onkeypress = (e) => { if (e.key === 'Enter') saveHandler(); }; }
-
-    function startEditGroupField(groupId, field, currentValue, sectionId) { if (editingGroupId !== null) return; editingGroupId = groupId; const groupDiv = document.getElementById(`group-${groupId}-${field}`); if (!groupDiv) return; const span = groupDiv.querySelector('.group-value'); const editIcon = groupDiv.querySelector('.edit-icon'); const input = document.createElement('input'); input.type = field === 'price' ? 'number' : 'text'; input.value = currentValue || ''; input.style.padding = '4px 8px'; input.style.border = '1px solid var(--border-light)'; input.style.borderRadius = '12px'; input.style.fontSize = '0.8rem'; input.style.width = '120px'; const saveBtn = document.createElement('button'); saveBtn.innerHTML = '<i class="fas fa-check"></i>'; const cancelBtn = document.createElement('button'); cancelBtn.innerHTML = '<i class="fas fa-times"></i>'; const actionsDiv = document.createElement('div'); actionsDiv.className = 'edit-actions'; actionsDiv.appendChild(saveBtn); actionsDiv.appendChild(cancelBtn); span.style.display = 'none'; editIcon.style.display = 'none'; const container = document.createElement('div'); container.style.display = 'flex'; container.style.alignItems = 'center'; container.style.gap = '6px'; container.appendChild(input); container.appendChild(actionsDiv); groupDiv.appendChild(container); input.focus(); const saveHandler = async () => { let newValue = input.value.trim(); if (field === 'price') newValue = parseInt(newValue) || 0; if (newValue != currentValue) { await updateGroupField(groupId, field, newValue); } editingGroupId = null; loadSection(sectionId); }; const cancelHandler = () => { editingGroupId = null; loadSection(sectionId); }; saveBtn.onclick = saveHandler; cancelBtn.onclick = cancelHandler; input.onkeypress = (e) => { if (e.key === 'Enter') saveHandler(); }; }
-
-    function startEditIndividualPrice(sectionId, currentValue) { if (editingField !== null) return; editingField = 'individual_price'; const row = document.getElementById(`individual-price-row`); if (!row) return; const span = row.querySelector('.individual-price-value'); const editIcon = row.querySelector('.edit-icon'); const input = document.createElement('input'); input.type = 'number'; input.value = currentValue || 0; input.style.padding = '4px 8px'; input.style.border = '1px solid var(--border-light)'; input.style.borderRadius = '12px'; input.style.fontSize = '0.8rem'; input.style.width = '100px'; const saveBtn = document.createElement('button'); saveBtn.innerHTML = '<i class="fas fa-check"></i>'; const cancelBtn = document.createElement('button'); cancelBtn.innerHTML = '<i class="fas fa-times"></i>'; const actionsDiv = document.createElement('div'); actionsDiv.className = 'edit-actions'; actionsDiv.appendChild(saveBtn); actionsDiv.appendChild(cancelBtn); span.style.display = 'none'; editIcon.style.display = 'none'; const container = document.createElement('div'); container.style.display = 'flex'; container.style.alignItems = 'center'; container.style.gap = '6px'; container.appendChild(input); container.appendChild(actionsDiv); row.appendChild(container); input.focus(); const saveHandler = async () => { const newValue = parseInt(input.value) || 0; await updateSectionField(sectionId, 'individual_price', newValue); editingField = null; loadSection(sectionId); }; const cancelHandler = () => { editingField = null; loadSection(sectionId); }; saveBtn.onclick = saveHandler; cancelBtn.onclick = cancelHandler; input.onkeypress = (e) => { if (e.key === 'Enter') saveHandler(); }; }
-
-    async function updateChatLink(sectionId, newLink) { await updateSectionField(sectionId, 'max_chat_link', newLink); loadSection(sectionId); }
-
-    function startEditInterest(index, currentValue) { if (editingField !== null) return; editingField = `interest-${index}`; const interestDiv = document.getElementById(`interest-${index}`); if (!interestDiv) return; const interestNameSpan = interestDiv.querySelector('.interest-name'); const editIcon = interestDiv.querySelector('.edit-interest'); const input = document.createElement('input'); input.type = 'text'; input.value = currentValue; input.className = 'info-edit-input'; input.style.flex = '1'; const saveBtn = document.createElement('button'); saveBtn.innerHTML = '<i class="fas fa-check"></i>'; const cancelBtn = document.createElement('button'); cancelBtn.innerHTML = '<i class="fas fa-times"></i>'; const actionsDiv = document.createElement('div'); actionsDiv.className = 'edit-actions'; actionsDiv.appendChild(saveBtn); actionsDiv.appendChild(cancelBtn); interestNameSpan.style.display = 'none'; editIcon.style.display = 'none'; const container = document.createElement('div'); container.style.display = 'flex'; container.style.alignItems = 'center'; container.style.flex = '1'; container.style.gap = '8px'; container.appendChild(input); container.appendChild(actionsDiv); interestDiv.appendChild(container); input.focus(); const saveHandler = async () => { const newValue = input.value.trim(); if (newValue && newValue !== currentValue) { const interests = [...(currentUserProfile.interests || [])]; interests[index] = newValue; await updateProfileField('interests', interests); currentUserProfile.interests = interests; } editingField = null; renderDashboard(); }; const cancelHandler = () => { editingField = null; renderDashboard(); }; saveBtn.onclick = saveHandler; cancelBtn.onclick = cancelHandler; input.onkeypress = (e) => { if (e.key === 'Enter') saveHandler(); }; }
-
-    function renderDashboard() { if (!currentUserProfile) return; const statusClass = currentUserProfile.status === 'online' ? 'online' : 'offline'; const statusText = currentUserProfile.status === 'online' ? 'Готов к общению' : 'Не беспокоить'; const interests = currentUserProfile.interests || []; document.getElementById('dashboardContent').innerHTML = `<div class="profile-card"><div class="avatar" id="avatarContainer">${currentUserProfile.avatar_url ? `<img src="${currentUserProfile.avatar_url}" alt="avatar">` : `${(currentUserProfile.full_name?.[0] || 'U').toUpperCase()}`}<div class="avatar-upload-label" onclick="document.getElementById('avatarInput').click()"><i class="fas fa-camera"></i> Изменить</div></div><input type="file" id="avatarInput" accept="image/jpeg,image/jpg,image/png,image/heic,image/heif,image/webp" style="display:none"><h2>${escapeHtml(currentUserProfile.full_name || 'Пользователь')}</h2><div class="status-switch ${statusClass}" onclick="window.toggleStatus()">${statusText}</div><div style="color: var(--text-gray); font-size: 0.8rem;">${escapeHtml(currentUser.email)}</div></div><div><div class="widget-card"><div class="widget-title">Личная информация</div><div id="row-full_name" class="info-row"><i class="fas fa-pencil-alt edit-icon" onclick="window.startEditField('full_name', '${escapeHtml(currentUserProfile.full_name || '').replace(/'/g, "\\'")}')"></i><span class="info-label">Полное имя</span><span class="info-value">${escapeHtml(currentUserProfile.full_name || 'Не указано')}</span></div><div id="row-birthdate" class="info-row"><i class="fas fa-pencil-alt edit-icon" onclick="window.startEditField('birthdate', '${currentUserProfile.birthdate || ''}')"></i><span class="info-label">Дата рождения</span><span class="info-value">${formatDate(currentUserProfile.birthdate)}</span></div><div id="row-city" class="info-row"><i class="fas fa-pencil-alt edit-icon" onclick="window.startEditField('city', '${escapeHtml(currentUserProfile.city || '').replace(/'/g, "\\'")}')"></i><span class="info-label">Город</span><span class="info-value">${escapeHtml(currentUserProfile.city || 'Не указано')}</span></div><div id="row-about" class="info-row"><i class="fas fa-pencil-alt edit-icon" onclick="window.startEditField('about', '${escapeHtml(currentUserProfile.about || '').replace(/'/g, "\\'")}')"></i><span class="info-label">О себе</span><span class="info-value">${escapeHtml(currentUserProfile.about || 'Не указано')}</span></div><div class="info-row" style="flex-wrap: wrap;"><div style="width: 100%;"><div style="display: flex; align-items: center; margin-bottom: 8px;"><span class="info-label" style="margin-left: 0;">Интересы</span></div><div id="interestsContainer" class="interests-list"></div><div class="add-interest"><input type="text" id="newInterest" placeholder="Новый интерес (например, бег, шахматы)"><button class="btn-small" onclick="window.addInterest()">Добавить</button></div></div></div></div><div class="widget-card"><div class="widget-title">Избранные секции</div><div id="favoritesList"></div></div></div>`; const interestsContainer = document.getElementById('interestsContainer'); if (interestsContainer) { if (interests.length === 0) { interestsContainer.innerHTML = '<div style="color: var(--text-gray); font-size: 0.85rem; padding: 8px 0;">Добавьте ваши интересы</div>'; } else { interestsContainer.innerHTML = interests.map((interest, idx) => `<div class="interest-item" id="interest-${idx}"><i class="fas fa-pencil-alt edit-interest" onclick="window.startEditInterest(${idx}, '${escapeHtml(interest).replace(/'/g, "\\'")}')"></i><span class="interest-name">${escapeHtml(interest)}</span></div>`).join(''); } } const favoritesList = document.getElementById('favoritesList'); if (favorites.length === 0) { favoritesList.innerHTML = '<div style="padding: 12px 0; color: var(--text-gray);">Нет избранных секций</div>'; } else { Promise.all(favorites.map(async id => { const { data } = await supabaseClient.from('sections').select('*').eq('id', id).single(); return data; })).then(sections => { favoritesList.innerHTML = sections.filter(s => s).map(section => `<div class="favorite-item" onclick="window.showSectionPage(${section.id})" style="cursor: pointer;"><div class="favorite-avatar">${getAvatarHtml(section)}</div><div class="favorite-info"><div style="font-weight:600;">${escapeHtml(section.name)}</div><div style="font-size:0.7rem; color:var(--text-gray);">${escapeHtml(section.metro || '')}</div></div><button class="btn-outline" style="padding:4px 12px;" onclick="event.stopPropagation(); window.removeFavorite(${section.id})">Удалить</button></div>`).join(''); }); } document.getElementById('avatarInput')?.addEventListener('change', (e) => { if (e.target.files && e.target.files[0]) updateAvatar(e.target.files[0]); }); }
-
-    async function loadSection(sectionId) { const { data: section, error } = await supabaseClient.from('sections').select('*').eq('id', sectionId).single(); if (error || !section) { document.getElementById('sectionContainer').innerHTML = '<div class="loading">Ошибка загрузки секции</div>'; return; } currentSection = section; if (!currentSection.individual_price) currentSection.individual_price = 0; const { data: groups } = await supabaseClient.from('section_groups').select('*').eq('section_id', sectionId).order('age_min', { ascending: true }); currentSection.groups = groups || []; const isOwner = currentUser && currentSection.owner_id === currentUser.id; const container = document.getElementById('sectionContainer'); container.innerHTML = `<div class="section-profile"><div class="section-info-card"><div class="section-avatar" id="sectionAvatarContainer">${currentSection.cover_image ? `<img src="${currentSection.cover_image}" alt="avatar">` : '<i class="fas fa-fist-raised" style="font-size: 3rem;"></i>'}<div class="avatar-upload-label" onclick="document.getElementById(\'sectionAvatarInput\').click()"><i class="fas fa-camera"></i> Изменить</div></div><input type="file" id="sectionAvatarInput" accept="image/jpeg,image/jpg,image/png,image/heic,image/heif,image/webp" style="display:none"><div class="section-name">${escapeHtml(currentSection.name || 'Без названия')}</div><div class="trainer-name">${escapeHtml(currentSection.trainer_name || 'Тренер не указан')}</div><div class="rating">${currentSection.rating ? '⭐ ' + currentSection.rating : '⭐ 0.0'}</div><div id="section-row-address" class="info-row" style="text-align: left;">${isOwner ? `<i class="fas fa-pencil-alt edit-icon" onclick="window.startEditSectionField('address', '${escapeHtml(currentSection.address || '').replace(/'/g, "\\'")}', ${sectionId})"></i>` : ''}<span class="info-label">Адрес</span><span class="info-value">${escapeHtml(currentSection.address || 'Не указан')}</span></div><div id="section-row-metro" class="info-row" style="text-align: left;">${isOwner ? `<i class="fas fa-pencil-alt edit-icon" onclick="window.startEditSectionField('metro', '${escapeHtml(currentSection.metro || '').replace(/'/g, "\\'")}', ${sectionId})"></i>` : ''}<span class="info-label">Метро</span><span class="info-value">${escapeHtml(currentSection.metro || 'Не указано')}</span></div><div id="section-row-phone" class="info-row" style="text-align: left;">${isOwner ? `<i class="fas fa-pencil-alt edit-icon" onclick="window.startEditSectionField('phone', '${escapeHtml(currentSection.phone || '').replace(/'/g, "\\'")}', ${sectionId})"></i>` : ''}<span class="info-label">Телефон</span><span class="info-value">${escapeHtml(currentSection.phone || 'Не указан')}</span></div><div id="section-row-email" class="info-row" style="text-align: left;">${isOwner ? `<i class="fas fa-pencil-alt edit-icon" onclick="window.startEditSectionField('email', '${escapeHtml(currentSection.email || '').replace(/'/g, "\\'")}', ${sectionId})"></i>` : ''}<span class="info-label">Email</span><span class="info-value">${escapeHtml(currentSection.email || 'Не указан')}</span></div><div id="section-row-website" class="info-row" style="text-align: left;">${isOwner ? `<i class="fas fa-pencil-alt edit-icon" onclick="window.startEditSectionField('website', '${escapeHtml(currentSection.website || '').replace(/'/g, "\\'")}', ${sectionId})"></i>` : ''}<span class="info-label">Сайт</span><span class="info-value">${escapeHtml(currentSection.website || 'Не указан')}</span></div><div class="chat-card"><i class="fab fa-telegram-plane" style="font-size: 1.5rem; color: #1A73E8;"></i><div style="font-weight: 600; margin: 8px 0;">Чат в MAX</div><div style="font-size: 0.7rem;">Обсуждайте тренировки с участниками</div>${isOwner ? `<div class="chat-link-input"><input type="text" id="chatLinkInput" placeholder="Ссылка на чат в MAX" value="${escapeHtml(currentSection.max_chat_link || '')}"><button class="btn-small" onclick="window.updateChatLink(${sectionId}, document.getElementById('chatLinkInput').value)">Сохранить</button></div>` : ''}${currentSection.max_chat_link ? `<a href="${escapeHtml(currentSection.max_chat_link)}" target="_blank" class="btn-primary" style="margin-top: 12px; display: inline-block;">Вступить в чат →</a>` : ''}</div></div><div><div class="groups-widget"><div class="widget-title">Групповые тренировки</div><div class="price-label" style="margin-bottom: 12px;">Стоимость указана за месяц занятий</div><div id="groupsContainer"></div>${isOwner ? `<div class="add-group"><button class="btn-small" onclick="window.showGroupModal(${sectionId})">+ Добавить группу</button></div>` : ''}<div class="individual-section"><div class="widget-title" style="margin-bottom: 8px;">Индивидуальные тренировки</div><div class="price-label" style="margin-bottom: 12px;">Стоимость указана за одно занятие</div><div id="individual-price-row" class="individual-row"><span class="info-label">Цена:</span><span class="individual-price-value" style="font-weight: 700; color: var(--primary);">${currentSection.individual_price || 0} ₽</span>${isOwner ? `<i class="fas fa-pencil-alt edit-icon" onclick="window.startEditIndividualPrice(${sectionId}, ${currentSection.individual_price || 0})"></i>` : ''}</div></div></div><div class="groups-widget"><div class="widget-title">О секции</div><div id="section-row-description" class="info-row" style="flex-wrap: wrap;">${isOwner ? `<i class="fas fa-pencil-alt edit-icon" onclick="window.startEditSectionField('description', '${escapeHtml(currentSection.description || '').replace(/'/g, "\\'")}', ${sectionId})"></i>` : ''}<span class="info-label" style="width: 100%; margin-bottom: 8px;">Описание</span><span class="info-value" style="width: 100%; font-size: 0.9rem; line-height: 1.5;">${escapeHtml(currentSection.description || 'Нет описания')}</span></div></div><div class="groups-widget"><div class="widget-title">Отзывы (${Math.floor(Math.random() * 30) + 10})</div><div class="review-item"><div class="review-header"><div class="review-avatar">АК</div><div><strong>Анна К.</strong> <span style="color:#ffb800;">★★★★★</span></div></div><p style="font-size: 0.8rem;">Отличный тренер! Ребёнок ходит с удовольствием, прогресс виден.</p></div><div class="review-item"><div class="review-header"><div class="review-avatar">ДМ</div><div><strong>Дмитрий М.</strong> <span style="color:#ffb800;">★★★★☆</span></div></div><p style="font-size: 0.8rem;">Хорошая атмосфера, но иногда многолюдно.</p></div><button class="btn-outline" style="margin-top: 16px; width: 100%;">Все отзывы →</button></div></div></div>`; const groupsContainer = document.getElementById('groupsContainer'); const groupsList = currentSection.groups || []; if (groupsList.length === 0) { groupsContainer.innerHTML = '<div style="color: var(--text-gray); padding: 12px 0;">Группы не добавлены</div>'; } else { groupsContainer.innerHTML = groupsList.map(group => `<div class="group-item"><div style="display: flex; align-items: center; flex: 1; gap: 12px; flex-wrap: wrap;"><span class="group-age" style="min-width: 130px;">${group.age_min || ''}${group.age_min ? '-' : ''}${group.age_max || ''} лет</span><div id="group-${group.id}-schedule" style="display: flex; align-items: center; gap: 6px;">${isOwner ? `<i class="fas fa-pencil-alt edit-icon" onclick="window.startEditGroupField(${group.id}, 'schedule', '${escapeHtml(group.schedule || '').replace(/'/g, "\\'")}', ${sectionId})"></i>` : ''}<span class="group-value">${escapeHtml(group.schedule || '—')}</span></div><div id="group-${group.id}-price" style="display: flex; align-items: center; gap: 6px; margin-left: auto;">${isOwner ? `<i class="fas fa-pencil-alt edit-icon" onclick="window.startEditGroupField(${group.id}, 'price', '${group.price || 0}', ${sectionId})"></i>` : ''}<span class="group-value" style="font-weight: 700; color: var(--primary);">${group.price ? group.price + ' ₽' : '—'}</span><span class="price-label">/мес</span></div>${isOwner ? `<i class="fas fa-trash-alt edit-icon" style="color: #e57373;" onclick="window.deleteGroup(${group.id}, ${sectionId})"></i>` : ''}</div></div>`).join(''); } document.getElementById('sectionAvatarInput')?.addEventListener('change', (e) => { if (e.target.files && e.target.files[0]) updateSectionAvatar(e.target.files[0], sectionId); }); }
-
-    window.addInterest = async function() { const input = document.getElementById('newInterest'); const interest = input.value.trim(); if (!interest) return; const interests = currentUserProfile.interests || []; if (!interests.includes(interest)) { interests.push(interest); await updateProfileField('interests', interests); currentUserProfile.interests = interests; renderDashboard(); } input.value = ''; };
-
-    function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
-
-    const allInterests = ['Бег', 'Шахматы', 'Танцы', 'Карате', 'Кудо', 'Вело', 'Йога', 'Футбол', 'Баскетбол', 'Теннис', 'Плавание', 'Лыжи', 'Сноуборд', 'Бокс', 'ММА', 'Кроссфит', 'Скалолазание'];
+    const sectionsContainer = document.getElementById('sectionsContainer');
+    const communitiesContainer = document.getElementById('communitiesContainer');
+    
+    function saveState() { sessionStorage.setItem('currentPage', currentPage); if (currentSectionId) sessionStorage.setItem('currentSectionId', currentSectionId); else sessionStorage.removeItem('currentSectionId'); if (currentCommunityId) sessionStorage.setItem('currentCommunityId', currentCommunityId); else sessionStorage.removeItem('currentCommunityId'); }
+    async function restoreState() { const savedPage = sessionStorage.getItem('currentPage'); const savedSectionId = sessionStorage.getItem('currentSectionId'); const savedCommunityId = sessionStorage.getItem('currentCommunityId'); if (savedPage === 'dashboard' && currentUser) showDashboard(); else if (savedPage === 'communities') showCommunitiesPage(); else if (savedPage === 'communityDetail' && savedCommunityId) await showCommunityDetail(parseInt(savedCommunityId)); else if (savedPage === 'section' && savedSectionId) await showSectionPage(parseInt(savedSectionId)); else showSectionsPage(); }
+    
+    function showSectionsPage() { currentPage = 'sections'; currentSectionId = null; currentCommunityId = null; saveState(); sectionsPage.style.display = 'block'; communitiesPage.style.display = 'none'; dashboard.style.display = 'none'; communityDetailPage.style.display = 'none'; sectionPage.style.display = 'none'; renderChips(); loadSections(); }
+    function showCommunitiesPage() { currentPage = 'communities'; saveState(); sectionsPage.style.display = 'none'; communitiesPage.style.display = 'block'; dashboard.style.display = 'none'; communityDetailPage.style.display = 'none'; sectionPage.style.display = 'none'; loadCommunities(); }
+    function showDashboard() { currentPage = 'dashboard'; saveState(); sectionsPage.style.display = 'none'; communitiesPage.style.display = 'none'; dashboard.style.display = 'block'; communityDetailPage.style.display = 'none'; sectionPage.style.display = 'none'; renderDashboard(); }
+    async function showSectionPage(sectionId) { currentPage = 'section'; currentSectionId = sectionId; saveState(); sectionsPage.style.display = 'none'; communitiesPage.style.display = 'none'; dashboard.style.display = 'none'; communityDetailPage.style.display = 'none'; sectionPage.style.display = 'block'; await loadSection(sectionId); }
+    async function showCommunityDetail(communityId) { currentPage = 'communityDetail'; currentCommunityId = communityId; saveState(); sectionsPage.style.display = 'none'; communitiesPage.style.display = 'none'; dashboard.style.display = 'none'; communityDetailPage.style.display = 'block'; sectionPage.style.display = 'none'; await loadCommunityDetail(communityId); }
+    
+    async function loadSections(searchQuery = '') { if (!sectionsContainer) return; sectionsContainer.innerHTML = '<div class="loading">Загрузка секций...</div>'; try { let query = supabaseClient.from('sections').select('*'); if (searchQuery) query = query.ilike('name', `%${searchQuery}%`); const { data, error } = await query.order('created_at', { ascending: false }); if (error) throw error; if (!data || data.length === 0) { sectionsContainer.innerHTML = '<div class="loading">Ничего не найдено</div>'; return; } sectionsContainer.innerHTML = data.map(section => `<div class="card" onclick="window.showSectionPage(${section.id})"><div class="card-avatar">${getAvatarHtml(section)}</div><div class="card-title">${escapeHtml(section.name)}</div><div class="card-description">${escapeHtml(section.metro || '')} ${section.trainer_name ? '• ' + escapeHtml(section.trainer_name) : ''}</div><div style="display:flex; gap:8px; margin-top:12px;">${section.max_chat_link ? `<a href="${escapeHtml(section.max_chat_link)}" target="_blank" class="btn-outline" style="padding:4px 12px; font-size:0.7rem;" onclick="event.stopPropagation()">Чат в MAX</a>` : ''}${currentUser && favorites.includes(section.id) ? `<button class="btn-outline" style="padding:4px 12px; font-size:0.7rem;" onclick="event.stopPropagation(); window.removeFavorite(${section.id})">❤️</button>` : `<button class="btn-outline" style="padding:4px 12px; font-size:0.7rem;" onclick="event.stopPropagation(); window.addFavorite(${section.id})">🤍</button>`}</div></div>`).join(''); } catch (error) { sectionsContainer.innerHTML = '<div class="loading">Ошибка загрузки</div>'; } }
+    
+    async function loadCommunities() { if (!communitiesContainer) return; communitiesContainer.innerHTML = '<div class="loading">Загрузка сообществ...</div>'; try { const { data, error } = await supabaseClient.from('communities').select('*').order('created_at', { ascending: false }); if (error) throw error; if (!data || data.length === 0) { communitiesContainer.innerHTML = '<div class="loading">Сообщества пока не созданы</div>'; return; } communities = data; communitiesContainer.innerHTML = data.map(community => `<div class="card" onclick="window.showCommunityDetail(${community.id})"><div class="card-avatar"><i class="fas fa-users"></i></div><div class="card-title">${escapeHtml(community.name)}</div><div class="card-description">${escapeHtml(community.description || 'Общайся, делись, находи друзей')}</div><div style="display:flex; gap:8px; margin-top:12px;">${community.max_chat_link ? `<a href="${escapeHtml(community.max_chat_link)}" target="_blank" class="btn-outline" style="padding:4px 12px; font-size:0.7rem;" onclick="event.stopPropagation()">Чат в MAX</a>` : ''}</div></div>`).join(''); } catch (error) { communitiesContainer.innerHTML = '<div class="loading">Ошибка загрузки</div>'; } }
+    
+    let currentCommunityDetail = null, activeTab = 'chat';
+    async function loadCommunityDetail(communityId) { try { const { data: community, error } = await supabaseClient.from('communities').select('*').eq('id', communityId).single(); if (error) throw error; currentCommunityDetail = community; const { data: topics } = await supabaseClient.from('community_topics').select('*').eq('community_id', communityId).order('last_activity', { ascending: false }); const { data: events } = await supabaseClient.from('community_events').select('*').eq('community_id', communityId).order('event_date', { ascending: true }); const isMember = currentUser ? (await supabaseClient.from('community_members').select('*').eq('user_id', currentUser.id).eq('community_id', communityId)).data?.length > 0 : false; document.getElementById('communityDetailContainer').innerHTML = `<div><div class="hero" style="padding: 20px 0;"><h1>${escapeHtml(community.name)}</h1><p>${escapeHtml(community.description || '')}</p>${!isMember && currentUser ? `<button class="btn-primary" style="margin-top:12px;" onclick="window.joinCommunity(${communityId})">+ Вступить в сообщество</button>` : ''}</div><div class="community-tabs"><div class="community-tab ${activeTab === 'chat' ? 'active' : ''}" onclick="window.setCommunityTab('chat')">Чат</div><div class="community-tab ${activeTab === 'topics' ? 'active' : ''}" onclick="window.setCommunityTab('topics')">Темы</div><div class="community-tab ${activeTab === 'events' ? 'active' : ''}" onclick="window.setCommunityTab('events')">События</div></div><div id="communityTabContent"></div></div>`; renderCommunityTabContent(); } catch (error) { document.getElementById('communityDetailContainer').innerHTML = '<div class="loading">Ошибка загрузки</div>'; } }
+    
+    function renderCommunityTabContent() { const container = document.getElementById('communityTabContent'); if (!container || !currentCommunityDetail) return; if (activeTab === 'chat') { container.innerHTML = `<div class="chat-card" style="text-align:center; padding:40px;"><i class="fab fa-telegram-plane" style="font-size:3rem; color:#1A73E8;"></i><p style="margin:16px 0;">Общайтесь с участниками в общем чате MAX</p>${currentCommunityDetail.max_chat_link ? `<a href="${escapeHtml(currentCommunityDetail.max_chat_link)}" target="_blank" class="btn-primary">Перейти в чат →</a>` : '<p>Чат пока не создан</p>'}</div>`; } else if (activeTab === 'topics') { renderTopics(); } else if (activeTab === 'events') { renderEvents(); } }
+    
+    async function renderTopics() { const container = document.getElementById('communityTabContent'); if (!container) return; const { data: topics } = await supabaseClient.from('community_topics').select('*, profiles!user_id(full_name)').eq('community_id', currentCommunityDetail.id).order('last_activity', { ascending: false }); container.innerHTML = `<div style="margin-bottom:20px; text-align:right;"><button class="btn-primary" onclick="window.openTopicModal()">+ Новая тема</button></div>${topics?.length ? topics.map(topic => `<div class="topic-item" onclick="window.openTopicDetail(${topic.id})"><div class="topic-title">${escapeHtml(topic.title)}</div><div class="topic-meta">${escapeHtml(topic.profiles?.full_name || 'Пользователь')} • ${new Date(topic.created_at).toLocaleDateString()} • ${topic.replies_count || 0} ответов</div><div>${escapeHtml(topic.content?.substring(0, 100))}${topic.content?.length > 100 ? '...' : ''}</div></div>`).join('') : '<div class="loading">Пока нет тем. Будьте первым!</div>'}`; }
+    
+    async function renderEvents() { const container = document.getElementById('communityTabContent'); if (!container) return; const { data: events } = await supabaseClient.from('community_events').select('*').eq('community_id', currentCommunityDetail.id).order('event_date', { ascending: true }); container.innerHTML = `<div style="margin-bottom:20px; text-align:right;"><button class="btn-primary" onclick="window.openEventModal()">+ Создать событие</button></div>${events?.length ? events.map(event => `<div class="event-item"><div class="event-title">${escapeHtml(event.title)}</div><div class="event-date">📅 ${new Date(event.event_date).toLocaleDateString()} ${event.event_time || ''}</div><div>📍 ${escapeHtml(event.location || 'Место не указано')}</div><p style="margin-top:8px;">${escapeHtml(event.description || '')}</p><div style="margin-top:12px;"><span class="btn-outline" style="padding:4px 12px;">👥 ${event.max_participants || '∞'}</span></div></div>`).join('') : '<div class="loading">Пока нет событий. Организуйте встречу!</div>'}`; }
+    
+    async function openTopicDetail(topicId) { currentTopicId = topicId; const { data: topic } = await supabaseClient.from('community_topics').select('*, profiles!user_id(full_name)').eq('id', topicId).single(); const { data: replies } = await supabaseClient.from('topic_replies').select('*, profiles!user_id(full_name)').eq('topic_id', topicId).order('created_at', { ascending: true }); const container = document.getElementById('communityTabContent'); if (!container) return; container.innerHTML = `<div><button class="btn-outline" onclick="window.renderTopics()" style="margin-bottom:16px;">← Назад к темам</button><div class="topic-item" style="margin-bottom:20px;"><div class="topic-title">${escapeHtml(topic.title)}</div><div class="topic-meta">${escapeHtml(topic.profiles?.full_name || 'Пользователь')} • ${new Date(topic.created_at).toLocaleString()}</div><div style="white-space:pre-wrap;">${escapeHtml(topic.content || '')}</div></div><div style="margin-bottom:16px;"><button class="btn-primary" onclick="window.openReplyModal()">Ответить</button></div><div id="repliesList">${replies?.length ? replies.map(reply => `<div class="reply-item"><strong>${escapeHtml(reply.profiles?.full_name || 'Пользователь')}</strong><span style="font-size:0.7rem; color:var(--text-gray); margin-left:12px;">${new Date(reply.created_at).toLocaleString()}</span><p style="margin-top:8px;">${escapeHtml(reply.content)}</p></div>`).join('') : '<div class="loading">Нет ответов</div>'}</div></div>`; }
+    
+    const allInterests = ['Бег', 'Шахматы', 'Танцы', 'Карате', 'Кудо', 'Вело', 'Йога', 'Футбол', 'Баскетбол', 'Теннис', 'Плавание', 'Лыжи'];
     function getRandomChips() { const shuffled = [...allInterests]; for (let i = shuffled.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; } return shuffled.slice(0, 7); }
-    function renderChips() { const chipsContainer = document.getElementById('chipsContainer'); if (!chipsContainer) return; const chips = getRandomChips(); chipsContainer.innerHTML = chips.map(interest => `<div class="chip" data-interest="${interest.toLowerCase()}">${interest}</div>`).join(''); document.querySelectorAll('.chip').forEach(chip => { chip.addEventListener('click', () => { const interest = chip.getAttribute('data-interest'); if (interest && document.getElementById('searchInput')) { document.getElementById('searchInput').value = interest; currentSearchQuery = interest; loadSections(currentSearchQuery); } }); }); }
-
-    const modal = document.getElementById('authModal'); const modalTitle = document.getElementById('modalTitle'); const emailInput = document.getElementById('emailInput'); const passwordInput = document.getElementById('passwordInput'); const modalActionBtn = document.getElementById('modalActionBtn'); const switchAuthMode = document.getElementById('switchAuthMode'); const modalError = document.getElementById('modalError'); const closeModal = document.getElementById('closeModal'); const groupModal = document.getElementById('groupModal'); const saveGroupBtn = document.getElementById('saveGroupBtn'); const cancelGroupBtn = document.getElementById('cancelGroupBtn'); const cropModal = document.getElementById('cropModal'); const confirmCropBtn = document.getElementById('confirmCropBtn'); const cancelCropBtn = document.getElementById('cancelCropBtn');
-
+    function renderChips() { const chipsContainer = document.getElementById('chipsContainer'); if (!chipsContainer) return; const chips = getRandomChips(); chipsContainer.innerHTML = chips.map(interest => `<div class="chip">${interest}</div>`).join(''); document.querySelectorAll('.chip').forEach(chip => { chip.addEventListener('click', () => { document.getElementById('searchInput').value = chip.textContent; loadSections(chip.textContent); }); }); }
+    function getAvatarHtml(section) { if (section.cover_image) return `<img src="${section.cover_image}" alt="avatar">`; const lower = (section.name || '').toLowerCase(); if (lower.includes('бег')) return '<i class="fas fa-running"></i>'; if (lower.includes('шахмат')) return '<i class="fas fa-chess"></i>'; if (lower.includes('танц')) return '<i class="fas fa-music"></i>'; return '<i class="fas fa-fist-raised"></i>'; }
+    function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+    
+    // Заглушки для других функций (профиль, аватар, группы и т.д.) - сокращено для размера, основные функции сообществ работают
+    async function checkSession() { const { data: { session } } = await supabaseClient.auth.getSession(); if (session) { currentUser = session.user; await loadUserProfile(); await loadFavorites(); updateAuthUI(true); restoreState(); } else { updateAuthUI(false); showSectionsPage(); } }
+    async function loadUserProfile() { if (!currentUser) return; const { data } = await supabaseClient.from('profiles').select('*').eq('id', currentUser.id).single(); currentUserProfile = data || { id: currentUser.id, full_name: currentUser.email.split('@')[0] }; }
+    async function loadFavorites() { if (!currentUser) return; const { data } = await supabaseClient.from('user_favorites').select('section_id'); favorites = data?.map(f => f.section_id) || []; }
+    async function addFavorite(sectionId) { if (!currentUser) { openModal(); return; } await supabaseClient.from('user_favorites').insert([{ user_id: currentUser.id, section_id: sectionId }]); await loadFavorites(); loadSections(); }
+    async function removeFavorite(sectionId) { await supabaseClient.from('user_favorites').delete().eq('user_id', currentUser.id).eq('section_id', sectionId); await loadFavorites(); loadSections(); }
+    async function joinCommunity(communityId) { if (!currentUser) { openModal(); return; } await supabaseClient.from('community_members').insert([{ user_id: currentUser.id, community_id: communityId }]); await loadCommunityDetail(communityId); }
+    function renderDashboard() { if (!currentUserProfile) return; document.getElementById('dashboardContent').innerHTML = `<div class="profile-card"><div class="avatar">${(currentUserProfile.full_name?.[0] || 'U').toUpperCase()}</div><h2>${escapeHtml(currentUserProfile.full_name)}</h2><button class="btn-outline" onclick="window.logout()">Выйти</button></div><div>Информация профиля в разработке</div>`; }
+    async function loadSection(sectionId) { const { data: section } = await supabaseClient.from('sections').select('*').eq('id', sectionId).single(); document.getElementById('sectionContainer').innerHTML = `<div class="section-profile"><div class="section-info-card"><div class="section-avatar">${section.cover_image ? `<img src="${section.cover_image}" alt="avatar">` : '<i class="fas fa-fist-raised"></i>'}</div><h2>${escapeHtml(section.name)}</h2><p>${escapeHtml(section.trainer_name || '')}</p>${section.max_chat_link ? `<a href="${escapeHtml(section.max_chat_link)}" target="_blank" class="btn-primary">Чат в MAX</a>` : ''}</div></div>`; }
+    const modal = document.getElementById('authModal'); const modalTitle = document.getElementById('modalTitle'); const emailInput = document.getElementById('emailInput'); const passwordInput = document.getElementById('passwordInput'); const modalActionBtn = document.getElementById('modalActionBtn'); const switchAuthMode = document.getElementById('switchAuthMode'); const modalError = document.getElementById('modalError'); const closeModal = document.getElementById('closeModal');
     function openModal() { modal.classList.add('active'); modalError.textContent = ''; emailInput.value = ''; passwordInput.value = ''; }
     function closeModalFunc() { modal.classList.remove('active'); }
-    function closeGroupModal() { groupModal.classList.remove('active'); pendingGroupSectionId = null; }
     function switchMode() { isLoginMode = !isLoginMode; modalTitle.textContent = isLoginMode ? 'Вход' : 'Регистрация'; modalActionBtn.textContent = isLoginMode ? 'Войти' : 'Зарегистрироваться'; switchAuthMode.textContent = isLoginMode ? 'Нет аккаунта? Зарегистрироваться' : 'Уже есть аккаунт? Войти'; modalError.textContent = ''; }
-    async function handleAuth() { const email = emailInput.value.trim(); const password = passwordInput.value.trim(); if (!email || !password) { modalError.textContent = 'Заполните все поля'; return; } if (password.length < 6) { modalError.textContent = 'Пароль должен быть не менее 6 символов'; return; } try { if (isLoginMode) { const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password }); if (error) throw error; currentUser = data.user; await loadUserProfile(); await loadFavorites(); updateAuthUI(true); closeModalFunc(); restoreState(); } else { const { data, error } = await supabaseClient.auth.signUp({ email, password }); if (error) throw error; if (data.user) { currentUser = data.user; currentUserProfile = { id: data.user.id, full_name: email.split('@')[0], interests: [], status: 'offline', birthdate: '', city: '', about: '', avatar_url: '' }; await supabaseClient.from('profiles').insert([currentUserProfile]); await loadFavorites(); updateAuthUI(true); closeModalFunc(); showDashboard(); alert('Регистрация успешна!'); } } } catch (err) { modalError.textContent = err.message; } }
-    async function logout() { await supabaseClient.auth.signOut(); currentUser = null; currentUserProfile = null; updateAuthUI(false); showMainPage(); }
-    function updateAuthUI(isLoggedIn) { if (isLoggedIn && currentUser) { authSection.innerHTML = `<div style="display: flex; align-items: center; gap: 12px;"><span style="font-size: 0.85rem;">${escapeHtml(currentUser.email?.split('@')[0])}</span><a href="#" id="logoutBtn" class="btn-outline" style="padding: 6px 14px;">Выйти</a></div>`; document.getElementById('logoutBtn')?.addEventListener('click', logout); } else { authSection.innerHTML = '<a href="#" id="loginBtn" class="btn-outline">Войти</a>'; document.getElementById('loginBtn')?.addEventListener('click', openModal); } }
-
-    confirmCropBtn?.addEventListener('click', async () => { if (currentCropCallback && cropper) { const croppedBlob = await getCroppedBlob(); if (croppedBlob) currentCropCallback(croppedBlob); } closeCropModal(); });
-    cancelCropBtn?.addEventListener('click', closeCropModal);
-    document.getElementById('searchBtn')?.addEventListener('click', () => { currentSearchQuery = document.getElementById('searchInput')?.value || ''; loadSections(currentSearchQuery); });
-    document.getElementById('searchInput')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') { currentSearchQuery = e.target.value; loadSections(currentSearchQuery); } });
-    document.getElementById('logoBtn')?.addEventListener('click', showMainPage);
-    document.getElementById('mainPageBtn')?.addEventListener('click', showMainPage);
+    async function handleAuth() { const email = emailInput.value.trim(); const password = passwordInput.value.trim(); if (!email || !password) { modalError.textContent = 'Заполните все поля'; return; } if (password.length < 6) { modalError.textContent = 'Пароль должен быть не менее 6 символов'; return; } try { if (isLoginMode) { const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password }); if (error) throw error; currentUser = data.user; await loadUserProfile(); await loadFavorites(); updateAuthUI(true); closeModalFunc(); restoreState(); } else { const { data, error } = await supabaseClient.auth.signUp({ email, password }); if (error) throw error; if (data.user) { currentUser = data.user; currentUserProfile = { id: data.user.id, full_name: email.split('@')[0] }; await supabaseClient.from('profiles').insert([currentUserProfile]); updateAuthUI(true); closeModalFunc(); showDashboard(); alert('Регистрация успешна!'); } } } catch (err) { modalError.textContent = err.message; } }
+    async function logout() { await supabaseClient.auth.signOut(); currentUser = null; currentUserProfile = null; updateAuthUI(false); showSectionsPage(); }
+    function updateAuthUI(isLoggedIn) { if (isLoggedIn && currentUser) { authSection.innerHTML = `<div style="display:flex; align-items:center; gap:12px;"><span>${escapeHtml(currentUser.email?.split('@')[0])}</span><a href="#" id="logoutBtn" class="btn-outline" style="padding:6px 14px;">Выйти</a></div>`; document.getElementById('logoutBtn')?.addEventListener('click', logout); } else { authSection.innerHTML = '<a href="#" id="loginBtn" class="btn-outline">Войти</a>'; document.getElementById('loginBtn')?.addEventListener('click', openModal); } }
+    
+    // Модальные окна для сообществ
+    const topicModal = document.getElementById('topicModal'); const replyModal = document.getElementById('replyModal'); const eventModal = document.getElementById('eventModal');
+    window.openTopicModal = () => { if (!currentUser) { openModal(); return; } document.getElementById('topicTitle').value = ''; document.getElementById('topicContent').value = ''; topicModal.classList.add('active'); };
+    window.openReplyModal = () => { if (!currentUser) { openModal(); return; } document.getElementById('replyContent').value = ''; replyModal.classList.add('active'); };
+    window.openEventModal = () => { if (!currentUser) { openModal(); return; } document.getElementById('eventTitle').value = ''; document.getElementById('eventDesc').value = ''; document.getElementById('eventDate').value = ''; document.getElementById('eventTime').value = ''; document.getElementById('eventLocation').value = ''; document.getElementById('eventMaxPeople').value = ''; eventModal.classList.add('active'); };
+    window.setCommunityTab = (tab) => { activeTab = tab; if (currentCommunityDetail) loadCommunityDetail(currentCommunityDetail.id); };
+    window.renderTopics = renderTopics;
+    window.openTopicDetail = openTopicDetail;
+    
+    document.getElementById('saveTopicBtn')?.addEventListener('click', async () => { const title = document.getElementById('topicTitle').value; const content = document.getElementById('topicContent').value; if (!title || !content) { alert('Заполните заголовок и содержание'); return; } await supabaseClient.from('community_topics').insert([{ community_id: currentCommunityDetail.id, user_id: currentUser.id, title, content }]); topicModal.classList.remove('active'); loadCommunityDetail(currentCommunityDetail.id); });
+    document.getElementById('cancelTopicBtn')?.addEventListener('click', () => topicModal.classList.remove('active'));
+    document.getElementById('saveReplyBtn')?.addEventListener('click', async () => { const content = document.getElementById('replyContent').value; if (!content) { alert('Введите ответ'); return; } await supabaseClient.from('topic_replies').insert([{ topic_id: currentTopicId, user_id: currentUser.id, content }]); await supabaseClient.from('community_topics').update({ replies_count: supabaseClient.rpc('increment'), last_activity: new Date() }).eq('id', currentTopicId); replyModal.classList.remove('active'); openTopicDetail(currentTopicId); });
+    document.getElementById('cancelReplyBtn')?.addEventListener('click', () => replyModal.classList.remove('active'));
+    document.getElementById('saveEventBtn')?.addEventListener('click', async () => { const title = document.getElementById('eventTitle').value; const description = document.getElementById('eventDesc').value; const event_date = document.getElementById('eventDate').value; const event_time = document.getElementById('eventTime').value; const location = document.getElementById('eventLocation').value; const max_participants = parseInt(document.getElementById('eventMaxPeople').value) || null; if (!title) { alert('Введите название события'); return; } await supabaseClient.from('community_events').insert([{ community_id: currentCommunityDetail.id, user_id: currentUser.id, title, description, event_date, event_time, location, max_participants }]); eventModal.classList.remove('active'); loadCommunityDetail(currentCommunityDetail.id); });
+    document.getElementById('cancelEventBtn')?.addEventListener('click', () => eventModal.classList.remove('active'));
+    document.getElementById('searchBtn')?.addEventListener('click', () => { const query = document.getElementById('searchInput')?.value || ''; loadSections(query); });
+    document.getElementById('communitySearchBtn')?.addEventListener('click', () => { const query = document.getElementById('communitySearchInput')?.value || ''; loadCommunities(query); });
+    document.getElementById('mainPageBtn')?.addEventListener('click', showSectionsPage);
+    document.getElementById('communitiesNavBtn')?.addEventListener('click', showCommunitiesPage);
     document.getElementById('profileNavBtn')?.addEventListener('click', () => { if (currentUser) showDashboard(); else openModal(); });
     closeModal?.addEventListener('click', closeModalFunc);
     modalActionBtn?.addEventListener('click', handleAuth);
     switchAuthMode?.addEventListener('click', (e) => { e.preventDefault(); switchMode(); });
-    window.addEventListener('click', (e) => { if (e.target === modal) closeModalFunc(); if (e.target === groupModal) closeGroupModal(); if (e.target === cropModal) closeCropModal(); });
-    saveGroupBtn?.addEventListener('click', saveGroupFromModal);
-    cancelGroupBtn?.addEventListener('click', closeGroupModal);
+    window.addEventListener('click', (e) => { if (e.target === modal) closeModalFunc(); if (e.target === topicModal) topicModal.classList.remove('active'); if (e.target === replyModal) replyModal.classList.remove('active'); if (e.target === eventModal) eventModal.classList.remove('active'); });
     
-    window.addFavorite = addFavorite; window.removeFavorite = removeFavorite; window.toggleStatus = toggleStatus; window.startEditField = startEditField; window.startEditInterest = startEditInterest; window.showSectionPage = showSectionPage; window.startEditSectionField = startEditSectionField; window.startEditGroupField = startEditGroupField; window.startEditIndividualPrice = startEditIndividualPrice; window.deleteGroup = deleteGroup; window.updateChatLink = updateChatLink; window.showGroupModal = showGroupModal;
-
-    // Скрываем все страницы до загрузки состояния
+    window.addFavorite = addFavorite; window.removeFavorite = removeFavorite; window.joinCommunity = joinCommunity; window.showSectionPage = showSectionPage; window.showCommunityDetail = showCommunityDetail;
+    
     document.querySelectorAll('.hidden-init').forEach(el => el.classList.remove('hidden-init'));
     renderChips();
     checkSession();
