@@ -153,7 +153,7 @@
     <!-- Страница сообществ (список) -->
     <div id="communitiesPage" class="container hidden-init">
         <div class="hero">
-            <h1>Сообщества по интересам</h1>
+            <h1>Найди своих по интересам</h1>
             <p>Найди единомышленников, общайся, участвуй в событиях и находи друзей по увлечениям</p>
             <div class="search-bar">
                 <input type="text" id="communitiesSearchInput" placeholder="Поиск сообщества...">
@@ -167,7 +167,7 @@
         </div>
     </div>
 
-    <!-- Страница отдельного сообщества (обновлённый дизайн) -->
+    <!-- Страница отдельного сообщества -->
     <div id="communityPage" class="container hidden-init">
         <div id="communityContainer"></div>
     </div>
@@ -175,8 +175,8 @@
     <!-- Страница секций (главная) -->
     <div id="mainPage" class="container hidden-init">
         <div class="hero">
-            <h1>Найди своих по интересам</h1>
-            <p>Бег, шахматы, танцы, единоборства — выбирай увлечение, находи людей рядом и занимайтесь вместе.</p>
+            <h1>Секции по интересам</h1>
+            <p>Бег, шахматы, танцы, единоборства — выбирай увлечение, находи секцию рядом и вступай в сообщество единомышленников</p>
             <div class="search-bar">
                 <input type="text" id="searchInput" placeholder="Поиск по названию секции...">
                 <button id="searchBtn">Найти</button>
@@ -455,11 +455,18 @@
         const savedCommunityId = sessionStorage.getItem('currentCommunityId');
         const savedCommunityTab = sessionStorage.getItem('currentCommunityTab');
         
+        // Скрываем все страницы до восстановления состояния
+        document.getElementById('communitiesPage').style.display = 'none';
+        document.getElementById('mainPage').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'none';
+        document.getElementById('sectionPage').style.display = 'none';
+        document.getElementById('communityPage').style.display = 'none';
+        
         if (savedPage === 'communities') {
             showCommunitiesPage();
         } else if (savedPage === 'community' && savedCommunityId) {
             currentCommunityTab = savedCommunityTab || 'events';
-            showCommunityPage(parseInt(savedCommunityId));
+            await showCommunityPage(parseInt(savedCommunityId));
         } else if (savedPage === 'dashboard' && currentUser) {
             showDashboard();
         } else if (savedPage === 'section' && savedSectionId) {
