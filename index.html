@@ -128,7 +128,11 @@
         .community-desc { font-size: 0.8rem; color: var(--text-gray); margin-bottom: 12px; line-height: 1.4; }
         .community-stats { display: flex; gap: 16px; margin-bottom: 16px; font-size: 0.7rem; color: var(--text-gray); }
         @media (max-width: 900px) { .dashboard-grid, .section-profile { grid-template-columns: 1fr; } .container { padding: 0 16px; } .hero h1 { font-size: 2rem; } .header-inner { flex-direction: column; align-items: flex-start; } .nav { width: 100%; justify-content: space-between; } }
-        .hidden-init { display: none; }
+        
+        /* Все страницы скрыты по умолчанию */
+        #communitiesPage, #communityPage, #mainPage, #dashboard, #sectionPage {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -151,7 +155,7 @@
 
 <main>
     <!-- Страница сообществ (список) -->
-    <div id="communitiesPage" class="container hidden-init">
+    <div id="communitiesPage" class="container">
         <div class="hero">
             <h1>Найди своих по интересам</h1>
             <p>Найди единомышленников, общайся, участвуй в событиях и находи друзей по увлечениям</p>
@@ -159,6 +163,7 @@
                 <input type="text" id="communitiesSearchInput" placeholder="Поиск сообщества...">
                 <button id="communitiesSearchBtn">Найти</button>
             </div>
+            <div id="communitiesChipsContainer" class="chips"></div>
         </div>
         <div>
             <div class="section-title">Популярные сообщества</div>
@@ -168,12 +173,12 @@
     </div>
 
     <!-- Страница отдельного сообщества -->
-    <div id="communityPage" class="container hidden-init">
+    <div id="communityPage" class="container">
         <div id="communityContainer"></div>
     </div>
 
     <!-- Страница секций (главная) -->
-    <div id="mainPage" class="container hidden-init">
+    <div id="mainPage" class="container">
         <div class="hero">
             <h1>Секции по интересам</h1>
             <p>Бег, шахматы, танцы, единоборства — выбирай увлечение, находи секцию рядом и вступай в сообщество единомышленников</p>
@@ -192,11 +197,11 @@
         </div>
     </div>
 
-    <div id="dashboard" class="container dashboard hidden-init">
+    <div id="dashboard" class="container dashboard">
         <div class="dashboard-grid" id="dashboardContent"></div>
     </div>
 
-    <div id="sectionPage" class="container hidden-init">
+    <div id="sectionPage" class="container">
         <div id="sectionContainer"></div>
     </div>
 </main>
@@ -230,6 +235,35 @@
     let currentCommunitiesSearchQuery = '';
     let currentCommunityId = null;
     let currentCommunityTab = 'events';
+
+    // Список всех интересов для чипсов (сообщества)
+    const allCommunityInterests = ['Бег', 'Шахматы', 'Танцы', 'Карате', 'Кудо', 'Вело', 'Йога', 'Футбол', 'Баскетбол', 'Теннис', 'Плавание', 'Лыжи', 'Сноуборд', 'Бокс', 'ММА', 'Кроссфит', 'Скалолазание', 'Фотография', 'Книги', 'Театр'];
+
+    function getRandomCommunityChips() {
+        const shuffled = [...allCommunityInterests];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled.slice(0, 7);
+    }
+
+    function renderCommunityChips() {
+        const chipsContainer = document.getElementById('communitiesChipsContainer');
+        if (!chipsContainer) return;
+        const chips = getRandomCommunityChips();
+        chipsContainer.innerHTML = chips.map(interest => `<div class="chip" data-community="${interest.toLowerCase()}">${interest}</div>`).join('');
+        document.querySelectorAll('#communitiesChipsContainer .chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                const interest = chip.getAttribute('data-community');
+                if (interest && document.getElementById('communitiesSearchInput')) {
+                    document.getElementById('communitiesSearchInput').value = interest;
+                    currentCommunitiesSearchQuery = interest;
+                    loadCommunities(currentCommunitiesSearchQuery);
+                }
+            });
+        });
+    }
 
     // Тестовые данные для сообществ
     const communitiesData = [
@@ -289,6 +323,7 @@
         const community = communitiesData.find(c => c.id === communityId);
         if (!community) return;
         
+        // Скрываем все страницы
         document.getElementById('communitiesPage').style.display = 'none';
         document.getElementById('mainPage').style.display = 'none';
         document.getElementById('dashboard').style.display = 'none';
@@ -382,6 +417,7 @@
                 const tabName = tab.getAttribute('data-tab');
                 currentCommunityTab = tabName;
                 renderCommunityPage(community);
+                saveState();
             });
         });
     }
@@ -447,6 +483,8 @@
         if (currentCommunityId) sessionStorage.setItem('currentCommunityId', currentCommunityId);
         else sessionStorage.removeItem('currentCommunityId');
         if (currentCommunityTab) sessionStorage.setItem('currentCommunityTab', currentCommunityTab);
+        if (currentCommunitiesSearchQuery) sessionStorage.setItem('currentCommunitiesSearchQuery', currentCommunitiesSearchQuery);
+        else sessionStorage.removeItem('currentCommunitiesSearchQuery');
     }
 
     async function restoreState() {
@@ -454,13 +492,9 @@
         const savedSectionId = sessionStorage.getItem('currentSectionId');
         const savedCommunityId = sessionStorage.getItem('currentCommunityId');
         const savedCommunityTab = sessionStorage.getItem('currentCommunityTab');
+        const savedCommunitiesSearch = sessionStorage.getItem('currentCommunitiesSearchQuery');
         
-        // Скрываем все страницы до восстановления состояния
-        document.getElementById('communitiesPage').style.display = 'none';
-        document.getElementById('mainPage').style.display = 'none';
-        document.getElementById('dashboard').style.display = 'none';
-        document.getElementById('sectionPage').style.display = 'none';
-        document.getElementById('communityPage').style.display = 'none';
+        if (savedCommunitiesSearch) currentCommunitiesSearchQuery = savedCommunitiesSearch;
         
         if (savedPage === 'communities') {
             showCommunitiesPage();
@@ -485,6 +519,7 @@
         document.getElementById('dashboard').style.display = 'none';
         document.getElementById('sectionPage').style.display = 'none';
         document.getElementById('communityPage').style.display = 'none';
+        renderCommunityChips();
         loadCommunities(currentCommunitiesSearchQuery);
     }
 
@@ -497,7 +532,20 @@
 
     async function updateProfileField(field, value) { if (!currentUser) return false; const updateData = {}; updateData[field] = value; const { error } = await supabaseClient.from('profiles').update(updateData).eq('id', currentUser.id); if (error) { console.error('Ошибка обновления:', error); return false; } return true; }
 
-    async function checkSession() { const { data: { session } } = await supabaseClient.auth.getSession(); if (session) { currentUser = session.user; await loadUserProfile(); await loadFavorites(); updateAuthUI(true); restoreState(); } else { currentUser = null; updateAuthUI(false); showMainPage(); } }
+    async function checkSession() { 
+        const { data: { session } } = await supabaseClient.auth.getSession(); 
+        if (session) { 
+            currentUser = session.user; 
+            await loadUserProfile(); 
+            await loadFavorites(); 
+            updateAuthUI(true); 
+            await restoreState(); 
+        } else { 
+            currentUser = null; 
+            updateAuthUI(false); 
+            showMainPage(); 
+        } 
+    }
 
     async function loadUserProfile() { if (!currentUser) return; const { data, error } = await supabaseClient.from('profiles').select('*').eq('id', currentUser.id).single(); if (error && error.code !== 'PGRST116') { console.error('Ошибка загрузки профиля:', error); } else if (data) { currentUserProfile = data; } else { currentUserProfile = { id: currentUser.id, full_name: currentUser.email.split('@')[0], interests: [], status: 'offline', birthdate: '', city: '', about: '', avatar_url: '' }; await supabaseClient.from('profiles').insert([currentUserProfile]); } }
 
@@ -563,7 +611,7 @@
 
     const allInterests = ['Бег', 'Шахматы', 'Танцы', 'Карате', 'Кудо', 'Вело', 'Йога', 'Футбол', 'Баскетбол', 'Теннис', 'Плавание', 'Лыжи', 'Сноуборд', 'Бокс', 'ММА', 'Кроссфит', 'Скалолазание'];
     function getRandomChips() { const shuffled = [...allInterests]; for (let i = shuffled.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; } return shuffled.slice(0, 7); }
-    function renderChips() { const chipsContainer = document.getElementById('chipsContainer'); if (!chipsContainer) return; const chips = getRandomChips(); chipsContainer.innerHTML = chips.map(interest => `<div class="chip" data-interest="${interest.toLowerCase()}">${interest}</div>`).join(''); document.querySelectorAll('.chip').forEach(chip => { chip.addEventListener('click', () => { const interest = chip.getAttribute('data-interest'); if (interest && document.getElementById('searchInput')) { document.getElementById('searchInput').value = interest; currentSearchQuery = interest; loadSections(currentSearchQuery); } }); }); }
+    function renderChips() { const chipsContainer = document.getElementById('chipsContainer'); if (!chipsContainer) return; const chips = getRandomChips(); chipsContainer.innerHTML = chips.map(interest => `<div class="chip" data-interest="${interest.toLowerCase()}">${interest}</div>`).join(''); document.querySelectorAll('#chipsContainer .chip').forEach(chip => { chip.addEventListener('click', () => { const interest = chip.getAttribute('data-interest'); if (interest && document.getElementById('searchInput')) { document.getElementById('searchInput').value = interest; currentSearchQuery = interest; loadSections(currentSearchQuery); } }); }); }
 
     const modal = document.getElementById('authModal'); const modalTitle = document.getElementById('modalTitle'); const emailInput = document.getElementById('emailInput'); const passwordInput = document.getElementById('passwordInput'); const modalActionBtn = document.getElementById('modalActionBtn'); const switchAuthMode = document.getElementById('switchAuthMode'); const modalError = document.getElementById('modalError'); const closeModal = document.getElementById('closeModal'); const groupModal = document.getElementById('groupModal'); const saveGroupBtn = document.getElementById('saveGroupBtn'); const cancelGroupBtn = document.getElementById('cancelGroupBtn'); const cropModal = document.getElementById('cropModal'); const confirmCropBtn = document.getElementById('confirmCropBtn'); const cancelCropBtn = document.getElementById('cancelCropBtn');
 
@@ -595,7 +643,6 @@
     window.addFavorite = addFavorite; window.removeFavorite = removeFavorite; window.toggleStatus = toggleStatus; window.startEditField = startEditField; window.startEditInterest = startEditInterest; window.showSectionPage = showSectionPage; window.startEditSectionField = startEditSectionField; window.startEditGroupField = startEditGroupField; window.startEditIndividualPrice = startEditIndividualPrice; window.deleteGroup = deleteGroup; window.updateChatLink = updateChatLink; window.showGroupModal = showGroupModal;
     window.showCommunityPage = showCommunityPage;
 
-    document.querySelectorAll('.hidden-init').forEach(el => el.classList.remove('hidden-init'));
     renderChips();
     checkSession();
     loadSections();
