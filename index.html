@@ -3,510 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Твоя среда — сообщества и секции</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Твоя среда — сообщества по интересам и секции</title>
+    <meta name="description" content="Твоя среда — сообщества по интересам, секции, друзья и единомышленники рядом.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #F0F4F0;
-            color: #1A2A1A;
-            line-height: 1.4;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: #F0F4F0; color: #1A2A1A; line-height: 1.4; }
         :root {
-            --primary: #4CAF7F;
-            --primary-dark: #3d8c64;
-            --primary-light: #e2f3ea;
-            --primary-ultralight: #f0faf5;
-            --gray-bg: #F7F9F7;
-            --gray-card: #FFFFFF;
-            --text-dark: #1A2A1A;
-            --text-gray: #5E6E5E;
-            --border-light: #DEE6DE;
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.03);
-            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.05);
-            --status-green: #2e7d32;
-            --status-green-bg: #e8f5e9;
-            --status-red: #c62828;
-            --status-red-bg: #ffebee;
-        }
-
-        .container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
-        .header {
-            background: white;
-            padding: 14px 0;
-            border-bottom: 1px solid var(--border-light);
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        .header-inner {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            cursor: pointer;
-        }
-
-        .nav {
-            display: flex;
-            gap: 28px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .nav a {
-            text-decoration: none;
-            color: var(--text-dark);
-            font-weight: 500;
-            transition: color 0.2s;
-            cursor: pointer;
-        }
-
-        .nav a:hover {
-            color: var(--primary);
-        }
-
-        .nav a.active {
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            font-size: 0.85rem;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-        }
-
-        .btn-outline {
-            border: 1px solid var(--border-light);
-            padding: 8px 18px;
-            border-radius: 40px;
-            background: white;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: var(--text-dark);
-            font-size: 0.85rem;
-        }
-
-        .btn-outline:hover {
-            border-color: var(--primary);
-            background: var(--primary-light);
-        }
-
-        .btn-max {
-            background: #1A73E8;
-            color: white;
-            padding: 8px 18px;
-            border-radius: 40px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-block;
-            transition: background 0.2s;
-        }
-
-        .search-bar {
-            max-width: 600px;
-            margin: 0 auto 32px;
-            display: flex;
-            background: white;
-            border: 1px solid var(--border-light);
-            border-radius: 60px;
-            padding: 6px 6px 6px 24px;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .search-bar input {
-            flex: 1;
-            border: none;
-            padding: 14px 0;
-            font-size: 1rem;
-            outline: none;
-            background: transparent;
-        }
-
-        .search-bar button {
-            background: var(--primary);
-            border: none;
-            border-radius: 60px;
-            padding: 10px 28px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .hero {
-            text-align: center;
-            padding: 60px 0 40px;
-        }
-
-        .hero h1 {
-            font-size: 2.8rem;
-            font-weight: 700;
-            margin-bottom: 16px;
-        }
-
-        .hero p {
-            font-size: 1.1rem;
-            color: var(--text-gray);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            font-size: 1.6rem;
-            font-weight: 700;
-            margin: 40px 0 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 28px;
-            margin: 24px 0;
-        }
-
-        .card {
-            background: white;
-            border-radius: 24px;
-            padding: 24px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-light);
-            transition: all 0.25s ease;
-            cursor: pointer;
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .card-avatar {
-            width: 56px;
-            height: 56px;
-            background: var(--primary-light);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 16px;
-            font-size: 1.8rem;
-            color: var(--primary);
-            overflow: hidden;
-        }
-
-        .card-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-        .card-meta {
-            font-size: 0.75rem;
-            color: var(--text-gray);
-            margin-bottom: 12px;
-        }
-
-        .card-desc {
-            font-size: 0.85rem;
-            color: var(--text-gray);
-            margin-bottom: 16px;
-            line-height: 1.4;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 60px;
-            color: var(--text-gray);
-        }
-
-        /* Профиль (дашборд) */
-        .dashboard {
-            display: none;
-        }
-        .dashboard.active {
-            display: block;
-        }
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 320px 1fr;
-            gap: 24px;
-            margin: 24px 0;
-        }
-        .profile-card {
-            background: white;
-            border-radius: 28px;
-            padding: 28px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-light);
-            text-align: center;
-        }
-        .avatar {
-            width: 120px;
-            height: 120px;
-            background: var(--primary-light);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 16px;
-            font-size: 3rem;
-            color: var(--primary);
-            overflow: hidden;
-        }
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .status-switch {
-            display: inline-block;
-            padding: 6px 18px;
-            border-radius: 40px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            margin: 12px 0;
-            transition: all 0.2s ease;
-            border: 1px solid transparent;
-        }
-        .status-switch.online {
-            background: var(--status-green-bg);
-            color: var(--status-green);
-            border-color: var(--status-green);
-        }
-        .status-switch.offline {
-            background: var(--status-red-bg);
-            color: var(--status-red);
-            border-color: var(--status-red);
-        }
-        .widget-card {
-            background: white;
-            border-radius: 24px;
-            padding: 24px;
-            margin-bottom: 24px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-light);
-        }
-        .widget-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .favorite-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border-light);
-        }
-        .favorite-avatar {
-            width: 44px;
-            height: 44px;
-            background: var(--primary-light);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            color: var(--primary);
-        }
-        .favorite-info {
-            flex: 1;
-        }
-
-        /* Страница сообщества (гибрид) */
-        .community-page {
-            display: none;
-        }
-        .community-header {
-            background: white;
-            border-radius: 24px;
-            padding: 24px;
-            margin: 24px 0;
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            align-items: center;
-            border: 1px solid var(--border-light);
-        }
-        .community-avatar-large {
-            width: 80px;
-            height: 80px;
-            background: var(--primary-light);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            color: var(--primary);
-        }
-        .tabs {
-            display: flex;
-            gap: 28px;
-            margin-bottom: 24px;
-            border-bottom: 2px solid var(--border-light);
-        }
-        .tab {
-            padding: 12px 0;
-            font-weight: 600;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            margin-bottom: -2px;
-            color: var(--text-gray);
-        }
-        .tab.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        .chat-widget {
-            background: white;
-            border-radius: 20px;
-            padding: 32px;
-            text-align: center;
-            border: 1px solid var(--border-light);
-        }
-        .event-card, .topic-card {
-            background: white;
-            border-radius: 16px;
-            padding: 18px;
-            margin-bottom: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            border: 1px solid var(--border-light);
-        }
-        .event-date {
-            background: var(--primary-light);
-            border-radius: 12px;
-            padding: 8px 16px;
-            text-align: center;
-            min-width: 70px;
-        }
-        .event-date .day {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-        .event-info {
-            flex: 1;
-        }
-        .event-title {
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        .btn-secondary {
-            background: #1A73E8;
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal.active {
-            display: flex;
-        }
-        .modal-content {
-            background: white;
-            border-radius: 32px;
-            padding: 32px;
-            max-width: 400px;
-            width: 90%;
-        }
-        .modal-content input {
-            width: 100%;
-            padding: 12px;
-            margin: 12px 0;
-            border: 1px solid var(--border-light);
-            border-radius: 12px;
-            font-size: 1rem;
-        }
-        .footer {
-            border-top: 1px solid var(--border-light);
-            padding: 32px 0;
-            margin-top: 40px;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 20px;
-            font-size: 0.8rem;
-            color: var(--text-gray);
-        }
-
-        @media (max-width: 900px) {
-            .dashboard-grid { grid-template-columns: 1fr; }
-            .container { padding: 0 16px; }
-            .hero h1 { font-size: 2rem; }
-            .header-inner { flex-direction: column; align-items: flex-start; }
-            .nav { width: 100%; justify-content: space-between; }
-        }
+            --primary: #4CAF7F; --primary-dark: #3d8c64; --primary-light: #e2f3ea;
+            --primary-ultralight: #f0faf5; --gray-bg: #F7F9F7; --gray-card: #FFFFFF;
+            --text-dark: #1A2A1A; --text-gray: #5E6E5E; --border-light: #DEE6DE;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.03); --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.05);
+            --status-green: #2e7d32; --status-green-bg: #e8f5e9; --status-red: #c62828; --status-red-bg: #ffebee;
+        }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+        .header { background: white; padding: 14px 0; border-bottom: 1px solid var(--border-light); position: sticky; top: 0; z-index: 10; }
+        .header-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); cursor: pointer; }
+        .nav { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; }
+        .nav a { text-decoration: none; color: var(--text-dark); font-weight: 500; transition: color 0.2s; cursor: pointer; }
+        .nav a:hover, .nav a.active { color: var(--primary); }
+        .btn-primary { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 40px; font-weight: 600; cursor: pointer; transition: background 0.2s; display: inline-block; font-size: 0.85rem; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-outline { border: 1px solid var(--border-light); padding: 8px 18px; border-radius: 40px; background: white; font-weight: 500; cursor: pointer; transition: all 0.2s; color: var(--text-dark); font-size: 0.85rem; }
+        .btn-outline:hover { border-color: var(--primary); background: var(--primary-light); }
+        .btn-max { background: #1A73E8; color: white; padding: 8px 18px; border-radius: 40px; font-size: 0.75rem; font-weight: 600; text-decoration: none; display: inline-block; transition: background 0.2s; }
+        .hero { text-align: center; padding: 40px 0 32px; }
+        .hero h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 16px; }
+        .hero p { font-size: 1.1rem; color: var(--text-gray); max-width: 640px; margin: 0 auto 24px; }
+        .search-bar { max-width: 600px; margin: 0 auto 24px; display: flex; background: white; border: 1px solid var(--border-light); border-radius: 60px; padding: 6px 6px 6px 24px; box-shadow: var(--shadow-sm); }
+        .search-bar input { flex: 1; border: none; padding: 14px 0; font-size: 1rem; outline: none; background: transparent; }
+        .search-bar button { background: var(--primary); border: none; border-radius: 60px; padding: 10px 28px; color: white; font-weight: 600; cursor: pointer; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 28px; margin: 32px 0 24px; }
+        .card { background: white; border-radius: 24px; padding: 24px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); transition: all 0.25s ease; cursor: pointer; }
+        .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+        .card-avatar { width: 48px; height: 48px; background: var(--primary-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; color: var(--primary); font-size: 1.25rem; overflow: hidden; }
+        .card-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .card-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+        .card-stats { color: var(--text-gray); font-size: 0.75rem; margin: 12px 0; display: flex; gap: 16px; }
+        .loading { text-align: center; padding: 60px; color: var(--text-gray); }
+        .page { display: none; }
+        .page.active { display: block; }
+        .dashboard-grid { display: grid; grid-template-columns: 320px 1fr; gap: 24px; margin: 24px 0; }
+        .profile-card { background: white; border-radius: 28px; padding: 28px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); text-align: center; }
+        .avatar { width: 120px; height: 120px; background: var(--primary-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 3rem; color: var(--primary); cursor: pointer; overflow: hidden; position: relative; }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar-upload-label { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.6); color: white; font-size: 0.7rem; padding: 4px; text-align: center; cursor: pointer; opacity: 0; transition: opacity 0.2s; }
+        .avatar:hover .avatar-upload-label { opacity: 1; }
+        .status-switch { display: inline-block; padding: 6px 18px; border-radius: 40px; font-size: 0.8rem; font-weight: 600; cursor: pointer; margin: 12px 0; transition: all 0.2s ease; border: 1px solid transparent; }
+        .status-switch.online { background: var(--status-green-bg); color: var(--status-green); border-color: var(--status-green); }
+        .status-switch.offline { background: var(--status-red-bg); color: var(--status-red); border-color: var(--status-red); }
+        .widget-card { background: white; border-radius: 24px; padding: 24px; margin-bottom: 24px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); }
+        .widget-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; }
+        .info-row { display: flex; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
+        .info-label { font-size: 0.85rem; color: var(--text-gray); min-width: 100px; margin-left: 8px; }
+        .info-value { flex: 1; font-size: 0.9rem; color: var(--text-dark); margin-left: 8px; }
+        .edit-icon { color: #9e9e9e; cursor: pointer; font-size: 0.7rem; transition: color 0.2s; margin-right: 4px; }
+        .edit-icon:hover { color: var(--primary); }
+        .interests-list { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; width: 100%; }
+        .interest-item { display: flex; align-items: center; margin-bottom: 12px; }
+        .interest-name { font-size: 0.9rem; color: var(--text-dark); margin-left: 8px; flex: 1; }
+        .edit-interest { color: #9e9e9e; cursor: pointer; font-size: 0.7rem; transition: color 0.2s; margin-right: 4px; }
+        .add-interest { display: flex; gap: 8px; margin-top: 16px; width: 100%; }
+        .add-interest input { flex: 1; padding: 8px 12px; border: 1px solid var(--border-light); border-radius: 40px; font-size: 0.8rem; }
+        .btn-small { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 40px; font-size: 0.75rem; cursor: pointer; }
+        .favorite-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border-light); cursor: pointer; }
+        .favorite-avatar { width: 40px; height: 40px; background: var(--primary-light); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; color: var(--primary); overflow: hidden; }
+        .favorite-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .favorite-info { flex: 1; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; border-radius: 32px; padding: 32px; max-width: 500px; width: 90%; }
+        .modal-content input { width: 100%; padding: 12px; margin: 12px 0; border: 1px solid var(--border-light); border-radius: 12px; font-size: 1rem; }
+        .footer { border-top: 1px solid var(--border-light); padding: 40px 0 32px; margin-top: 40px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 20px; font-size: 0.8rem; color: var(--text-gray); }
+        .footer-links { display: flex; gap: 32px; flex-wrap: wrap; }
+        .crop-container { margin: 20px 0; max-height: 400px; overflow: hidden; }
+        .crop-container img { max-width: 100%; display: block; }
+        @media (max-width: 900px) { .dashboard-grid { grid-template-columns: 1fr; } .container { padding: 0 16px; } .hero h1 { font-size: 2rem; } .header-inner { flex-direction: column; align-items: flex-start; } .nav { width: 100%; justify-content: space-between; } }
     </style>
 </head>
 <body>
@@ -516,77 +93,59 @@
         <div class="header-inner">
             <div class="logo" id="logoBtn">Твоя среда</div>
             <div class="nav" id="navSection">
-                <a href="#" id="mainPageBtn" class="active">Главная</a>
-                <a href="#" id="communitiesNavBtn">Сообщества</a>
+                <a href="#" id="communitiesNavBtn" class="active">Сообщества</a>
+                <a href="#" id="profileNavBtn">Профиль</a>
                 <a href="#" id="sectionsNavBtn">Секции</a>
-                <div id="authSection">
-                    <a href="#" id="loginBtn" class="btn-outline">Войти</a>
-                </div>
+                <div id="authSection"><a href="#" id="loginBtn" class="btn-outline">Войти</a></div>
             </div>
         </div>
     </div>
 </div>
 
 <main>
-    <!-- Главная страница (для незалогиненных) -->
-    <div id="mainPage" class="container" style="display: block;">
-        <div class="hero">
-            <h1>Найди своих по интересам</h1>
-            <p>Бег, шахматы, танцы, единоборства — выбирай увлечение, находи людей рядом и занимайтесь вместе.</p>
-            <div class="search-bar">
-                <input type="text" id="globalSearchInput" placeholder="Поиск секций и сообществ...">
-                <button id="globalSearchBtn">Найти</button>
+    <!-- Страница Сообществ -->
+    <div id="communitiesPage" class="page active">
+        <div class="container">
+            <div class="hero">
+                <h1>Сообщества по интересам</h1>
+                <p>Общайтесь, находите друзей, обсуждайте любимые хобби и участвуйте в событиях</p>
+                <div class="search-bar">
+                    <input type="text" id="communitiesSearchInput" placeholder="Поиск сообществ...">
+                    <button id="communitiesSearchBtn">Найти</button>
+                </div>
             </div>
-        </div>
-
-        <div class="section-title"><i class="fas fa-users"></i> Сообщества по интересам</div>
-        <div id="communitiesList" class="grid-3">
-            <div class="loading">Загрузка сообществ...</div>
-        </div>
-
-        <div class="section-title"><i class="fas fa-location-dot"></i> Секции и кружки рядом</div>
-        <div id="sectionsList" class="grid-3">
-            <div class="loading">Загрузка секций...</div>
+            <div id="communitiesContainer" class="grid-3"><div class="loading">Загрузка сообществ...</div></div>
         </div>
     </div>
 
-    <!-- Профиль пользователя (после входа) -->
-    <div id="dashboard" class="container dashboard">
-        <div class="dashboard-grid" id="dashboardContent"></div>
+    <!-- Страница Профиля -->
+    <div id="profilePage" class="page">
+        <div class="container">
+            <div class="dashboard-grid" id="dashboardContent"></div>
+        </div>
     </div>
 
-    <!-- Страница сообщества (гибрид) -->
-    <div id="communityPage" class="container community-page">
-        <div id="communityContainer"></div>
+    <!-- Страница Секций -->
+    <div id="sectionsPage" class="page">
+        <div class="container">
+            <div class="hero">
+                <h1>Секции и кружки рядом</h1>
+                <p>Конкретные места, где можно заниматься. Отзывы — в чатах участников</p>
+                <div class="search-bar">
+                    <input type="text" id="sectionsSearchInput" placeholder="Поиск по названию секции...">
+                    <button id="sectionsSearchBtn">Найти</button>
+                </div>
+            </div>
+            <div id="sectionsContainer" class="grid-3"><div class="loading">Загрузка секций...</div></div>
+        </div>
     </div>
 </main>
 
-<!-- Модальное окно входа -->
-<div id="authModal" class="modal">
-    <div class="modal-content">
-        <h3 id="modalTitle">Вход</h3>
-        <input type="email" id="emailInput" placeholder="Email">
-        <input type="password" id="passwordInput" placeholder="Пароль">
-        <div id="modalError" style="color: red; font-size: 0.8rem; margin: 8px 0;"></div>
-        <button id="modalActionBtn" class="btn-primary" style="width: 100%;">Войти</button>
-        <div style="text-align: center; margin-top: 16px;">
-            <a href="#" id="switchAuthMode">Нет аккаунта? Зарегистрироваться</a>
-        </div>
-        <button id="closeModal" style="margin-top: 12px; background: none; border: none; cursor: pointer; color: var(--text-gray);">Закрыть</button>
-    </div>
-</div>
+<!-- Модальные окна -->
+<div id="cropModal" class="modal"><div class="modal-content"><h3>Обрежьте аватар</h3><div class="crop-container"><img id="cropImage" src=""></div><div style="display:flex; gap:12px; margin-top:20px;"><button id="confirmCropBtn" class="btn-primary" style="flex:1;">Сохранить</button><button id="cancelCropBtn" class="btn-outline" style="flex:1;">Отмена</button></div></div></div>
+<div id="authModal" class="modal"><div class="modal-content"><h3 id="modalTitle">Вход</h3><input type="email" id="emailInput" placeholder="Email"><input type="password" id="passwordInput" placeholder="Пароль"><div id="modalError" style="color:red; font-size:0.8rem; margin:8px 0;"></div><button id="modalActionBtn" class="btn-primary" style="width:100%;">Войти</button><div style="text-align:center; margin-top:16px;"><a href="#" id="switchAuthMode">Нет аккаунта? Зарегистрироваться</a></div><button id="closeModal" style="margin-top:12px; background:none; border:none; cursor:pointer; color:var(--text-gray);">Закрыть</button></div></div>
 
-<footer class="container">
-    <div class="footer">
-        <div>Твоя среда — найди своих по интересам</div>
-        <div class="footer-links" style="display: flex; gap: 32px;">
-            <a href="#">О проекте</a>
-            <a href="#">Контакты</a>
-            <a href="#">Для тренеров</a>
-        </div>
-        <div>© 2026 Твоя среда</div>
-    </div>
-</footer>
+<footer class="container"><div class="footer"><div>Твоя среда — найди своих по интересам</div><div class="footer-links"><a href="#">О проекте</a><a href="#">Контакты</a><a href="#">Для тренеров</a></div><div>© 2026</div></div></footer>
 
 <script>
     const SUPABASE_URL = 'https://zweulqmupkljowyfwzqs.supabase.co';
@@ -596,269 +155,308 @@
     let currentUser = null;
     let currentUserProfile = null;
     let isLoginMode = true;
-    let currentSection = null;
-    let currentCommunity = null;
-    let currentPageView = 'main';
+    let currentSectionsQuery = '';
+    let currentCommunitiesQuery = '';
+    let favorites = [];
+    let editingField = null;
+    let cropper = null;
+    let currentCropCallback = null;
 
-    const mainPage = document.getElementById('mainPage');
-    const dashboard = document.getElementById('dashboard');
-    const communityPage = document.getElementById('communityPage');
-    const communitiesList = document.getElementById('communitiesList');
-    const sectionsList = document.getElementById('sectionsList');
+    const communitiesPage = document.getElementById('communitiesPage');
+    const profilePage = document.getElementById('profilePage');
+    const sectionsPage = document.getElementById('sectionsPage');
+    const communitiesContainer = document.getElementById('communitiesContainer');
+    const sectionsContainer = document.getElementById('sectionsContainer');
+    const authSection = document.getElementById('authSection');
 
-    // Сохранение состояния
-    function saveState() {
-        sessionStorage.setItem('currentPage', currentPageView);
-    }
-
-    function restoreState() {
-        const savedPage = sessionStorage.getItem('currentPage');
-        if (savedPage === 'dashboard' && currentUser) {
-            showDashboard();
-        } else if (savedPage === 'communities') {
-            showCommunitiesTab();
-        } else if (savedPage === 'sections') {
-            showSectionsTab();
-        } else {
-            showMainPage();
+    function showPage(page) {
+        communitiesPage.classList.remove('active');
+        profilePage.classList.remove('active');
+        sectionsPage.classList.remove('active');
+        if (page === 'communities') {
+            communitiesPage.classList.add('active');
+            document.getElementById('communitiesNavBtn').classList.add('active');
+            document.getElementById('profileNavBtn').classList.remove('active');
+            document.getElementById('sectionsNavBtn').classList.remove('active');
+            loadCommunities(currentCommunitiesQuery);
+        } else if (page === 'profile') {
+            profilePage.classList.add('active');
+            document.getElementById('profileNavBtn').classList.add('active');
+            document.getElementById('communitiesNavBtn').classList.remove('active');
+            document.getElementById('sectionsNavBtn').classList.remove('active');
+            if (currentUser) renderDashboard();
+            else openModal();
+        } else if (page === 'sections') {
+            sectionsPage.classList.add('active');
+            document.getElementById('sectionsNavBtn').classList.add('active');
+            document.getElementById('communitiesNavBtn').classList.remove('active');
+            document.getElementById('profileNavBtn').classList.remove('active');
+            loadSections(currentSectionsQuery);
         }
-    }
-
-    function showMainPage() {
-        currentPageView = 'main';
-        saveState();
-        mainPage.style.display = 'block';
-        dashboard.style.display = 'none';
-        communityPage.style.display = 'none';
-        document.getElementById('mainPageBtn').classList.add('active');
-        document.getElementById('communitiesNavBtn').classList.remove('active');
-        document.getElementById('sectionsNavBtn').classList.remove('active');
-        loadCommunities();
-        loadSections();
-    }
-
-    function showDashboard() {
-        if (!currentUser) {
-            showMainPage();
-            return;
-        }
-        currentPageView = 'dashboard';
-        saveState();
-        mainPage.style.display = 'none';
-        dashboard.style.display = 'block';
-        communityPage.style.display = 'none';
-        document.getElementById('mainPageBtn').classList.remove('active');
-        document.getElementById('communitiesNavBtn').classList.remove('active');
-        document.getElementById('sectionsNavBtn').classList.remove('active');
-        renderDashboard();
-    }
-
-    function showCommunitiesTab() {
-        currentPageView = 'communities';
-        saveState();
-        mainPage.style.display = 'block';
-        dashboard.style.display = 'none';
-        communityPage.style.display = 'none';
-        document.getElementById('mainPageBtn').classList.remove('active');
-        document.getElementById('communitiesNavBtn').classList.add('active');
-        document.getElementById('sectionsNavBtn').classList.remove('active');
-        loadCommunities();
-    }
-
-    function showSectionsTab() {
-        currentPageView = 'sections';
-        saveState();
-        mainPage.style.display = 'block';
-        dashboard.style.display = 'none';
-        communityPage.style.display = 'none';
-        document.getElementById('mainPageBtn').classList.remove('active');
-        document.getElementById('communitiesNavBtn').classList.remove('active');
-        document.getElementById('sectionsNavBtn').classList.add('active');
-        loadSections();
-    }
-
-    function showCommunityPage(communityId) {
-        currentPageView = 'community';
-        saveState();
-        mainPage.style.display = 'none';
-        dashboard.style.display = 'none';
-        communityPage.style.display = 'block';
-        loadCommunity(communityId);
     }
 
     async function loadCommunities(searchQuery = '') {
-        if (!communitiesList) return;
-        communitiesList.innerHTML = '<div class="loading">Загрузка сообществ...</div>';
+        if (!communitiesContainer) return;
+        communitiesContainer.innerHTML = '<div class="loading">Загрузка сообществ...</div>';
         try {
             let query = supabaseClient.from('communities').select('*');
-            if (searchQuery) {
-                query = query.ilike('name', `%${searchQuery}%`);
-            }
+            if (searchQuery) query = query.ilike('name', `%${searchQuery}%`);
+            query = query.order('member_count', { ascending: false });
             const { data: communities, error } = await query;
             if (error) throw error;
             if (!communities || communities.length === 0) {
-                communitiesList.innerHTML = '<div class="loading">Ничего не найдено</div>';
+                communitiesContainer.innerHTML = '<div class="loading">😕 Сообщества не найдены</div>';
                 return;
             }
-            communitiesList.innerHTML = communities.map(community => `
-                <div class="card" onclick="window.showCommunityPage(${community.id})">
-                    <div class="card-avatar">${community.avatar_url || '🏆'}</div>
+            communitiesContainer.innerHTML = communities.map(community => `
+                <div class="card">
+                    <div class="card-avatar">${community.avatar_url ? `<img src="${community.avatar_url}">` : '<i class="fas fa-users"></i>'}</div>
                     <div class="card-title">${escapeHtml(community.name)}</div>
-                    <div class="card-meta">${community.member_count || 0} участников • ${community.city || 'Онлайн'}</div>
-                    <div class="card-desc">${escapeHtml(community.description || '')}</div>
-                    <a href="${community.max_chat_link || '#'}" target="_blank" class="btn-max" onclick="event.stopPropagation()">Вступить в MAX-чат →</a>
+                    <div class="card-stats"><span>👥 ${community.member_count || 0} участников</span><span>📍 ${community.city || 'Онлайн'}</span></div>
+                    ${community.max_chat_link ? `<a href="${escapeHtml(community.max_chat_link)}" target="_blank" class="btn-max" onclick="event.stopPropagation()">Вступить в чат MAX →</a>` : '<span class="btn-outline" style="display:inline-block;">Чат создаётся</span>'}
                 </div>
             `).join('');
-        } catch (error) {
-            communitiesList.innerHTML = '<div class="loading">Ошибка загрузки</div>';
-        }
+        } catch (error) { communitiesContainer.innerHTML = '<div class="loading">Ошибка загрузки</div>'; }
     }
 
     async function loadSections(searchQuery = '') {
-        if (!sectionsList) return;
-        sectionsList.innerHTML = '<div class="loading">Загрузка секций...</div>';
+        if (!sectionsContainer) return;
+        sectionsContainer.innerHTML = '<div class="loading">Загрузка секций...</div>';
         try {
             let query = supabaseClient.from('sections').select('*');
-            if (searchQuery) {
-                query = query.ilike('name', `%${searchQuery}%`);
-            }
+            if (searchQuery) query = query.ilike('name', `%${searchQuery}%`);
+            query = query.order('created_at', { ascending: false });
             const { data: sections, error } = await query;
             if (error) throw error;
             if (!sections || sections.length === 0) {
-                sectionsList.innerHTML = '<div class="loading">Ничего не найдено</div>';
+                sectionsContainer.innerHTML = '<div class="loading">😕 Секции не найдены</div>';
                 return;
             }
-            sectionsList.innerHTML = sections.map(section => `
-                <div class="card" onclick="window.showSectionPage(${section.id})">
-                    <div class="card-avatar">${section.cover_image ? `<img src="${section.cover_image}">` : '🏆'}</div>
+            sectionsContainer.innerHTML = sections.map(section => `
+                <div class="card">
+                    <div class="card-avatar">${section.cover_image ? `<img src="${section.cover_image}">` : '<i class="fas fa-location-dot"></i>'}</div>
                     <div class="card-title">${escapeHtml(section.name)}</div>
-                    <div class="card-meta">${escapeHtml(section.metro || 'Адрес не указан')}</div>
-                    <div class="card-desc">${section.trainer_name ? escapeHtml(section.trainer_name) : ''}</div>
+                    <div class="card-stats"><span>📍 ${escapeHtml(section.metro || 'Адрес не указан')}</span></div>
                     ${section.max_chat_link ? `<a href="${escapeHtml(section.max_chat_link)}" target="_blank" class="btn-max" onclick="event.stopPropagation()">Чат в MAX →</a>` : ''}
                 </div>
             `).join('');
-        } catch (error) {
-            sectionsList.innerHTML = '<div class="loading">Ошибка загрузки</div>';
+        } catch (error) { sectionsContainer.innerHTML = '<div class="loading">Ошибка загрузки</div>'; }
+    }
+
+    async function checkSession() {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (session) {
+            currentUser = session.user;
+            await loadUserProfile();
+            await loadFavorites();
+            updateAuthUI(true);
+            showPage('profile');
+        } else {
+            currentUser = null;
+            updateAuthUI(false);
+            showPage('communities');
         }
     }
 
-    async function loadCommunity(communityId) {
-        const { data: community, error } = await supabaseClient
-            .from('communities')
-            .select('*')
-            .eq('id', communityId)
-            .single();
-        
-        if (error || !community) {
-            document.getElementById('communityContainer').innerHTML = '<div class="loading">Ошибка загрузки сообщества</div>';
-            return;
+    async function loadUserProfile() {
+        if (!currentUser) return;
+        const { data, error } = await supabaseClient.from('profiles').select('*').eq('id', currentUser.id).single();
+        if (error && error.code !== 'PGRST116') {
+            currentUserProfile = { id: currentUser.id, full_name: currentUser.email.split('@')[0], interests: [], status: 'offline', birthdate: '', city: '', about: '', avatar_url: '' };
+            await supabaseClient.from('profiles').insert([currentUserProfile]);
+        } else if (data) currentUserProfile = data;
+        else { currentUserProfile = { id: currentUser.id, full_name: currentUser.email.split('@')[0], interests: [], status: 'offline', birthdate: '', city: '', about: '', avatar_url: '' }; await supabaseClient.from('profiles').insert([currentUserProfile]); }
+    }
+
+    async function loadFavorites() {
+        if (!currentUser) return;
+        const { data, error } = await supabaseClient.from('user_favorites').select('section_id');
+        if (!error) favorites = data.map(f => f.section_id);
+    }
+
+    async function updateProfileField(field, value) {
+        if (!currentUser) return false;
+        const updateData = {};
+        updateData[field] = value;
+        const { error } = await supabaseClient.from('profiles').update(updateData).eq('id', currentUser.id);
+        if (error) { console.error('Ошибка обновления:', error); return false; }
+        return true;
+    }
+
+    async function toggleStatus() {
+        if (!currentUserProfile) return;
+        const newStatus = currentUserProfile.status === 'online' ? 'offline' : 'online';
+        await updateProfileField('status', newStatus);
+        currentUserProfile.status = newStatus;
+        renderDashboard();
+    }
+
+    function formatDate(dateString) {
+        if (!dateString) return 'Не указано';
+        const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return dateString;
+        return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+    }
+
+    function startEditField(field, currentValue) {
+        if (editingField !== null) return;
+        editingField = field;
+        const row = document.getElementById(`row-${field}`);
+        if (!row) return;
+        const valueSpan = row.querySelector('.info-value');
+        const editIcon = row.querySelector('.edit-icon');
+        let input = document.createElement('input');
+        input.type = field === 'birthdate' ? 'date' : 'text';
+        input.value = currentValue || '';
+        input.className = 'info-edit-input';
+        const saveBtn = document.createElement('button'); saveBtn.innerHTML = '<i class="fas fa-check"></i>';
+        const cancelBtn = document.createElement('button'); cancelBtn.innerHTML = '<i class="fas fa-times"></i>';
+        const actionsDiv = document.createElement('div'); actionsDiv.className = 'edit-actions';
+        actionsDiv.appendChild(saveBtn); actionsDiv.appendChild(cancelBtn);
+        valueSpan.style.display = 'none'; editIcon.style.display = 'none';
+        const container = document.createElement('div'); container.style.display = 'flex'; container.style.alignItems = 'center'; container.style.flex = '1';
+        container.appendChild(input); container.appendChild(actionsDiv);
+        row.appendChild(container);
+        input.focus();
+        const saveHandler = async () => {
+            const newValue = input.value.trim();
+            if (newValue !== currentValue) { await updateProfileField(field, newValue); currentUserProfile[field] = newValue; }
+            editingField = null; renderDashboard();
+        };
+        const cancelHandler = () => { editingField = null; renderDashboard(); };
+        saveBtn.onclick = saveHandler; cancelBtn.onclick = cancelHandler;
+        input.onkeypress = (e) => { if (e.key === 'Enter') saveHandler(); };
+    }
+
+    function startEditInterest(index, currentValue) {
+        if (editingField !== null) return;
+        editingField = `interest-${index}`;
+        const interestDiv = document.getElementById(`interest-${index}`);
+        if (!interestDiv) return;
+        const interestNameSpan = interestDiv.querySelector('.interest-name');
+        const editIcon = interestDiv.querySelector('.edit-interest');
+        const input = document.createElement('input'); input.type = 'text'; input.value = currentValue; input.className = 'info-edit-input'; input.style.flex = '1';
+        const saveBtn = document.createElement('button'); saveBtn.innerHTML = '<i class="fas fa-check"></i>';
+        const cancelBtn = document.createElement('button'); cancelBtn.innerHTML = '<i class="fas fa-times"></i>';
+        const actionsDiv = document.createElement('div'); actionsDiv.className = 'edit-actions';
+        actionsDiv.appendChild(saveBtn); actionsDiv.appendChild(cancelBtn);
+        interestNameSpan.style.display = 'none'; editIcon.style.display = 'none';
+        const container = document.createElement('div'); container.style.display = 'flex'; container.style.alignItems = 'center'; container.style.flex = '1'; container.style.gap = '8px';
+        container.appendChild(input); container.appendChild(actionsDiv);
+        interestDiv.appendChild(container);
+        input.focus();
+        const saveHandler = async () => {
+            const newValue = input.value.trim();
+            if (newValue && newValue !== currentValue) {
+                const interests = [...(currentUserProfile.interests || [])];
+                interests[index] = newValue;
+                await updateProfileField('interests', interests);
+                currentUserProfile.interests = interests;
+            }
+            editingField = null; renderDashboard();
+        };
+        const cancelHandler = () => { editingField = null; renderDashboard(); };
+        saveBtn.onclick = saveHandler; cancelBtn.onclick = cancelHandler;
+        input.onkeypress = (e) => { if (e.key === 'Enter') saveHandler(); };
+    }
+
+    window.addInterest = async function() {
+        const input = document.getElementById('newInterest');
+        const interest = input.value.trim();
+        if (!interest) return;
+        const interests = currentUserProfile.interests || [];
+        if (!interests.includes(interest)) {
+            interests.push(interest);
+            await updateProfileField('interests', interests);
+            currentUserProfile.interests = interests;
+            renderDashboard();
         }
-        
-        currentCommunity = community;
-        
-        const container = document.getElementById('communityContainer');
-        container.innerHTML = `
-            <div class="community-header">
-                <div class="community-avatar-large">${community.avatar_url || '🏃'}</div>
-                <div>
-                    <h1>${escapeHtml(community.name)}</h1>
-                    <div style="color: var(--text-gray);">${community.member_count || 0} участников • ${community.city || 'Онлайн'}</div>
-                </div>
-            </div>
-            <div class="tabs">
-                <div class="tab active" data-tab="chat">💬 Чат</div>
-                <div class="tab" data-tab="events">📅 События</div>
-                <div class="tab" data-tab="topics">📝 Темы</div>
-            </div>
-            <div id="community-tab-chat" class="tab-content active">
-                <div class="chat-widget">
-                    <i class="fab fa-telegram-plane" style="font-size: 3rem; color: #1A73E8;"></i>
-                    <div style="font-size: 1.1rem; font-weight: 600; margin: 16px 0;">Общий чат сообщества</div>
-                    <div style="color: var(--text-gray); margin-bottom: 16px;">Обсуждайте события, делитесь опытом, находите друзей</div>
-                    <a href="${community.max_chat_link || '#'}" target="_blank" class="btn-primary" style="background: #1A73E8;">Вступить в чат MAX →</a>
-                </div>
-            </div>
-            <div id="community-tab-events" class="tab-content">
-                <button class="btn-primary" onclick="alert('Создание события будет доступно в следующей версии')" style="margin-bottom: 20px;"><i class="fas fa-plus"></i> Создать событие</button>
-                <div class="event-card">
-                    <div class="event-date"><div class="day">15</div><div>июня</div></div>
-                    <div class="event-info"><div class="event-title">Совместная пробежка в Сокольниках</div><div>📍 м. Сокольники • 10:00 • 8 км</div></div>
-                    <button class="btn-secondary" onclick="alert('Функция будет доступна после настройки базы данных')">Пойду</button>
-                </div>
-                <div class="event-card">
-                    <div class="event-date"><div class="day">22</div><div>июня</div></div>
-                    <div class="event-info"><div class="event-title">Лекция о правильной экипировке</div><div>📍 Точка кипения • 19:00</div></div>
-                    <button class="btn-secondary" onclick="alert('Функция будет доступна после настройки базы данных')">Пойду</button>
-                </div>
-            </div>
-            <div id="community-tab-topics" class="tab-content">
-                <button class="btn-primary" onclick="alert('Создание темы будет доступно в следующей версии')" style="margin-bottom: 20px;"><i class="fas fa-plus"></i> Новая тема</button>
-                <div class="topic-card">
-                    <div><div class="event-title">Ищу напарника для утренних пробежек</div><div style="font-size: 0.75rem; color: var(--text-gray);">Алексей • 3 дня назад</div></div>
-                    <button class="btn-secondary" onclick="alert('Функция будет доступна после настройки базы данных')">Читать</button>
-                </div>
-                <div class="topic-card">
-                    <div><div class="event-title">Как выбрать кроссовки для бега?</div><div style="font-size: 0.75rem; color: var(--text-gray);">Мария • 5 дней назад</div></div>
-                    <button class="btn-secondary" onclick="alert('Функция будет доступна после настройки базы данных')">Читать</button>
-                </div>
-            </div>
-        `;
-        
-        document.querySelectorAll('#communityContainer .tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                const target = tab.dataset.tab;
-                document.querySelectorAll('#communityContainer .tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                document.querySelectorAll('#communityContainer .tab-content').forEach(c => c.classList.remove('active'));
-                document.getElementById(`community-tab-${target}`).classList.add('active');
-            });
-        });
+        input.value = '';
+    };
+
+    function getAvatarHtml(item) {
+        if (item.avatar_url) return `<img src="${item.avatar_url}" alt="avatar">`;
+        return '<i class="fas fa-user"></i>';
     }
 
     function renderDashboard() {
         if (!currentUserProfile) return;
         const statusClass = currentUserProfile.status === 'online' ? 'online' : 'offline';
         const statusText = currentUserProfile.status === 'online' ? 'Готов к общению' : 'Не беспокоить';
-        
+        const interests = currentUserProfile.interests || [];
         document.getElementById('dashboardContent').innerHTML = `
             <div class="profile-card">
-                <div class="avatar">${(currentUserProfile.full_name?.[0] || '👤').toUpperCase()}</div>
+                <div class="avatar" id="avatarContainer">${currentUserProfile.avatar_url ? `<img src="${currentUserProfile.avatar_url}">` : (currentUserProfile.full_name?.[0] || 'U').toUpperCase()}<div class="avatar-upload-label" onclick="document.getElementById('avatarInput').click()"><i class="fas fa-camera"></i> Изменить</div></div>
+                <input type="file" id="avatarInput" accept="image/jpeg,image/jpg,image/png,image/heic,image/heif,image/webp" style="display:none">
                 <h2>${escapeHtml(currentUserProfile.full_name || 'Пользователь')}</h2>
                 <div class="status-switch ${statusClass}" onclick="window.toggleStatus()">${statusText}</div>
                 <div style="color: var(--text-gray); font-size: 0.8rem;">${escapeHtml(currentUser.email)}</div>
-                <button class="btn-outline" style="margin-top: 16px; width:100%;" onclick="alert('Редактирование профиля будет в следующей версии')">Редактировать профиль</button>
             </div>
             <div>
                 <div class="widget-card">
-                    <div class="widget-title">⭐ Избранные секции</div>
-                    <div style="color: var(--text-gray); padding: 12px 0;">Добавьте секции в избранное на главной странице</div>
+                    <div class="widget-title">Личная информация</div>
+                    <div id="row-full_name" class="info-row"><i class="fas fa-pencil-alt edit-icon" onclick="window.startEditField('full_name', '${escapeHtml(currentUserProfile.full_name || '').replace(/'/g, "\\'")}')"></i><span class="info-label">Полное имя</span><span class="info-value">${escapeHtml(currentUserProfile.full_name || 'Не указано')}</span></div>
+                    <div id="row-birthdate" class="info-row"><i class="fas fa-pencil-alt edit-icon" onclick="window.startEditField('birthdate', '${currentUserProfile.birthdate || ''}')"></i><span class="info-label">Дата рождения</span><span class="info-value">${formatDate(currentUserProfile.birthdate)}</span></div>
+                    <div id="row-city" class="info-row"><i class="fas fa-pencil-alt edit-icon" onclick="window.startEditField('city', '${escapeHtml(currentUserProfile.city || '').replace(/'/g, "\\'")}')"></i><span class="info-label">Город</span><span class="info-value">${escapeHtml(currentUserProfile.city || 'Не указано')}</span></div>
+                    <div id="row-about" class="info-row"><i class="fas fa-pencil-alt edit-icon" onclick="window.startEditField('about', '${escapeHtml(currentUserProfile.about || '').replace(/'/g, "\\'")}')"></i><span class="info-label">О себе</span><span class="info-value">${escapeHtml(currentUserProfile.about || 'Не указано')}</span></div>
+                    <div><div style="margin-bottom:8px;"><span class="info-label">Интересы</span></div><div id="interestsContainer" class="interests-list"></div><div class="add-interest"><input type="text" id="newInterest" placeholder="Новый интерес"><button class="btn-small" onclick="window.addInterest()">Добавить</button></div></div>
                 </div>
-                <div class="widget-card">
-                    <div class="widget-title">👥 Мои сообщества</div>
-                    <div style="color: var(--text-gray); padding: 12px 0;">Вступайте в сообщества, чтобы они появились здесь</div>
-                </div>
+                <div class="widget-card"><div class="widget-title">Избранные секции</div><div id="favoritesList"></div></div>
             </div>
         `;
-    }
-
-    async function toggleStatus() {
-        if (!currentUserProfile) return;
-        const newStatus = currentUserProfile.status === 'online' ? 'offline' : 'online';
-        const { error } = await supabaseClient.from('profiles').update({ status: newStatus }).eq('id', currentUser.id);
-        if (!error) {
-            currentUserProfile.status = newStatus;
-            renderDashboard();
+        const interestsContainer = document.getElementById('interestsContainer');
+        if (interestsContainer) {
+            if (interests.length === 0) interestsContainer.innerHTML = '<div style="color: var(--text-gray); padding: 8px 0;">Добавьте ваши интересы</div>';
+            else interestsContainer.innerHTML = interests.map((interest, idx) => `<div class="interest-item" id="interest-${idx}"><i class="fas fa-pencil-alt edit-interest" onclick="window.startEditInterest(${idx}, '${escapeHtml(interest).replace(/'/g, "\\'")}')"></i><span class="interest-name">${escapeHtml(interest)}</span></div>`).join('');
         }
+        const favoritesList = document.getElementById('favoritesList');
+        if (favorites.length === 0) favoritesList.innerHTML = '<div style="padding:12px 0; color:var(--text-gray);">Нет избранных секций</div>';
+        else {
+            Promise.all(favorites.map(async id => { const { data } = await supabaseClient.from('sections').select('*').eq('id', id).single(); return data; })).then(sections => {
+                favoritesList.innerHTML = sections.filter(s => s).map(section => `<div class="favorite-item"><div class="favorite-avatar">${section.cover_image ? `<img src="${section.cover_image}">` : '<i class="fas fa-location-dot"></i>'}</div><div class="favorite-info"><div style="font-weight:600;">${escapeHtml(section.name)}</div><div style="font-size:0.7rem; color:var(--text-gray);">${escapeHtml(section.metro || '')}</div></div></div>`).join('');
+            });
+        }
+        document.getElementById('avatarInput')?.addEventListener('change', (e) => { if (e.target.files && e.target.files[0]) updateAvatar(e.target.files[0]); });
     }
 
-    function escapeHtml(text) {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
+    function showCropModal(file, callback) {
+        currentCropCallback = callback;
+        const imgElement = document.getElementById('cropImage');
+        imgElement.src = URL.createObjectURL(file);
+        document.getElementById('cropModal').classList.add('active');
+        setTimeout(() => { if (cropper) cropper.destroy(); cropper = new Cropper(imgElement, { aspectRatio: 1, viewMode: 1, dragMode: 'move', autoCropArea: 1, cropBoxMovable: true, cropBoxResizable: true, background: false }); }, 100);
     }
 
-    // Авторизация
+    async function getCroppedBlob() {
+        if (!cropper) return null;
+        const canvas = cropper.getCroppedCanvas({ width: 400, height: 400 });
+        return new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.85));
+    }
+
+    async function updateAvatar(file) {
+        if (!file || !currentUser) return;
+        const allowedTypes = ['image/jpeg','image/jpg','image/png','image/heic','image/heif','image/webp'];
+        if (!allowedTypes.includes(file.type)) { alert('Поддерживаются: JPEG, PNG, HEIC, WEBP'); return; }
+        if (file.size > 5*1024*1024) { alert('Файл до 5MB'); return; }
+        showCropModal(file, async (croppedBlob) => {
+            try {
+                const fileName = `${currentUser.id}_${Date.now()}.jpg`;
+                const oldAvatarUrl = currentUserProfile.avatar_url;
+                const { error: uploadError } = await supabaseClient.storage.from('avatars').upload(fileName, croppedBlob, { cacheControl: '3600', upsert: true, contentType: 'image/jpeg' });
+                if (uploadError) throw uploadError;
+                const { data: { publicUrl } } = supabaseClient.storage.from('avatars').getPublicUrl(fileName);
+                await updateProfileField('avatar_url', publicUrl);
+                if (oldAvatarUrl) { const oldFileName = oldAvatarUrl.split('/avatars/').pop(); if (oldFileName) await supabaseClient.storage.from('avatars').remove([oldFileName]); }
+                currentUserProfile.avatar_url = publicUrl;
+                renderDashboard();
+                alert('Аватар обновлён!');
+            } catch (error) { console.error(error); alert('Ошибка загрузки'); }
+        });
+    }
+
+    function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+
     const modal = document.getElementById('authModal');
     const modalTitle = document.getElementById('modalTitle');
     const emailInput = document.getElementById('emailInput');
@@ -867,31 +465,28 @@
     const switchAuthMode = document.getElementById('switchAuthMode');
     const modalError = document.getElementById('modalError');
     const closeModal = document.getElementById('closeModal');
+    const confirmCropBtn = document.getElementById('confirmCropBtn');
+    const cancelCropBtn = document.getElementById('cancelCropBtn');
 
     function openModal() { modal.classList.add('active'); modalError.textContent = ''; emailInput.value = ''; passwordInput.value = ''; }
     function closeModalFunc() { modal.classList.remove('active'); }
-    function switchMode() {
-        isLoginMode = !isLoginMode;
-        modalTitle.textContent = isLoginMode ? 'Вход' : 'Регистрация';
-        modalActionBtn.textContent = isLoginMode ? 'Войти' : 'Зарегистрироваться';
-        switchAuthMode.textContent = isLoginMode ? 'Нет аккаунта? Зарегистрироваться' : 'Уже есть аккаунт? Войти';
-        modalError.textContent = '';
-    }
+    function switchMode() { isLoginMode = !isLoginMode; modalTitle.textContent = isLoginMode ? 'Вход' : 'Регистрация'; modalActionBtn.textContent = isLoginMode ? 'Войти' : 'Зарегистрироваться'; switchAuthMode.textContent = isLoginMode ? 'Нет аккаунта? Зарегистрироваться' : 'Уже есть аккаунт? Войти'; modalError.textContent = ''; }
 
     async function handleAuth() {
         const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
         if (!email || !password) { modalError.textContent = 'Заполните все поля'; return; }
-        if (password.length < 6) { modalError.textContent = 'Пароль должен быть не менее 6 символов'; return; }
+        if (password.length < 6) { modalError.textContent = 'Пароль ≥6 символов'; return; }
         try {
             if (isLoginMode) {
                 const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
                 if (error) throw error;
                 currentUser = data.user;
                 await loadUserProfile();
+                await loadFavorites();
                 updateAuthUI(true);
                 closeModalFunc();
-                showDashboard();
+                showPage('profile');
             } else {
                 const { data, error } = await supabaseClient.auth.signUp({ email, password });
                 if (error) throw error;
@@ -899,40 +494,21 @@
                     currentUser = data.user;
                     currentUserProfile = { id: data.user.id, full_name: email.split('@')[0], interests: [], status: 'offline', birthdate: '', city: '', about: '', avatar_url: '' };
                     await supabaseClient.from('profiles').insert([currentUserProfile]);
+                    await loadFavorites();
                     updateAuthUI(true);
                     closeModalFunc();
-                    showDashboard();
+                    showPage('profile');
                     alert('Регистрация успешна!');
                 }
             }
         } catch (err) { modalError.textContent = err.message; }
     }
 
-    async function loadUserProfile() {
-        if (!currentUser) return;
-        const { data, error } = await supabaseClient.from('profiles').select('*').eq('id', currentUser.id).single();
-        if (error && error.code !== 'PGRST116') {
-            console.error('Ошибка загрузки профиля:', error);
-        } else if (data) {
-            currentUserProfile = data;
-        } else {
-            currentUserProfile = { id: currentUser.id, full_name: currentUser.email.split('@')[0], interests: [], status: 'offline', birthdate: '', city: '', about: '', avatar_url: '' };
-            await supabaseClient.from('profiles').insert([currentUserProfile]);
-        }
-    }
-
-    async function logout() {
-        await supabaseClient.auth.signOut();
-        currentUser = null;
-        currentUserProfile = null;
-        updateAuthUI(false);
-        showMainPage();
-    }
+    async function logout() { await supabaseClient.auth.signOut(); currentUser = null; currentUserProfile = null; updateAuthUI(false); showPage('communities'); }
 
     function updateAuthUI(isLoggedIn) {
-        const authSection = document.getElementById('authSection');
         if (isLoggedIn && currentUser) {
-            authSection.innerHTML = `<div style="display: flex; align-items: center; gap: 12px;"><span style="font-size: 0.85rem;">${escapeHtml(currentUser.email?.split('@')[0])}</span><a href="#" id="logoutBtn" class="btn-outline" style="padding: 6px 14px;">Выйти</a></div>`;
+            authSection.innerHTML = `<div style="display:flex; align-items:center; gap:12px;"><span>${escapeHtml(currentUser.email?.split('@')[0])}</span><a href="#" id="logoutBtn" class="btn-outline" style="padding:6px 14px;">Выйти</a></div>`;
             document.getElementById('logoutBtn')?.addEventListener('click', logout);
         } else {
             authSection.innerHTML = '<a href="#" id="loginBtn" class="btn-outline">Войти</a>';
@@ -940,48 +516,33 @@
         }
     }
 
-    async function checkSession() {
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        if (session) {
-            currentUser = session.user;
-            await loadUserProfile();
-            updateAuthUI(true);
-            restoreState();
-        } else {
-            currentUser = null;
-            updateAuthUI(false);
-            restoreState();
-        }
-    }
+    confirmCropBtn?.addEventListener('click', async () => {
+        if (currentCropCallback && cropper) { const blob = await getCroppedBlob(); if (blob) currentCropCallback(blob); }
+        document.getElementById('cropModal').classList.remove('active');
+        if (cropper) { cropper.destroy(); cropper = null; }
+    });
+    cancelCropBtn?.addEventListener('click', () => { document.getElementById('cropModal').classList.remove('active'); if (cropper) { cropper.destroy(); cropper = null; } });
 
-    document.getElementById('globalSearchBtn')?.addEventListener('click', () => {
-        const query = document.getElementById('globalSearchInput')?.value || '';
-        loadCommunities(query);
-        loadSections(query);
-    });
-    document.getElementById('globalSearchInput')?.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            const query = e.target.value;
-            loadCommunities(query);
-            loadSections(query);
-        }
-    });
-    document.getElementById('mainPageBtn')?.addEventListener('click', showMainPage);
-    document.getElementById('communitiesNavBtn')?.addEventListener('click', showCommunitiesTab);
-    document.getElementById('sectionsNavBtn')?.addEventListener('click', showSectionsTab);
-    document.getElementById('logoBtn')?.addEventListener('click', showMainPage);
+    document.getElementById('communitiesSearchBtn')?.addEventListener('click', () => { currentCommunitiesQuery = document.getElementById('communitiesSearchInput')?.value || ''; loadCommunities(currentCommunitiesQuery); });
+    document.getElementById('communitiesSearchInput')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') { currentCommunitiesQuery = e.target.value; loadCommunities(currentCommunitiesQuery); } });
+    document.getElementById('sectionsSearchBtn')?.addEventListener('click', () => { currentSectionsQuery = document.getElementById('sectionsSearchInput')?.value || ''; loadSections(currentSectionsQuery); });
+    document.getElementById('sectionsSearchInput')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') { currentSectionsQuery = e.target.value; loadSections(currentSectionsQuery); } });
+    document.getElementById('communitiesNavBtn')?.addEventListener('click', () => { showPage('communities'); });
+    document.getElementById('profileNavBtn')?.addEventListener('click', () => { if (currentUser) showPage('profile'); else openModal(); });
+    document.getElementById('sectionsNavBtn')?.addEventListener('click', () => { showPage('sections'); });
+    document.getElementById('logoBtn')?.addEventListener('click', () => { if (currentUser) showPage('profile'); else showPage('communities'); });
     closeModal?.addEventListener('click', closeModalFunc);
     modalActionBtn?.addEventListener('click', handleAuth);
     switchAuthMode?.addEventListener('click', (e) => { e.preventDefault(); switchMode(); });
     window.addEventListener('click', (e) => { if (e.target === modal) closeModalFunc(); });
-    
-    window.toggleStatus = toggleStatus;
-    window.showCommunityPage = showCommunityPage;
-    window.showSectionPage = (sectionId) => { alert('Страница секции будет доступна в следующей версии'); };
 
-    checkSession();
+    window.toggleStatus = toggleStatus;
+    window.startEditField = startEditField;
+    window.startEditInterest = startEditInterest;
+
     loadCommunities();
     loadSections();
+    checkSession();
 </script>
 </body>
 </html>
