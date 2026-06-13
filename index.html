@@ -93,8 +93,8 @@
         <div class="header-inner">
             <div class="logo" id="logoBtn">Твоя среда</div>
             <div class="nav" id="navSection">
-                <a href="#" id="communitiesNavBtn" class="active">Сообщества</a>
-                <a href="#" id="profileNavBtn">Профиль</a>
+                <a href="#" id="profileNavBtn" class="active">Профиль</a>
+                <a href="#" id="communitiesNavBtn">Сообщества</a>
                 <a href="#" id="sectionsNavBtn">Секции</a>
                 <div id="authSection"><a href="#" id="loginBtn" class="btn-outline">Войти</a></div>
             </div>
@@ -103,8 +103,15 @@
 </div>
 
 <main>
+    <!-- Страница Профиля -->
+    <div id="profilePage" class="page active">
+        <div class="container">
+            <div class="dashboard-grid" id="dashboardContent"></div>
+        </div>
+    </div>
+
     <!-- Страница Сообществ -->
-    <div id="communitiesPage" class="page active">
+    <div id="communitiesPage" class="page">
         <div class="container">
             <div class="hero">
                 <h1>Сообщества по интересам</h1>
@@ -115,13 +122,6 @@
                 </div>
             </div>
             <div id="communitiesContainer" class="grid-3"><div class="loading">Загрузка сообществ...</div></div>
-        </div>
-    </div>
-
-    <!-- Страница Профиля -->
-    <div id="profilePage" class="page">
-        <div class="container">
-            <div class="dashboard-grid" id="dashboardContent"></div>
         </div>
     </div>
 
@@ -162,35 +162,51 @@
     let cropper = null;
     let currentCropCallback = null;
 
-    const communitiesPage = document.getElementById('communitiesPage');
     const profilePage = document.getElementById('profilePage');
+    const communitiesPage = document.getElementById('communitiesPage');
     const sectionsPage = document.getElementById('sectionsPage');
     const communitiesContainer = document.getElementById('communitiesContainer');
     const sectionsContainer = document.getElementById('sectionsContainer');
     const authSection = document.getElementById('authSection');
 
+    // Функция нормализации поискового запроса (для поиска по корню слова)
+    function normalizeSearchQuery(query) {
+        if (!query) return '';
+        const lower = query.toLowerCase();
+        const stems = {
+            'бег': 'бег', 'бега': 'бег', 'бегу': 'бег', 'бегом': 'бег', 'беге': 'бег',
+            'шахмат': 'шахмат', 'шахматы': 'шахмат', 'шахматам': 'шахмат',
+            'танц': 'танц', 'танцы': 'танц', 'танцев': 'танц', 'танцам': 'танц', 'танцами': 'танц', 'танцах': 'танц',
+            'карате': 'карате', 'кудо': 'кудо', 'вело': 'вело', 'йога': 'йога',
+            'футбол': 'футбол', 'баскетбол': 'баскетбол', 'теннис': 'теннис',
+            'плавание': 'плаван', 'лыжи': 'лыж', 'бокс': 'бокс', 'кроссфит': 'кроссфит'
+        };
+        for (const [word, stem] of Object.entries(stems)) {
+            if (lower.includes(word)) return stem;
+        }
+        return lower.substring(0, 3);
+    }
+
     function showPage(page) {
-        communitiesPage.classList.remove('active');
         profilePage.classList.remove('active');
+        communitiesPage.classList.remove('active');
         sectionsPage.classList.remove('active');
-        if (page === 'communities') {
-            communitiesPage.classList.add('active');
-            document.getElementById('communitiesNavBtn').classList.add('active');
-            document.getElementById('profileNavBtn').classList.remove('active');
-            document.getElementById('sectionsNavBtn').classList.remove('active');
-            loadCommunities(currentCommunitiesQuery);
-        } else if (page === 'profile') {
+        document.getElementById('profileNavBtn').classList.remove('active');
+        document.getElementById('communitiesNavBtn').classList.remove('active');
+        document.getElementById('sectionsNavBtn').classList.remove('active');
+        
+        if (page === 'profile') {
             profilePage.classList.add('active');
             document.getElementById('profileNavBtn').classList.add('active');
-            document.getElementById('communitiesNavBtn').classList.remove('active');
-            document.getElementById('sectionsNavBtn').classList.remove('active');
             if (currentUser) renderDashboard();
             else openModal();
+        } else if (page === 'communities') {
+            communitiesPage.classList.add('active');
+            document.getElementById('communitiesNavBtn').classList.add('active');
+            loadCommunities(currentCommunitiesQuery);
         } else if (page === 'sections') {
             sectionsPage.classList.add('active');
             document.getElementById('sectionsNavBtn').classList.add('active');
-            document.getElementById('communitiesNavBtn').classList.remove('active');
-            document.getElementById('profileNavBtn').classList.remove('active');
             loadSections(currentSectionsQuery);
         }
     }
@@ -200,7 +216,14 @@
         communitiesContainer.innerHTML = '<div class="loading">Загрузка сообществ...</div>';
         try {
             let query = supabaseClient.from('communities').select('*');
-            if (searchQuery) query = query.ilike('name', `%${searchQuery}%`);
+            if (searchQuery) {
+                const searchStem = normalizeSearchQuery(searchQuery);
+                if (searchStem && searchStem.length > 2) {
+                    query = query.ilike('name', `%${searchStem}%`);
+                } else {
+                    query = query.ilike('name', `%${searchQuery}%`);
+                }
+            }
             query = query.order('member_count', { ascending: false });
             const { data: communities, error } = await query;
             if (error) throw error;
@@ -224,7 +247,14 @@
         sectionsContainer.innerHTML = '<div class="loading">Загрузка секций...</div>';
         try {
             let query = supabaseClient.from('sections').select('*');
-            if (searchQuery) query = query.ilike('name', `%${searchQuery}%`);
+            if (searchQuery) {
+                const searchStem = normalizeSearchQuery(searchQuery);
+                if (searchStem && searchStem.length > 2) {
+                    query = query.ilike('name', `%${searchStem}%`);
+                } else {
+                    query = query.ilike('name', `%${searchQuery}%`);
+                }
+            }
             query = query.order('created_at', { ascending: false });
             const { data: sections, error } = await query;
             if (error) throw error;
@@ -434,6 +464,14 @@
         return new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.85));
     }
 
+    async function deleteOldAvatar(avatarUrl) {
+        if (!avatarUrl) return;
+        try {
+            const fileName = avatarUrl.split('/avatars/').pop();
+            if (fileName) await supabaseClient.storage.from('avatars').remove([fileName]);
+        } catch (error) { console.error('Ошибка удаления старого аватара:', error); }
+    }
+
     async function updateAvatar(file) {
         if (!file || !currentUser) return;
         const allowedTypes = ['image/jpeg','image/jpg','image/png','image/heic','image/heif','image/webp'];
@@ -447,7 +485,7 @@
                 if (uploadError) throw uploadError;
                 const { data: { publicUrl } } = supabaseClient.storage.from('avatars').getPublicUrl(fileName);
                 await updateProfileField('avatar_url', publicUrl);
-                if (oldAvatarUrl) { const oldFileName = oldAvatarUrl.split('/avatars/').pop(); if (oldFileName) await supabaseClient.storage.from('avatars').remove([oldFileName]); }
+                if (oldAvatarUrl) await deleteOldAvatar(oldAvatarUrl);
                 currentUserProfile.avatar_url = publicUrl;
                 renderDashboard();
                 alert('Аватар обновлён!');
@@ -527,8 +565,8 @@
     document.getElementById('communitiesSearchInput')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') { currentCommunitiesQuery = e.target.value; loadCommunities(currentCommunitiesQuery); } });
     document.getElementById('sectionsSearchBtn')?.addEventListener('click', () => { currentSectionsQuery = document.getElementById('sectionsSearchInput')?.value || ''; loadSections(currentSectionsQuery); });
     document.getElementById('sectionsSearchInput')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') { currentSectionsQuery = e.target.value; loadSections(currentSectionsQuery); } });
-    document.getElementById('communitiesNavBtn')?.addEventListener('click', () => { showPage('communities'); });
     document.getElementById('profileNavBtn')?.addEventListener('click', () => { if (currentUser) showPage('profile'); else openModal(); });
+    document.getElementById('communitiesNavBtn')?.addEventListener('click', () => { showPage('communities'); });
     document.getElementById('sectionsNavBtn')?.addEventListener('click', () => { showPage('sections'); });
     document.getElementById('logoBtn')?.addEventListener('click', () => { if (currentUser) showPage('profile'); else showPage('communities'); });
     closeModal?.addEventListener('click', closeModalFunc);
