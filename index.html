@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Твоя среда — сообщества по интересам</title>
+    <title>Твоя среда — найди своих по интересам</title>
     <meta name="description" content="Твоя среда — сообщества по интересам и секции. Бег, шахматы, танцы, единоборства — находи единомышленников рядом.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -127,188 +127,6 @@
         .community-name { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
         .community-desc { font-size: 0.8rem; color: var(--text-gray); margin-bottom: 12px; line-height: 1.4; }
         .community-stats { display: flex; gap: 16px; margin-bottom: 16px; font-size: 0.7rem; color: var(--text-gray); }
-        
-        /* Страница сообщества */
-        .community-profile-page { display: none; }
-        .community-header {
-            background: white;
-            border-radius: 32px;
-            padding: 32px;
-            margin: 24px 0;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-light);
-        }
-        .community-header-content {
-            display: flex;
-            gap: 32px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .community-header-avatar {
-            width: 100px;
-            height: 100px;
-            background: var(--primary-light);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            color: var(--primary);
-        }
-        .community-header-info {
-            flex: 1;
-        }
-        .community-header-name {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-        .community-tabs {
-            display: flex;
-            gap: 8px;
-            border-bottom: 1px solid var(--border-light);
-            margin-bottom: 24px;
-            background: white;
-            border-radius: 60px;
-            padding: 4px;
-            width: fit-content;
-        }
-        .community-tab {
-            padding: 10px 24px;
-            border-radius: 60px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: var(--text-gray);
-        }
-        .community-tab.active {
-            background: var(--primary);
-            color: white;
-        }
-        .community-tab-content {
-            display: none;
-        }
-        .community-tab-content.active {
-            display: block;
-        }
-        .forum-topic {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-light);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .forum-topic:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-        .forum-topic-title {
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-bottom: 8px;
-        }
-        .forum-topic-meta {
-            display: flex;
-            gap: 20px;
-            font-size: 0.7rem;
-            color: var(--text-gray);
-        }
-        .event-card {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-light);
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        .event-date {
-            background: var(--primary-light);
-            border-radius: 16px;
-            padding: 12px 20px;
-            text-align: center;
-            min-width: 100px;
-        }
-        .event-day {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-        .event-month {
-            font-size: 0.7rem;
-            color: var(--text-gray);
-        }
-        .event-info {
-            flex: 1;
-        }
-        .event-title {
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-        .event-location {
-            font-size: 0.7rem;
-            color: var(--text-gray);
-        }
-        .chat-message {
-            background: white;
-            border-radius: 20px;
-            padding: 16px;
-            margin-bottom: 12px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-light);
-            display: flex;
-            gap: 12px;
-        }
-        .chat-message-avatar {
-            width: 40px;
-            height: 40px;
-            background: var(--primary-light);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-        }
-        .chat-message-content {
-            flex: 1;
-        }
-        .chat-message-name {
-            font-weight: 600;
-            font-size: 0.85rem;
-            margin-bottom: 4px;
-        }
-        .chat-message-text {
-            font-size: 0.85rem;
-            color: var(--text-dark);
-        }
-        .chat-message-time {
-            font-size: 0.65rem;
-            color: var(--text-gray);
-            margin-top: 4px;
-        }
-        .chat-input {
-            background: white;
-            border-radius: 60px;
-            padding: 8px 8px 8px 20px;
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-            border: 1px solid var(--border-light);
-        }
-        .chat-input input {
-            flex: 1;
-            border: none;
-            outline: none;
-            background: transparent;
-            padding: 10px 0;
-        }
-        
         @media (max-width: 900px) { .dashboard-grid, .section-profile { grid-template-columns: 1fr; } .container { padding: 0 16px; } .hero h1 { font-size: 2rem; } .header-inner { flex-direction: column; align-items: flex-start; } .nav { width: 100%; justify-content: space-between; } }
         .hidden-init { display: none; }
     </style>
@@ -349,7 +167,7 @@
         </div>
     </div>
 
-    <!-- Страница отдельного сообщества -->
+    <!-- Страница отдельного сообщества (обновлённый дизайн) -->
     <div id="communityPage" class="container hidden-init">
         <div id="communityContainer"></div>
     </div>
@@ -411,23 +229,25 @@
     let currentSectionId = null;
     let currentCommunitiesSearchQuery = '';
     let currentCommunityId = null;
-    let currentCommunityTab = 'chat';
+    let currentCommunityTab = 'events';
 
     // Тестовые данные для сообществ
     const communitiesData = [
-        { id: 1, name: 'Бег в Москве', description: 'Обсуждаем маршруты, делимся результатами, организуем совместные пробежки по паркам и набережным', members: 2340, events: 12, icon: '🏃', chatLink: 'https://max.ru/join/running_msk', chatMessages: [
-            { user: 'Анна', avatar: 'А', text: 'Всем привет! Кто завтра бежит в Сокольниках?', time: '10:45' },
-            { user: 'Максим', avatar: 'М', text: 'Я планирую в 8 утра, присоединяйся!', time: '11:20' }
-        ], topics: [
-            { title: 'Лучшие маршруты для пробежки в центре', author: 'Дмитрий', replies: 12, views: 45, lastActivity: '2 часа назад' },
-            { title: 'Как подготовиться к полумарафону за месяц', author: 'Елена', replies: 8, views: 32, lastActivity: 'вчера' }
-        ], events: [
-            { date: '15 июня', day: '15', month: 'июня', title: 'Утренняя пробежка в Сокольниках', location: 'Сокольники, главный вход', time: '08:00' },
-            { date: '22 июня', day: '22', month: 'июня', title: 'Парковый забег на 5 км', location: 'Парк Горького', time: '10:00' }
-        ] },
-        { id: 2, name: 'Шахматы в парках', description: 'Любители шахмат встречаются в городских парках, проводят турниры и учат новичков', members: 890, events: 5, icon: '♟️', chatLink: 'https://max.ru/join/chess', chatMessages: [], topics: [], events: [] },
-        { id: 3, name: 'Танцы для взрослых', description: 'Сальса, бачата, кизомба, хастл. Ищем партнёров, обсуждаем мастер-классы и вечеринки', members: 1520, events: 8, icon: '💃', chatLink: 'https://max.ru/join/dance', chatMessages: [], topics: [], events: [] }
+        { id: 1, name: 'Бег в Москве', description: 'Обсуждаем маршруты, делимся результатами, организуем совместные пробежки по паркам и набережным', members: 2340, events: 12, icon: '🏃', chatLink: 'https://max.ru/join/running_msk' },
+        { id: 2, name: 'Шахматы в парках', description: 'Любители шахмат встречаются в городских парках, проводят турниры и учат новичков', members: 890, events: 5, icon: '♟️', chatLink: 'https://max.ru/join/chess' },
+        { id: 3, name: 'Танцы для взрослых', description: 'Сальса, бачата, кизомба, хастл. Ищем партнёров, обсуждаем мастер-классы и вечеринки', members: 1520, events: 8, icon: '💃', chatLink: 'https://max.ru/join/dance' }
     ];
+
+    // Тестовые события для сообществ
+    const communityEvents = {
+        1: [
+            { date: '2026-06-15', day: 15, month: 'июня', title: 'Совместная пробежка в Сокольниках', location: 'м. Сокольники', time: '10:00', distance: '8 км', going: 12 },
+            { date: '2026-06-22', day: 22, month: 'июня', title: 'Лекция о правильной экипировке', location: 'Точка кипения', time: '19:00', distance: '', going: 8 },
+            { date: '2026-06-30', day: 30, month: 'июня', title: 'Ночной забег «Фонари»', location: 'м. Спортивная', time: '23:00', distance: '5 км', going: 24 }
+        ],
+        2: [],
+        3: []
+    };
 
     function loadCommunities(searchQuery = '') {
         const container = document.getElementById('communitiesContainer');
@@ -462,7 +282,7 @@
 
     function showCommunityPage(communityId) {
         currentCommunityId = communityId;
-        currentCommunityTab = 'chat';
+        currentCommunityTab = 'events';
         currentPage = 'community';
         saveState();
         
@@ -482,34 +302,25 @@
         const container = document.getElementById('communityContainer');
         if (!container) return;
         
-        const chatMessages = community.chatMessages || [];
-        const topics = community.topics || [];
-        const events = community.events || [];
+        const eventsList = communityEvents[community.id] || [];
         
         container.innerHTML = `
-            <div class="community-header">
-                <div class="community-header-content">
-                    <div class="community-header-avatar">
-                        <span style="font-size: 3rem;">${community.icon}</span>
-                    </div>
-                    <div class="community-header-info">
-                        <div class="community-header-name">${escapeHtml(community.name)}</div>
-                        <div style="color: var(--text-gray); margin-bottom: 16px;">${escapeHtml(community.description)}</div>
-                        <div style="display: flex; gap: 24px; flex-wrap: wrap;">
-                            <span><i class="fas fa-users"></i> ${community.members} участников</span>
-                            <span><i class="fas fa-calendar-alt"></i> ${community.events} событий</span>
-                        </div>
-                    </div>
+            <div style="background: white; border-radius: 24px; padding: 28px; margin: 24px 0; display: flex; gap: 24px; flex-wrap: wrap; align-items: center; border: 1px solid var(--border-light);">
+                <div style="width: 80px; height: 80px; background: var(--primary-light); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: var(--primary);">${community.icon}</div>
+                <div>
+                    <h1 style="font-size: 1.8rem; margin-bottom: 4px;">${escapeHtml(community.name)}</h1>
+                    <div style="color: var(--text-gray); margin-bottom: 12px;">${community.members} участников</div>
+                    <a href="${community.chatLink}" target="_blank" style="background:#1A73E8; color:white; padding:6px 20px; border-radius:40px; text-decoration:none; display:inline-block;">Чат в MAX →</a>
                 </div>
             </div>
             
-            <div class="community-tabs">
-                <div class="community-tab ${currentCommunityTab === 'chat' ? 'active' : ''}" data-tab="chat">💬 Чат</div>
-                <div class="community-tab ${currentCommunityTab === 'topics' ? 'active' : ''}" data-tab="topics">📝 Темы</div>
-                <div class="community-tab ${currentCommunityTab === 'events' ? 'active' : ''}" data-tab="events">🎉 События</div>
+            <div style="display: flex; gap: 24px; margin-bottom: 24px; border-bottom: 2px solid var(--border-light);">
+                <div class="community-tab ${currentCommunityTab === 'chat' ? 'active' : ''}" data-tab="chat" style="padding: 12px 0; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; ${currentCommunityTab === 'chat' ? 'color: var(--primary); border-bottom-color: var(--primary);' : ''}">Чат</div>
+                <div class="community-tab ${currentCommunityTab === 'events' ? 'active' : ''}" data-tab="events" style="padding: 12px 0; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; ${currentCommunityTab === 'events' ? 'color: var(--primary); border-bottom-color: var(--primary);' : ''}">События</div>
+                <div class="community-tab ${currentCommunityTab === 'members' ? 'active' : ''}" data-tab="members" style="padding: 12px 0; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; ${currentCommunityTab === 'members' ? 'color: var(--primary); border-bottom-color: var(--primary);' : ''}">Участники</div>
             </div>
             
-            <div id="communityTabChat" class="community-tab-content ${currentCommunityTab === 'chat' ? 'active' : ''}">
+            <div id="communityChatTab" style="display: ${currentCommunityTab === 'chat' ? 'block' : 'none'};">
                 <div style="background: var(--primary-ultralight); border-radius: 20px; padding: 16px; margin-bottom: 20px;">
                     <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
                         <i class="fab fa-telegram-plane" style="font-size: 1.5rem; color: #1A73E8;"></i>
@@ -518,53 +329,51 @@
                     </div>
                 </div>
                 <div class="chat-message-list">
-                    ${chatMessages.map(msg => `
-                        <div class="chat-message">
-                            <div class="chat-message-avatar">${escapeHtml(msg.avatar)}</div>
-                            <div class="chat-message-content">
-                                <div class="chat-message-name">${escapeHtml(msg.user)}</div>
-                                <div class="chat-message-text">${escapeHtml(msg.text)}</div>
-                                <div class="chat-message-time">${escapeHtml(msg.time)}</div>
-                            </div>
+                    <div class="chat-message" style="background: white; border-radius: 20px; padding: 16px; margin-bottom: 12px; display: flex; gap: 12px; border: 1px solid var(--border-light);">
+                        <div class="chat-message-avatar" style="width: 40px; height: 40px; background: var(--primary-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">А</div>
+                        <div class="chat-message-content" style="flex: 1;">
+                            <div style="font-weight: 600; margin-bottom: 4px;">Анна</div>
+                            <div style="font-size: 0.85rem;">Всем привет! Кто завтра бежит в Сокольниках?</div>
+                            <div style="font-size: 0.65rem; color: var(--text-gray); margin-top: 4px;">10:45</div>
                         </div>
-                    `).join('')}
+                    </div>
+                    <div class="chat-message" style="background: white; border-radius: 20px; padding: 16px; margin-bottom: 12px; display: flex; gap: 12px; border: 1px solid var(--border-light);">
+                        <div class="chat-message-avatar" style="width: 40px; height: 40px; background: var(--primary-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">М</div>
+                        <div class="chat-message-content" style="flex: 1;">
+                            <div style="font-weight: 600; margin-bottom: 4px;">Максим</div>
+                            <div style="font-size: 0.85rem;">Я планирую в 8 утра, присоединяйся!</div>
+                            <div style="font-size: 0.65rem; color: var(--text-gray); margin-top: 4px;">11:20</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="chat-input">
-                    <input type="text" placeholder="Написать сообщение... (откроется MAX)" readonly>
+                <div style="background: white; border-radius: 60px; padding: 8px 8px 8px 20px; display: flex; gap: 12px; margin-top: 20px; border: 1px solid var(--border-light);">
+                    <input type="text" placeholder="Написать сообщение... (откроется MAX)" style="flex: 1; border: none; outline: none; background: transparent; padding: 10px 0;" readonly>
                     <button class="btn-primary" onclick="window.open('${community.chatLink}', '_blank')" style="border-radius: 60px; padding: 8px 20px;">Отправить</button>
                 </div>
             </div>
             
-            <div id="communityTabTopics" class="community-tab-content ${currentCommunityTab === 'topics' ? 'active' : ''}">
-                ${topics.length > 0 ? topics.map(topic => `
-                    <div class="forum-topic">
-                        <div class="forum-topic-title">${escapeHtml(topic.title)}</div>
-                        <div class="forum-topic-meta">
-                            <span><i class="fas fa-user"></i> ${escapeHtml(topic.author)}</span>
-                            <span><i class="fas fa-reply"></i> ${topic.replies} ответов</span>
-                            <span><i class="fas fa-eye"></i> ${topic.views} просмотров</span>
-                            <span><i class="fas fa-clock"></i> ${escapeHtml(topic.lastActivity)}</span>
+            <div id="communityEventsTab" style="display: ${currentCommunityTab === 'events' ? 'block' : 'none'};">
+                <button class="btn-create" style="background: var(--primary); color: white; border: none; padding: 10px 24px; border-radius: 40px; font-weight: 600; cursor: pointer; margin-bottom: 20px;" onclick="alert('Функция создания события будет доступна в следующей версии!')"><i class="fas fa-plus"></i> Создать событие</button>
+                ${eventsList.length > 0 ? eventsList.map(event => `
+                    <div style="background: white; border-radius: 20px; padding: 20px; margin-bottom: 16px; display: flex; gap: 20px; flex-wrap: wrap; align-items: center; border: 1px solid var(--border-light);">
+                        <div style="background: var(--primary-light); border-radius: 16px; padding: 12px; text-align: center; min-width: 80px;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">${event.day}</div>
+                            <div style="font-size: 0.7rem; color: var(--text-gray);">${event.month}</div>
                         </div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 700; margin-bottom: 4px;">${escapeHtml(event.title)}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-gray); margin-bottom: 8px;">
+                                📍 ${escapeHtml(event.location)} • ${event.time} ${event.distance ? `• ${event.distance}` : ''}
+                            </div>
+                            <div>Идёт ${event.going} человек</div>
+                        </div>
+                        <button class="btn-going" style="background: var(--primary); color: white; border: none; padding: 8px 20px; border-radius: 40px; font-weight: 600; cursor: pointer;" onclick="alert('Вы пойдёте на событие!')">Пойду</button>
                     </div>
-                `).join('') : '<div class="loading">Пока нет тем. Будьте первым!</div>'}
-                <button class="btn-outline" style="margin-top: 20px; width: 100%;">+ Создать новую тему</button>
+                `).join('') : '<div class="loading" style="text-align: center; padding: 40px;">Пока нет событий. Создайте первое событие в сообществе!</div>'}
             </div>
             
-            <div id="communityTabEvents" class="community-tab-content ${currentCommunityTab === 'events' ? 'active' : ''}">
-                ${events.length > 0 ? events.map(event => `
-                    <div class="event-card">
-                        <div class="event-date">
-                            <div class="event-day">${escapeHtml(event.day)}</div>
-                            <div class="event-month">${escapeHtml(event.month)}</div>
-                        </div>
-                        <div class="event-info">
-                            <div class="event-title">${escapeHtml(event.title)}</div>
-                            <div class="event-location"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(event.location)} • ${escapeHtml(event.time)}</div>
-                        </div>
-                        <button class="btn-outline" style="padding: 6px 16px;">Пойду →</button>
-                    </div>
-                `).join('') : '<div class="loading">Пока нет событий. Следите за обновлениями!</div>'}
-                <button class="btn-outline" style="margin-top: 20px; width: 100%;">+ Предложить событие</button>
+            <div id="communityMembersTab" style="display: ${currentCommunityTab === 'members' ? 'block' : 'none'};">
+                <div class="loading" style="text-align: center; padding: 40px;">Список участников будет доступен в следующей версии</div>
             </div>
         `;
         
@@ -649,7 +458,7 @@
         if (savedPage === 'communities') {
             showCommunitiesPage();
         } else if (savedPage === 'community' && savedCommunityId) {
-            currentCommunityTab = savedCommunityTab || 'chat';
+            currentCommunityTab = savedCommunityTab || 'events';
             showCommunityPage(parseInt(savedCommunityId));
         } else if (savedPage === 'dashboard' && currentUser) {
             showDashboard();
