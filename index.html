@@ -127,6 +127,74 @@
         .community-name { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
         .community-desc { font-size: 0.8rem; color: var(--text-gray); margin-bottom: 12px; line-height: 1.4; }
         .community-stats { display: flex; gap: 16px; margin-bottom: 16px; font-size: 0.7rem; color: var(--text-gray); }
+        
+        /* Выпадающее меню пользователя */
+        .user-menu {
+            position: relative;
+            cursor: pointer;
+        }
+        .user-avatar-small {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: var(--primary);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid var(--primary-light);
+        }
+        .user-avatar-small:hover {
+            border-color: var(--primary);
+        }
+        .user-avatar-small img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .dropdown-menu {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            width: 200px;
+            z-index: 100;
+            display: none;
+            overflow: hidden;
+        }
+        .dropdown-menu.active {
+            display: block;
+        }
+        .dropdown-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: var(--text-dark);
+            text-decoration: none;
+        }
+        .dropdown-item:hover {
+            background: var(--primary-light);
+        }
+        .dropdown-item i {
+            width: 20px;
+            color: var(--text-gray);
+        }
+        .dropdown-divider {
+            height: 1px;
+            background: var(--border-light);
+            margin: 4px 0;
+        }
+        
         @media (max-width: 900px) { .dashboard-grid, .section-profile { grid-template-columns: 1fr; } .container { padding: 0 16px; } .hero h1 { font-size: 2rem; } .header-inner { flex-direction: column; align-items: flex-start; } .nav { width: 100%; justify-content: space-between; } }
         
         /* Все страницы скрыты по умолчанию */
@@ -144,7 +212,6 @@
             <div class="nav" id="navSection">
                 <a href="#" id="communitiesNavBtn">Сообщества</a>
                 <a href="#" id="mainPageBtn">Секции</a>
-                <a href="#" id="profileNavBtn">Профиль</a>
                 <div id="authSection">
                     <a href="#" id="loginBtn" class="btn-outline">Войти</a>
                 </div>
@@ -323,7 +390,6 @@
         const community = communitiesData.find(c => c.id === communityId);
         if (!community) return;
         
-        // Скрываем все страницы
         document.getElementById('communitiesPage').style.display = 'none';
         document.getElementById('mainPage').style.display = 'none';
         document.getElementById('dashboard').style.display = 'none';
@@ -557,11 +623,42 @@
 
     async function toggleStatus() { if (!currentUserProfile) return; const newStatus = currentUserProfile.status === 'online' ? 'offline' : 'online'; await updateProfileField('status', newStatus); currentUserProfile.status = newStatus; renderDashboard(); }
 
-    function showDashboard() { currentPage = 'dashboard'; currentSectionId = null; saveState(); document.getElementById('communitiesPage').style.display = 'none'; document.getElementById('mainPage').style.display = 'none'; dashboard.style.display = 'block'; document.getElementById('sectionPage').style.display = 'none'; document.getElementById('communityPage').style.display = 'none'; renderDashboard(); }
+    function showDashboard() { 
+        currentPage = 'dashboard'; 
+        currentSectionId = null; 
+        saveState(); 
+        document.getElementById('communitiesPage').style.display = 'none'; 
+        document.getElementById('mainPage').style.display = 'none'; 
+        dashboard.style.display = 'block'; 
+        document.getElementById('sectionPage').style.display = 'none'; 
+        document.getElementById('communityPage').style.display = 'none'; 
+        renderDashboard(); 
+    }
 
-    function showMainPage() { currentPage = 'main'; currentSectionId = null; saveState(); document.getElementById('communitiesPage').style.display = 'none'; mainPage.style.display = 'block'; dashboard.style.display = 'none'; document.getElementById('sectionPage').style.display = 'none'; document.getElementById('communityPage').style.display = 'none'; renderChips(); loadSections(currentSearchQuery); }
+    function showMainPage() { 
+        currentPage = 'main'; 
+        currentSectionId = null; 
+        saveState(); 
+        document.getElementById('communitiesPage').style.display = 'none'; 
+        mainPage.style.display = 'block'; 
+        dashboard.style.display = 'none'; 
+        document.getElementById('sectionPage').style.display = 'none'; 
+        document.getElementById('communityPage').style.display = 'none'; 
+        renderChips(); 
+        loadSections(currentSearchQuery); 
+    }
 
-    async function showSectionPage(sectionId) { currentPage = 'section'; currentSectionId = sectionId; saveState(); document.getElementById('communitiesPage').style.display = 'none'; mainPage.style.display = 'none'; dashboard.style.display = 'none'; sectionPage.style.display = 'block'; document.getElementById('communityPage').style.display = 'none'; await loadSection(sectionId); }
+    async function showSectionPage(sectionId) { 
+        currentPage = 'section'; 
+        currentSectionId = sectionId; 
+        saveState(); 
+        document.getElementById('communitiesPage').style.display = 'none'; 
+        mainPage.style.display = 'none'; 
+        dashboard.style.display = 'none'; 
+        sectionPage.style.display = 'block'; 
+        document.getElementById('communityPage').style.display = 'none'; 
+        await loadSection(sectionId); 
+    }
 
     function getIconForSection(name) { const lower = name.toLowerCase(); if (lower.includes('бег')) return '<i class="fas fa-running"></i>'; if (lower.includes('шахмат')) return '<i class="fas fa-chess"></i>'; if (lower.includes('танц')) return '<i class="fas fa-music"></i>'; if (lower.includes('карате')) return '<i class="fas fa-fist-raised"></i>'; if (lower.includes('кудо')) return '<i class="fas fa-fist-raised"></i>'; return '<i class="fas fa-location-dot"></i>'; }
 
@@ -613,7 +710,80 @@
     function getRandomChips() { const shuffled = [...allInterests]; for (let i = shuffled.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; } return shuffled.slice(0, 7); }
     function renderChips() { const chipsContainer = document.getElementById('chipsContainer'); if (!chipsContainer) return; const chips = getRandomChips(); chipsContainer.innerHTML = chips.map(interest => `<div class="chip" data-interest="${interest.toLowerCase()}">${interest}</div>`).join(''); document.querySelectorAll('#chipsContainer .chip').forEach(chip => { chip.addEventListener('click', () => { const interest = chip.getAttribute('data-interest'); if (interest && document.getElementById('searchInput')) { document.getElementById('searchInput').value = interest; currentSearchQuery = interest; loadSections(currentSearchQuery); } }); }); }
 
-    const modal = document.getElementById('authModal'); const modalTitle = document.getElementById('modalTitle'); const emailInput = document.getElementById('emailInput'); const passwordInput = document.getElementById('passwordInput'); const modalActionBtn = document.getElementById('modalActionBtn'); const switchAuthMode = document.getElementById('switchAuthMode'); const modalError = document.getElementById('modalError'); const closeModal = document.getElementById('closeModal'); const groupModal = document.getElementById('groupModal'); const saveGroupBtn = document.getElementById('saveGroupBtn'); const cancelGroupBtn = document.getElementById('cancelGroupBtn'); const cropModal = document.getElementById('cropModal'); const confirmCropBtn = document.getElementById('confirmCropBtn'); const cancelCropBtn = document.getElementById('cancelCropBtn');
+    function updateAuthUI(isLoggedIn) { 
+        const authSection = document.getElementById('authSection');
+        if (isLoggedIn && currentUser) {
+            const userInitial = (currentUserProfile?.full_name?.[0] || currentUser.email?.[0] || 'U').toUpperCase();
+            const avatarUrl = currentUserProfile?.avatar_url;
+            authSection.innerHTML = `
+                <div class="user-menu" id="userMenu">
+                    <div class="user-avatar-small" id="userAvatarBtn">
+                        ${avatarUrl ? `<img src="${avatarUrl}" alt="avatar">` : userInitial}
+                    </div>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="#" class="dropdown-item" id="profileMenuItem"><i class="fas fa-user"></i> Профиль</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item" id="settingsMenuItem"><i class="fas fa-sliders-h"></i> Настройки</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item" id="logoutMenuItem"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+                    </div>
+                </div>
+            `;
+            const userMenu = document.getElementById('userMenu');
+            const userAvatarBtn = document.getElementById('userAvatarBtn');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            const profileMenuItem = document.getElementById('profileMenuItem');
+            const settingsMenuItem = document.getElementById('settingsMenuItem');
+            const logoutMenuItem = document.getElementById('logoutMenuItem');
+            
+            userAvatarBtn?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdownMenu?.classList.toggle('active');
+            });
+            
+            profileMenuItem?.addEventListener('click', (e) => {
+                e.preventDefault();
+                showDashboard();
+                dropdownMenu?.classList.remove('active');
+            });
+            
+            settingsMenuItem?.addEventListener('click', (e) => {
+                e.preventDefault();
+                alert('Страница настроек будет доступна в следующей версии!');
+                dropdownMenu?.classList.remove('active');
+            });
+            
+            logoutMenuItem?.addEventListener('click', (e) => {
+                e.preventDefault();
+                logout();
+                dropdownMenu?.classList.remove('active');
+            });
+            
+            document.addEventListener('click', (e) => {
+                if (!userMenu?.contains(e.target)) {
+                    dropdownMenu?.classList.remove('active');
+                }
+            });
+        } else {
+            authSection.innerHTML = '<a href="#" id="loginBtn" class="btn-outline">Войти</a>';
+            document.getElementById('loginBtn')?.addEventListener('click', openModal);
+        }
+    }
+
+    const modal = document.getElementById('authModal'); 
+    const modalTitle = document.getElementById('modalTitle'); 
+    const emailInput = document.getElementById('emailInput'); 
+    const passwordInput = document.getElementById('passwordInput'); 
+    const modalActionBtn = document.getElementById('modalActionBtn'); 
+    const switchAuthMode = document.getElementById('switchAuthMode'); 
+    const modalError = document.getElementById('modalError'); 
+    const closeModal = document.getElementById('closeModal'); 
+    const groupModal = document.getElementById('groupModal'); 
+    const saveGroupBtn = document.getElementById('saveGroupBtn'); 
+    const cancelGroupBtn = document.getElementById('cancelGroupBtn'); 
+    const cropModal = document.getElementById('cropModal'); 
+    const confirmCropBtn = document.getElementById('confirmCropBtn'); 
+    const cancelCropBtn = document.getElementById('cancelCropBtn');
 
     function openModal() { modal.classList.add('active'); modalError.textContent = ''; emailInput.value = ''; passwordInput.value = ''; }
     function closeModalFunc() { modal.classList.remove('active'); }
@@ -621,7 +791,6 @@
     function switchMode() { isLoginMode = !isLoginMode; modalTitle.textContent = isLoginMode ? 'Вход' : 'Регистрация'; modalActionBtn.textContent = isLoginMode ? 'Войти' : 'Зарегистрироваться'; switchAuthMode.textContent = isLoginMode ? 'Нет аккаунта? Зарегистрироваться' : 'Уже есть аккаунт? Войти'; modalError.textContent = ''; }
     async function handleAuth() { const email = emailInput.value.trim(); const password = passwordInput.value.trim(); if (!email || !password) { modalError.textContent = 'Заполните все поля'; return; } if (password.length < 6) { modalError.textContent = 'Пароль должен быть не менее 6 символов'; return; } try { if (isLoginMode) { const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password }); if (error) throw error; currentUser = data.user; await loadUserProfile(); await loadFavorites(); updateAuthUI(true); closeModalFunc(); restoreState(); } else { const { data, error } = await supabaseClient.auth.signUp({ email, password }); if (error) throw error; if (data.user) { currentUser = data.user; currentUserProfile = { id: data.user.id, full_name: email.split('@')[0], interests: [], status: 'offline', birthdate: '', city: '', about: '', avatar_url: '' }; await supabaseClient.from('profiles').insert([currentUserProfile]); await loadFavorites(); updateAuthUI(true); closeModalFunc(); showDashboard(); alert('Регистрация успешна!'); } } } catch (err) { modalError.textContent = err.message; } }
     async function logout() { await supabaseClient.auth.signOut(); currentUser = null; currentUserProfile = null; updateAuthUI(false); showMainPage(); }
-    function updateAuthUI(isLoggedIn) { if (isLoggedIn && currentUser) { authSection.innerHTML = `<div style="display: flex; align-items: center; gap: 12px;"><span style="font-size: 0.85rem;">${escapeHtml(currentUser.email?.split('@')[0])}</span><a href="#" id="logoutBtn" class="btn-outline" style="padding: 6px 14px;">Выйти</a></div>`; document.getElementById('logoutBtn')?.addEventListener('click', logout); } else { authSection.innerHTML = '<a href="#" id="loginBtn" class="btn-outline">Войти</a>'; document.getElementById('loginBtn')?.addEventListener('click', openModal); } }
 
     confirmCropBtn?.addEventListener('click', async () => { if (currentCropCallback && cropper) { const croppedBlob = await getCroppedBlob(); if (croppedBlob) currentCropCallback(croppedBlob); } closeCropModal(); });
     cancelCropBtn?.addEventListener('click', closeCropModal);
@@ -632,7 +801,6 @@
     document.getElementById('logoBtn')?.addEventListener('click', showMainPage);
     document.getElementById('mainPageBtn')?.addEventListener('click', showMainPage);
     document.getElementById('communitiesNavBtn')?.addEventListener('click', showCommunitiesPage);
-    document.getElementById('profileNavBtn')?.addEventListener('click', () => { if (currentUser) showDashboard(); else openModal(); });
     closeModal?.addEventListener('click', closeModalFunc);
     modalActionBtn?.addEventListener('click', handleAuth);
     switchAuthMode?.addEventListener('click', (e) => { e.preventDefault(); switchMode(); });
